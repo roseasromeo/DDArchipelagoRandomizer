@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>DDArchipelagoRandomizer</AssemblyName>
-    <Product>An Archipelago implementation of the randomizer for Death's Door</Product>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -13,6 +12,7 @@
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
     <RootNamespace>ArchipelagoRandomizer</RootNamespace>
+    <Product>ArchipelagoRandomizer</Product>
   </PropertyGroup>
 
   <ItemGroup>

@@ -15,9 +15,9 @@ public class Plugin : BaseUnityPlugin
 		Logger = base.Logger;
 		Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
-		AGM.AlternativeGameModes.Add("Archipelago Randomizer", () =>
+		AGM.AlternativeGameModes.Add("Archipelago Rando", () =>
 		{
-			Logger.LogInfo("test!");
+			new ItemRandomizer();
 		});
 	}
 }
