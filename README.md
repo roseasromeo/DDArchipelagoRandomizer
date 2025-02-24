@@ -24,10 +24,10 @@ We talk about the development of this in the Death's Door thread in the `future-
 1. Add a `config.txt` to the project's root directory.
 2. In the `config.txt`, add the following line and replace the value with the path to where you want this plugin to be stored:
     ```plaintext
-    PLUGIN_PATH=Path\To\Your\Plugin\Path\For\This\Mod
+    PLUGIN_PATH=Path\To\Your\Plugin\Directory\For\This\Mod
     ```
     Note: Do not add quotes around the path, the script handles spaces in path automatically.
-3. Now, when you build, it will automatically copy the build files to the path the `PLUGIN_PATH`.
+3. Now, when you build, it will automatically copy the build files to the `PLUGIN_PATH`.
 
 ## Acknowledgements
 
