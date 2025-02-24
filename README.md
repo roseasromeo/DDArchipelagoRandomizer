@@ -2,8 +2,8 @@
 
 This is a work in progress Archipelago randomizer mod for Death's Door.
 
-[!IMPORTANT]
-This is in very early alpha stage and is not yet playable.
+> [!IMPORTANT]
+> This is in very early alpha stage and is not yet playable.
 
 ## Contributing
 
