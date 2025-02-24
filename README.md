@@ -20,7 +20,7 @@ We talk about the development of this in the Death's Door thread in the `future-
 2. Navigate to the project's root directory in a terminal and run `dotnet restore` to install dependencies.
 3. Run `dotnet build` to build the project.
 
-### Automatically Copy Build Files to Plugin Directory
+### (Optional) Automatically Copy Build Files to Plugin Directory
 1. Add a `config.txt` to the project's root directory.
 2. In the `config.txt`, add the following line and replace the value with the path to where you want this plugin to be stored:
     ```plaintext
