@@ -31,3 +31,6 @@ Thanks to [dpinela](https://github.com/dpinela) for their work on the
 (of which I'm using to figure out how to make this mod) and for the dependencies this mod uses:
 [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes) and
 [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger)!
+
+Thanks to [lunix33](https://github.com/lunix33) for starting this project with their work on the
+[APWorld](https://github.com/lunix33/Archipelago_DeathsDoor/tree/deaths-door/worlds/deaths_door) side of things!
