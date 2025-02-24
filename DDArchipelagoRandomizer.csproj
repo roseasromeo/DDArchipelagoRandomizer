@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <AssemblyName>DDArchipelagoRandomizer</AssemblyName>
+    <AssemblyName>ArchipelagoRandomizer</AssemblyName>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -12,31 +12,29 @@
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
     <RootNamespace>ArchipelagoRandomizer</RootNamespace>
-    <Product>ArchipelagoRandomizer</Product>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.4" IncludeAssets="compile" />
   </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="AlternativeGameModes">
-      <HintPath>Dependencies\AlternativeGameModes.dll</HintPath>
-    </Reference>
-    <Reference Include="ItemChanger">
-      <HintPath>Dependencies\ItemChanger.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Dependencies\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="AlternativeGameModes">
+	    <HintPath>Dependencies\AlternativeGameModes.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	  <Reference Include="ItemChanger">
+	    <HintPath>Dependencies\ItemChanger.dll</HintPath>
+	    <Private>False</Private>
+	  </Reference>
+	</ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(ProjectDir)postbuild.bat&quot; &quot;$(OutDir)&quot;" />

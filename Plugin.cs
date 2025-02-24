@@ -1,10 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using AGM = DDoor.AlternativeGameModes;
+using HL = HarmonyLib;
 
 namespace ArchipelagoRandomizer;
 
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInPlugin("deathsdoor.archipelagorandomizer", "ArchipelagoRandomizer", "1.0.0.0")]
+[BepInDependency("deathsdoor.itemchanger"), BepInDependency("deathsdoor.alternativegamemodes")]
 public class Plugin : BaseUnityPlugin
 {
 	internal static new ManualLogSource Logger;

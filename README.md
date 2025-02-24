@@ -17,17 +17,20 @@ We talk about the development of this in the Death's Door thread in the `future-
 
 ### Building
 1. Clone this repository.
-2. Navigate to the project's root directory in a terminal and run `dotnet restore` to install dependencies.
-3. Run `dotnet build` to build the project.
+1. Add the DLLs for these dependencies into a "Dependencies" folder in the project's root directory:
+    - [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes)
+    - [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger)
+1. Navigate to the project's root directory in a terminal and run `dotnet restore` to install packages.
+1. Run `dotnet build` to build the project.
 
 ### (Optional) Automatically Copy Build Files to Plugin Directory
 1. Add a `config.txt` to the project's root directory.
-2. In the `config.txt`, add the following line and replace the value with the path to where you want this plugin to be stored:
+1. In the `config.txt`, add the following line and replace the value with the path to where you want this plugin to be stored:
     ```plaintext
     PLUGIN_PATH=Path\To\Your\Plugin\Directory\For\This\Mod
     ```
     Note: Do not add quotes around the path, the script handles spaces in path automatically.
-3. Now, when you build, it will automatically copy the build files to the `PLUGIN_PATH`.
+1. Now, when you build, it will automatically copy the build files to the `PLUGIN_PATH`.
 
 ## Acknowledgements
 
