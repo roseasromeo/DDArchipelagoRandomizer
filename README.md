@@ -10,6 +10,11 @@ This is a work in progress Archipelago randomizer mod for Death's Door.
 If you're interested in helping out, join the discussion in the [Archipelago Discord server](https://discord.com/invite/8Z65BR2).
 We talk about the development of this in the Death's Door thread in the `future-game-design` forum!
 
+### Prerequisites
+- [.NET Framework 4.7.2 or later](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
+- [BepInEx 5.4.22 or later 5.x versions](https://github.com/bepinex/bepinex/releases/latest)
+  - Do **not** use BepInEx 6.x, as it's in pre-release stage and may not work properly or be compatible.
+
 ### Building
 1. Clone this repository.
 2. Navigate to the project's root directory in a terminal and run `dotnet restore` to install dependencies.
