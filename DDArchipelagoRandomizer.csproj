@@ -1,42 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Project info -->
+	<PropertyGroup>
+		<RootNamespace>ArchipelagoRandomizer</RootNamespace>
+		<AssemblyName>ArchipelagoRandomizer</AssemblyName>
+		<AssemblyTitle>Archipelago Randomizer</AssemblyTitle>
+		<Product>ArchipelagoRandomizer</Product>
+		<Description>An Archipelago multiworld client for Death's Door</Description>
+		<Version>0.1.0</Version>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json;
+			https://nuget.samboy.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <AssemblyName>ArchipelagoRandomizer</AssemblyName>
-    <Version>1.0.0</Version>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
-    <RestoreAdditionalProjectSources>
-      https://api.nuget.org/v3/index.json;
-      https://nuget.bepinex.dev/v3/index.json;
-      https://nuget.samboy.dev/v3/index.json
-    </RestoreAdditionalProjectSources>
-    <RootNamespace>ArchipelagoRandomizer</RootNamespace>
-  </PropertyGroup>
-	
-  <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="UnityEngine.Modules" Version="2019.4" IncludeAssets="compile" />
-  </ItemGroup>
+	<!-- Packages -->
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.Core" Version="5.*" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="UnityEngine.Modules" Version="2019.4" IncludeAssets="compile" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
 
+	<!-- External DLLs -->
 	<ItemGroup>
-	  <Reference Include="AlternativeGameModes">
-	    <HintPath>Dependencies\AlternativeGameModes.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
-	  <Reference Include="ItemChanger">
-	    <HintPath>Dependencies\ItemChanger.dll</HintPath>
-	    <Private>False</Private>
-	  </Reference>
+		<Reference Include="AlternativeGameModes">
+			<HintPath>Dependencies\AlternativeGameModes.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="ItemChanger">
+			<HintPath>Dependencies\ItemChanger.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call &quot;$(ProjectDir)postbuild.bat&quot; &quot;$(OutDir)&quot;" />
-  </Target>
+
+	<!-- Build events -->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="call &quot;$(ProjectDir)postbuild.bat&quot; &quot;$(OutDir)&quot;" />
+	</Target>
 </Project>
