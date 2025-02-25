@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using AGM = DDoor.AlternativeGameModes;
-using HL = HarmonyLib;
 
 namespace ArchipelagoRandomizer;
 

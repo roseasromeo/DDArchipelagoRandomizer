@@ -1,10 +1,10 @@
 ﻿namespace ArchipelagoRandomizer;
 
-static class Debug
+static class Logger
 {
 	public static void Log(string message)
 	{
-		Plugin.Logger.LogInfo(message);
+		Plugin.Logger.LogMessage(message);
 	}
 
 	public static void LogWarning(string message)

@@ -16,6 +16,6 @@ class ItemRandomizer
 		data.Place("Fire", "Seed-Cemetery Broken Bridge");
 		data.Place("Arrow Upgrade", "Seed-Cemetery Near Tablet Gate");
 		data.Place("Bomb", "Soul Orb-Cemetery Under Bridge");
-		Debug.Log("Item randomizer started!");
+		Logger.Log("Item randomizer started!");
 	}
 }
