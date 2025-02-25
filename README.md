@@ -17,20 +17,22 @@ We talk about the development of this in the Death's Door thread in the `future-
 
 ### Building
 1. Clone this repository.
-1. Add the DLLs for these dependencies into a "Dependencies" folder in the project's root directory:
+1. Install these mods into your Death's Door plugins folder:
     - [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes)
     - [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger)
-1. Navigate to the project's root directory in a terminal and run `dotnet restore` to install packages.
-1. Run `dotnet build` to build the project.
-
-### (Optional) Automatically Copy Build Files to Plugin Directory
-1. Add a `config.txt` to the project's root directory.
-1. In the `config.txt`, add the following line and replace the value with the path to where you want this plugin to be stored:
-    ```plaintext
-    PLUGIN_PATH=Path\To\Your\Plugin\Directory\For\This\Mod
+1. Create a new file at the project's root named `config.targets` and add the following code:
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <Project>
+      <PropertyGroup>
+        <PluginsPath>Path\To\Your\Death's\Door\Plugins\Directory</PluginsPath>
+      </PropertyGroup>
+    </Project>
     ```
-    Note: Do not add quotes around the path, the script handles spaces in path automatically.
-1. Now, when you build, it will automatically copy the build files to the `PLUGIN_PATH`.
+    Replace `Path\To\Your\Death's\Door\Plugins\Directory`.
+    This will usually be at [`Game directory]\BepInEx\plugins`, unless you changed the default location.
+1. Navigate to the project's root directory in a terminal and run `dotnet restore` to install packages.
+1. Build the project.
 
 ## Acknowledgements
 
@@ -42,3 +44,7 @@ Thanks to [dpinela](https://github.com/dpinela) for their work on the
 
 Thanks to [lunix33](https://github.com/lunix33) for starting this project with their work on the
 [APWorld](https://github.com/lunix33/Archipelago_DeathsDoor/tree/deaths-door/worlds/deaths_door) side of things!
+
+Thanks to [BadMagic](https://github.com/BadMagic100) for their work on
+[Hollow Knight's Archipelago client](https://github.com/ArchipelagoMW-HollowKnight/Archipelago.HollowKnight),
+which I used as a reference for the MSBuild properties of this project.

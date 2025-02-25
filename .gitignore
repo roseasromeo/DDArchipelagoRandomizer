@@ -3,8 +3,7 @@
 .vs/
 .vscode/
 .idea/
-Dependencies/
-config.txt
+config.targets
 
 # User-specific configuration files
 *.user

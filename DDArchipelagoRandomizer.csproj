@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<!-- Project info -->
 	<PropertyGroup>
 		<RootNamespace>ArchipelagoRandomizer</RootNamespace>
 		<AssemblyName>ArchipelagoRandomizer</AssemblyName>
@@ -14,9 +13,21 @@
 			https://nuget.bepinex.dev/v3/index.json;
 			https://nuget.samboy.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
+		<OutputPath>$(ProjectDir)Build</OutputPath>
 	</PropertyGroup>
 
-	<!-- Packages -->
+	<!-- Custom properties -->
+	<PropertyGroup>
+		<ModName>ArchipelagoRandomizer</ModName>
+		<ExportDir>$(OutputPath)\Export</ExportDir>
+	</PropertyGroup>
+
+	<!--
+		Create a file named 'config.targets' in the project's doot directory.
+		This should contain a 'PluginsPath' property pointing to your Death's Door plugins directory.
+	-->
+	<Import Project="config.targets" Condition="Exists('config.targets')" />
+
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.Core" Version="5.*" />
@@ -28,20 +39,29 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
 
-	<!-- External DLLs -->
 	<ItemGroup>
 		<Reference Include="AlternativeGameModes">
-			<HintPath>Dependencies\AlternativeGameModes.dll</HintPath>
+			<HintPath>$(PluginsPath)/AlternativeGameModes/AlternativeGameModes.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="ItemChanger">
-			<HintPath>Dependencies\ItemChanger.dll</HintPath>
+			<HintPath>$(PluginsPath)/ItemChanger/ItemChanger.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 	</ItemGroup>
 
-	<!-- Build events -->
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="call &quot;$(ProjectDir)postbuild.bat&quot; &quot;$(OutDir)&quot;" />
+	<Target Name="CopyMod" AfterTargets="PostBuildEvent">
+		<RemoveDir Directories="$(ExportDir)/" />
+		<MakeDir Directories="$(ExportDir)/" />
+		<MakeDir Directories="$(ExportDir)/zip/" />
+		<MakeDir Condition="!Exists('$(PluginsPath)/$(ModName)/')" Directories="$(PluginsPath)/$(ModName)/" />
+		<Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(PluginsPath)/$(ModName)/" />
+		<Copy SourceFiles="$(ProjectDir)\README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/" />
+		<ZipDirectory SourceDirectory="$(ExportDir)/zip/" DestinationFile="$(ExportDir)/$(ModName).zip" />
+		<RemoveDir Directories="$(ExportDir)/zip/" />
+		<GetFileHash Files="$(ExportDir)/$(ModName).zip" Algorithm="SHA256">
+			<Output TaskParameter="Items" ItemName="FilesWithHashes" />
+		</GetFileHash>
+		<WriteLinesToFile File="$(ExportDir)/SHA.txt" Lines="@(FilesWithHashes->'%(FileHash)')" Overwrite="true" Encoding="UTF-8" />
 	</Target>
 </Project>
