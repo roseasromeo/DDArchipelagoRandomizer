@@ -16,13 +16,12 @@ public class Plugin : BaseUnityPlugin
 	{
 		try
 		{
-			// Plugin startup logic
 			Logger = base.Logger;
 			Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
 			AGM.AlternativeGameModes.Add("Archipelago", () =>
 			{
-				new ItemRandomizer();
+				StartGame();
 			});
 
 			InitStatus = 1;
@@ -31,6 +30,24 @@ public class Plugin : BaseUnityPlugin
 		{
 			InitStatus = 2;
 			throw err;
+		}
+	}
+
+	private void StartGame()
+	{
+		// TODO: Remove static data when we can configure this in game
+		Archipelago.APConnectionInfo connectionInfo = new()
+		{
+			URL = "localhost",
+			Port = 38281,
+			SlotName = "test",
+			Password = ""
+		};
+
+		// Once connected, start item randomizer
+		if (Archipelago.Instance.Connect(connectionInfo) != null)
+		{
+			ItemRandomizer.Instance.OnFileStarted();
 		}
 	}
 }

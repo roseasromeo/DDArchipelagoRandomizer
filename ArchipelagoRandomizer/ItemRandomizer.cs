@@ -4,12 +4,13 @@ namespace DDoor.ArchipelagoRandomizer;
 
 class ItemRandomizer
 {
-	public ItemRandomizer()
-	{
-		OnFileStarted();
-	}
+	private static readonly ItemRandomizer instance = new();
 
-	private void OnFileStarted()
+	public static ItemRandomizer Instance => instance;
+
+	private ItemRandomizer() { }
+
+	public void OnFileStarted()
 	{
 		var data = IC.SaveData.Open();
 		data.Place("Hookshot", "Seed-Cemetery Left of Main Entrance");
