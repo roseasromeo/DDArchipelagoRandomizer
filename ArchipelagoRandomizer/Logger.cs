@@ -1,4 +1,4 @@
-﻿namespace ArchipelagoRandomizer;
+﻿namespace DDoor.ArchipelagoRandomizer;
 
 static class Logger
 {

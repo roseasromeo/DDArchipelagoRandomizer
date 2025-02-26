@@ -1,6 +1,6 @@
 ﻿using IC = DDoor.ItemChanger;
 
-namespace ArchipelagoRandomizer;
+namespace DDoor.ArchipelagoRandomizer;
 
 class ItemRandomizer
 {

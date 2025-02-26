@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<RootNamespace>ArchipelagoRandomizer</RootNamespace>
+		<RootNamespace>DDoor</RootNamespace>
 		<AssemblyName>ArchipelagoRandomizer</AssemblyName>
 		<AssemblyTitle>Archipelago Randomizer</AssemblyTitle>
 		<Product>ArchipelagoRandomizer</Product>

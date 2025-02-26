@@ -2,7 +2,7 @@
 using BepInEx.Logging;
 using AGM = DDoor.AlternativeGameModes;
 
-namespace ArchipelagoRandomizer;
+namespace DDoor.ArchipelagoRandomizer;
 
 [BepInPlugin("deathsdoor.archipelagorandomizer", MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("deathsdoor.itemchanger"), BepInDependency("deathsdoor.alternativegamemodes")]
