@@ -32,8 +32,7 @@ class Archipelago
 		{
 			case LoginFailure failure:
 				string errors = string.Join(", ", failure.Errors);
-				Logger.LogError($"Failed to connect to Archipelago: {errors}");
-				throw new LoginValidationException(errors);
+				throw new LoginValidationException($"Failed to connect to Archipelago: {errors}");
 			case LoginSuccessful success:
 				Session.Socket.SocketClosed += OnSocketClosed;
 				OnConnected?.Invoke();
