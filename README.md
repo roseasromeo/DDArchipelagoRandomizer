@@ -14,6 +14,7 @@ We talk about the development of this in the Death's Door thread in the `future-
 - [.NET Framework 4.7.2 or later](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 - [BepInEx 5.4.22 or later 5.x versions](https://github.com/bepinex/bepinex/releases/latest)
   - Do **not** use BepInEx 6.x, as it's in pre-release stage and may not work properly or be compatible.
+- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)
 
 ### Building
 1. Clone this repository.
@@ -33,6 +34,18 @@ We talk about the development of this in the Death's Door thread in the `future-
     This will usually be at [`Game directory]\BepInEx\plugins`, unless you changed the default location.
 1. Navigate to the project's root directory in a terminal and run `dotnet restore` to install packages.
 1. Build the project.
+
+### Code Guidelines
+- Follow the [C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) *except for the following*:
+  - **Use 4 space tabs** for indentation.
+    - This should be set up for you in the `.editorconfig` file.
+  - **Never use implicit typing** (var) for variables.
+    - This should be set up for you in the `.editorconfig` file.
+- If you add a new mod dependency, do the following:
+  - Include it in `Plugin`'s `BepInDepndency` attributes.
+  - Edit the `.csproj` to add it as a reference, but use dynamic pathing for it using the `PluginsPath` custom MSBuild variable.
+	- This ensures the mod is included in the project for anyone who builds it, regardless of difference in paths.
+	- Example: `<HintPath>$(PluginsPath)/ItemChanger/ItemChanger.dll</HintPath>`
 
 ## Acknowledgements
 
