@@ -16,19 +16,21 @@
 		<OutputPath>$(ProjectDir)Build</OutputPath>
 	</PropertyGroup>
 
-	<!-- Custom properties -->
-	<PropertyGroup>
-		<ModName>ArchipelagoRandomizer</ModName>
-		<ExportDir>$(OutputPath)\Export</ExportDir>
-	</PropertyGroup>
-
 	<!--
 		Create a file named 'config.targets' in the project's doot directory.
 		This should contain a 'PluginsPath' property pointing to your Death's Door plugins directory.
 	-->
 	<Import Project="config.targets" Condition="Exists('config.targets')" />
 
+	<!-- Custom properties -->
+	<PropertyGroup>
+		<ModName>ArchipelagoRandomizer</ModName>
+		<ExportDir>$(OutputPath)\Export</ExportDir>
+		<ManagedDir>$(PluginsPath)\..\..\DeathsDoor_Data\Managed</ManagedDir>
+	</PropertyGroup>
+
 	<ItemGroup>
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
 		<PackageReference Include="Archipelago.MultiClient.Net" Version="6.6.0" />
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.Core" Version="5.*" />
@@ -41,6 +43,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="Assembly-CSharp" Publicize="true">
+			<HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath>
+		</Reference>
 		<Reference Include="AlternativeGameModes">
 			<HintPath>$(PluginsPath)/AlternativeGameModes/AlternativeGameModes.dll</HintPath>
 			<Private>False</Private>
