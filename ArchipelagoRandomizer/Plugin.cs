@@ -27,14 +27,6 @@ public class Plugin : BaseUnityPlugin
 				ArchipelagoRandomizerMod.Instance.OnFileCreated();
 			});
 
-			//SceneManager.sceneLoaded += (Scene scene, LoadSceneMode mode) =>
-			//{
-			//	if (SceneManager.GetActiveScene().name == "TitleScreen" && scene.name != "TitleScreen")
-			//	{
-			//		UIManager.Instance.CreateAPMenu();
-			//	}
-			//};
-
 			new Harmony("deathsdoor.archipelagorandomizer").PatchAll();
 
 			InitStatus = 1;

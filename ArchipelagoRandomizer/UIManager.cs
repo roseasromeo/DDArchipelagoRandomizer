@@ -13,6 +13,7 @@ internal class UIManager : MonoBehaviour
 	private static UIManager instance;
 	private LayoutRoot apMenuRoot;
 	private SaveMenu saveMenu;
+	private static APMenuElements apMenuElements;
 	private readonly float apMenuFadeDuration = 0.4f;
 	private bool isAPMenuFading;
 	private readonly float elementPadding = 15;
@@ -33,169 +34,26 @@ internal class UIManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		apMenuElements = new();
 	}
 
-	private struct APMenuElements
+	public void HideAPMenuAndStartGame()
 	{
-		public static TextInput urlTextInput;
-		public static TextInput portTextInput;
-		public static TextInput slotNameTextInput;
-		public static TextInput passwordTextInput;
-
-		public static TextObject HeadingText
+		if (apMenuRoot != null)
 		{
-			get
-			{
-				return new TextObject(instance.apMenuRoot, nameof(HeadingText))
-				{
-					Text = "Archipelago Connection Settings",
-					FontSize = 90,
-					HorizontalAlignment = HorizontalAlignment.Center,
-					VerticalAlignment = VerticalAlignment.Center,
-					Padding = new Padding(instance.elementPadding),
-				};
-			}
+			StartCoroutine(DoAPMenuFade(false));
 		}
 
-		public static StackLayout URLPortStack
+		if (saveMenu == null)
 		{
-			get
-			{
-				StackLayout stack = new StackLayout(instance.apMenuRoot, nameof(URLPortStack))
-				{
-					Orientation = Orientation.Horizontal,
-				};
-				stack.Children.Add(URLTextInput);
-				stack.Children.Add(PortTextInput);
-				return stack;
-			}
+			saveMenu = TitleScreen.instance.saveMenu;
 		}
 
-		public static TextInput URLTextInput
-		{
-			get
-			{
-				urlTextInput = new TextInput(instance.apMenuRoot, nameof(URLTextInput))
-				{
-					MinWidth = 400,
-					FontSize = 50,
-					Placeholder = "URL (eg. archipelago.gg)",
-					Padding = new Padding(instance.elementPadding),
-				};
-				return urlTextInput;
-			}
-		}
-
-		public static TextInput PortTextInput
-		{
-			get
-			{
-				portTextInput = new TextInput(instance.apMenuRoot, nameof(PortTextInput))
-				{
-					MinWidth = 200,
-					FontSize = 50,
-					Placeholder = "Port (eg. 38281)",
-					Padding = new Padding(instance.elementPadding),
-				};
-				return portTextInput;
-			}
-		}
-
-		public static StackLayout SlotNamePasswordStack
-		{
-			get
-			{
-				StackLayout stack = new StackLayout(instance.apMenuRoot, nameof(SlotNamePasswordStack))
-				{
-					Orientation = Orientation.Horizontal,
-				};
-				stack.Children.Add(SlotNameTextInput);
-				stack.Children.Add(PasswordTextInput);
-				return stack;
-			}
-		}
-
-		public static TextInput SlotNameTextInput
-		{
-			get
-			{
-				slotNameTextInput = new TextInput(instance.apMenuRoot, nameof(SlotNameTextInput))
-				{
-					MinWidth = 200,
-					FontSize = 50,
-					Placeholder = "Player name",
-					Padding = new Padding(instance.elementPadding),
-				};
-				return slotNameTextInput;
-			}
-		}
-
-		public static TextInput PasswordTextInput
-		{
-			get
-			{
-				passwordTextInput = new TextInput(instance.apMenuRoot, nameof(PasswordTextInput))
-				{
-					MinWidth = 400,
-					FontSize = 50,
-					Placeholder = "Password",
-					Padding = new Padding(instance.elementPadding),
-				};
-				return passwordTextInput;
-			}
-		}
-
-		public static StackLayout ButtonsStack
-		{
-			get
-			{
-				StackLayout stack = new StackLayout(instance.apMenuRoot, nameof(ButtonsStack))
-				{
-					Orientation = Orientation.Horizontal,
-					HorizontalAlignment = HorizontalAlignment.Center,
-				};
-				stack.Children.Add(ConnectButton);
-				stack.Children.Add(BackButton);
-				return stack;
-			}
-		}
-
-		public static Button ConnectButton
-		{
-			get
-			{
-				Button button = new Button(instance.apMenuRoot, nameof(ConnectButton))
-				{
-					Content = "Connect",
-					FontSize = 70,
-					HorizontalAlignment = HorizontalAlignment.Center,
-					VerticalAlignment = VerticalAlignment.Bottom,
-					Padding = new Padding(instance.elementPadding, instance.elementPadding * 3),
-				};
-				button.Click += instance.ClickedConnect;
-				return button;
-			}
-		}
-
-		public static Button BackButton
-		{
-			get
-			{
-				Button button = new Button(instance.apMenuRoot, nameof(BackButton))
-				{
-					Content = "Back",
-					FontSize = 70,
-					HorizontalAlignment = HorizontalAlignment.Center,
-					VerticalAlignment = VerticalAlignment.Bottom,
-					Padding = new Padding(instance.elementPadding, instance.elementPadding * 3),
-				};
-				button.Click += instance.ClickedBack;
-				return button;
-			}
-		}
+		SaveSlot slot = saveMenu.slots[saveMenu.index].GetComponent<SaveSlot>();
+		slot.LoadSave();
 	}
 
-	public void CreateAPMenu()
+	private void CreateAPMenu()
 	{
 		apMenuRoot = new(false, "AP Menu");
 		StackLayout mainStack = new StackLayout(apMenuRoot, "MainStack")
@@ -203,20 +61,37 @@ internal class UIManager : MonoBehaviour
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
 		};
-		mainStack.Children.Add(APMenuElements.HeadingText);
-		mainStack.Children.Add(APMenuElements.URLPortStack);
-		mainStack.Children.Add(APMenuElements.SlotNamePasswordStack);
-		mainStack.Children.Add(APMenuElements.ButtonsStack);
+		mainStack.Children.Add(apMenuElements.HeadingText);
+		mainStack.Children.Add(apMenuElements.URLPortStack);
+		mainStack.Children.Add(apMenuElements.SlotNamePasswordStack);
+		mainStack.Children.Add(apMenuElements.ButtonsStack);
+
+		PrefillAPMenu(TitleScreen.instance.saveMenu.index);
 		StartCoroutine(DoAPMenuFade(true));
+	}
+
+	private void PrefillAPMenu(int saveSlot)
+	{
+		Archipelago.APConnectionInfo connectioninfo = Archipelago.Instance.GetConnectionInfoForFile(saveSlot);
+
+		if (connectioninfo == null)
+		{
+			return;
+		}
+
+		apMenuElements.URLTextInput.Text = connectioninfo.URL;
+		apMenuElements.PortTextInput.Text = connectioninfo.Port.ToString();
+		apMenuElements.SlotNameTextInput.Text = connectioninfo.SlotName;
+		apMenuElements.PasswordTextInput.Text = connectioninfo.Password;
 	}
 
 	private void ClickedConnect(Button button)
 	{
-		string url = APMenuElements.urlTextInput.Text;
-		string slotName = APMenuElements.slotNameTextInput.Text;
-		string password = APMenuElements.passwordTextInput.Text;
+		string url = apMenuElements.URLTextInput.Text;
+		string slotName = apMenuElements.SlotNameTextInput.Text;
+		string password = apMenuElements.PasswordTextInput.Text;
 
-		if (int.TryParse(APMenuElements.portTextInput.Text, out int port))
+		if (int.TryParse(apMenuElements.PortTextInput.Text, out int port))
 		{
 			Archipelago.APConnectionInfo connectionInfo = new()
 			{
@@ -225,7 +100,7 @@ internal class UIManager : MonoBehaviour
 				SlotName = slotName,
 				Password = password
 			};
-			ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo);
+			ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo, saveMenu.index);
 		}
 	}
 
@@ -246,6 +121,7 @@ internal class UIManager : MonoBehaviour
 		else
 		{
 			apMenuRoot.Canvas.SetActive(true);
+			PrefillAPMenu(saveMenu.index);
 			StartCoroutine(DoAPMenuFade(true));
 		}
 	}
@@ -297,5 +173,197 @@ internal class UIManager : MonoBehaviour
 		}
 
 		return true;
+	}
+
+	private struct APMenuElements
+	{
+		private TextObject headingText;
+		private StackLayout urlPortStack;
+		private TextInput urlTextInput;
+		private TextInput portTextInput;
+		private StackLayout slotNamePasswordStack;
+		private TextInput slotNameTextInput;
+		private TextInput passwordTextInput;
+		private StackLayout buttonsStack;
+		private Button connectButton;
+		private Button backButton;
+
+		public TextObject HeadingText
+		{
+			get
+			{
+				headingText ??= new TextObject(instance.apMenuRoot, nameof(HeadingText))
+				{
+					Text = "Archipelago Connection Settings",
+					FontSize = 90,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Padding = new Padding(instance.elementPadding),
+				};
+
+				return headingText;
+			}
+		}
+
+		public StackLayout URLPortStack
+		{
+			get
+			{
+				if (urlPortStack == null)
+				{
+					urlPortStack = new StackLayout(instance.apMenuRoot, nameof(URLPortStack))
+					{
+						Orientation = Orientation.Horizontal,
+					};
+					urlPortStack.Children.Add(URLTextInput);
+					urlPortStack.Children.Add(PortTextInput);
+				}
+
+				return urlPortStack;
+			}
+		}
+
+		public TextInput URLTextInput
+		{
+			get
+			{
+				urlTextInput ??= new TextInput(instance.apMenuRoot, nameof(URLTextInput))
+				{
+					MinWidth = 400,
+					FontSize = 50,
+					Placeholder = "URL (eg. archipelago.gg)",
+					Padding = new Padding(instance.elementPadding),
+				};
+
+				return urlTextInput;
+			}
+		}
+
+		public TextInput PortTextInput
+		{
+			get
+			{
+				portTextInput ??= new TextInput(instance.apMenuRoot, nameof(PortTextInput))
+				{
+					MinWidth = 200,
+					FontSize = 50,
+					Placeholder = "Port (eg. 38281)",
+					Padding = new Padding(instance.elementPadding),
+				};
+
+				return portTextInput;
+			}
+		}
+
+		public StackLayout SlotNamePasswordStack
+		{
+			get
+			{
+				if (slotNamePasswordStack == null)
+				{
+					slotNamePasswordStack = new StackLayout(instance.apMenuRoot, nameof(SlotNamePasswordStack))
+					{
+						Orientation = Orientation.Horizontal,
+					};
+					slotNamePasswordStack.Children.Add(SlotNameTextInput);
+					slotNamePasswordStack.Children.Add(PasswordTextInput);
+				}
+
+				return slotNamePasswordStack;
+			}
+		}
+
+		public TextInput SlotNameTextInput
+		{
+			get
+			{
+				slotNameTextInput ??= new TextInput(instance.apMenuRoot, nameof(SlotNameTextInput))
+				{
+					MinWidth = 200,
+					FontSize = 50,
+					Placeholder = "Player name",
+					Padding = new Padding(instance.elementPadding),
+				};
+
+				return slotNameTextInput;
+			}
+		}
+
+		public TextInput PasswordTextInput
+		{
+			get
+			{
+				passwordTextInput ??= new TextInput(instance.apMenuRoot, nameof(PasswordTextInput))
+				{
+					MinWidth = 400,
+					FontSize = 50,
+					Placeholder = "Password",
+					Padding = new Padding(instance.elementPadding),
+				};
+
+				return passwordTextInput;
+			}
+		}
+
+		public StackLayout ButtonsStack
+		{
+			get
+			{
+				if (buttonsStack == null)
+				{
+					buttonsStack = new StackLayout(instance.apMenuRoot, nameof(ButtonsStack))
+					{
+						Orientation = Orientation.Horizontal,
+						HorizontalAlignment = HorizontalAlignment.Center,
+					};
+					buttonsStack.Children.Add(ConnectButton);
+					buttonsStack.Children.Add(BackButton);
+				}
+
+				return buttonsStack;
+			}
+		}
+
+		public Button ConnectButton
+		{
+			get
+			{
+				if (connectButton == null)
+				{
+					connectButton = new Button(instance.apMenuRoot, nameof(ConnectButton))
+					{
+						Content = "Connect",
+						FontSize = 70,
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Bottom,
+						Padding = new Padding(instance.elementPadding, instance.elementPadding * 3),
+					};
+					connectButton.Click += instance.ClickedConnect;
+				}
+
+				return connectButton;
+			}
+		}
+
+		public Button BackButton
+		{
+			get
+			{
+				if (backButton == null)
+				{
+					backButton = new Button(instance.apMenuRoot, nameof(BackButton))
+					{
+						Content = "Back",
+						FontSize = 70,
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Bottom,
+						Padding = new Padding(instance.elementPadding, instance.elementPadding * 3),
+					};
+					backButton.Click += instance.ClickedBack;
+				}
+
+				return backButton;
+			}
+		}
 	}
 }

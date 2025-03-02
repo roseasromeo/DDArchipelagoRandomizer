@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static DDoor.ArchipelagoRandomizer.Archipelago;
+using AGM = DDoor.AlternativeGameModes;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -29,9 +31,14 @@ internal class ArchipelagoRandomizerMod
 	/// </summary>
 	public void InitMod()
 	{
+		if (hasInited)
+		{
+			return;
+		}
+
 		SceneManager.sceneLoaded += (Scene scene, LoadSceneMode mode) =>
 		{
-			if (scene.name == "TitleScreen")
+			if (SceneManager.GetActiveScene().name == "TitleScreen" && scene.name != "TitleScreen")
 			{
 				DisableMod();
 			}
@@ -43,22 +50,38 @@ internal class ArchipelagoRandomizerMod
 	/// <summary>
 	/// Enables the mod. This runs every time an Archipelago save file is loaded.
 	/// </summary>
-	public void EnableMod(Archipelago.APConnectionInfo connectionInfo)
+	public void EnableMod(APConnectionInfo connectionInfo, int saveInfoToSlotIndex)
 	{
 		if (!hasInited)
 		{
 			InitMod();
 		}
 
+		ConnectToArchipelago(connectionInfo, saveInfoToSlotIndex);
+	}
+
+	public void EnableMod(int saveInfoToSlotIndex)
+	{
+		APConnectionInfo connectionInfo = Archipelago.Instance.GetConnectionInfoForFile(saveInfoToSlotIndex);
+		ConnectToArchipelago(connectionInfo, saveInfoToSlotIndex, isAlreadyLoading: true);
+	}
+
+	private void ConnectToArchipelago(APConnectionInfo connectionInfo, int saveInfoToSlotIndex = 0, bool isAlreadyLoading = false)
+	{
 		try
 		{
 			// Once connected, start item randomizer
-			if (Archipelago.Instance.Connect(connectionInfo) != null)
+			if (Archipelago.Instance.Connect(connectionInfo, saveInfoToSlotIndex) != null)
 			{
 				archipelagoRandomizer = new GameObject("ArchipelagoRandomizer");
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();
 				archipelagoRandomizer.AddComponent<DeathManager>();
 				Object.DontDestroyOnLoad(archipelagoRandomizer);
+
+				if (!isAlreadyLoading)
+				{
+					UIManager.Instance.HideAPMenuAndStartGame();
+				}
 			}
 		}
 		catch (LoginValidationException ex)
@@ -75,6 +98,7 @@ internal class ArchipelagoRandomizerMod
 	private void DisableMod()
 	{
 		Object.Destroy(archipelagoRandomizer);
+		Archipelago.Instance.Disconnect();
 	}
 
 	[HarmonyPatch]
@@ -90,7 +114,11 @@ internal class ArchipelagoRandomizerMod
 
 			if (__instance.saveFile.IsLoaded() && GameSave.currentSave.IsKeyUnlocked("ArchipelagoRandomizer"))
 			{
-				// TODO: Load AP data from save file
+				// If loading AP file
+				if (AGM.AlternativeGameModes.SelectedModeName == "START")
+				{
+					instance.EnableMod(TitleScreen.instance.saveMenu.index);
+				}
 			}
 		}
 	}
