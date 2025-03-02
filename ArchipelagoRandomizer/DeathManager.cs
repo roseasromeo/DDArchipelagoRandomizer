@@ -1,0 +1,132 @@
+﻿using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
+using HarmonyLib;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace DDoor.ArchipelagoRandomizer;
+
+[HarmonyPatch]
+internal class DeathManager : MonoBehaviour
+{
+	private static DeathManager instance;
+
+	private DeathLinkService deathLinkService;
+	private DamageablePlayer damageable;
+	private UIMenuPauseController pauseController;
+	private readonly List<string> deathMessages =
+	[
+		"{name}'s last feather has fallen...",
+		"{name} lost their soul.",
+		"{name} reaped their last soul...",
+		"{name} drank too much squid soup.",
+	];
+	private const float deathCooldown = 10f;
+	private bool diedFromDeathLink;
+	private bool preventDeath;
+
+	public static DeathManager Instance => instance;
+	public static bool IsDeathLinkEnabled { get; private set; }
+
+	private void Awake()
+	{
+		instance = this;
+		deathLinkService ??= Archipelago.Instance.Session.CreateDeathLinkService();
+	}
+
+	private void OnEnable()
+	{
+		deathLinkService.EnableDeathLink();
+		deathLinkService.OnDeathLinkReceived += OnDeathReceived;
+		IsDeathLinkEnabled = true;
+	}
+
+	private void OnDisable()
+	{
+		deathLinkService.DisableDeathLink();
+		deathLinkService.OnDeathLinkReceived -= OnDeathReceived;
+		IsDeathLinkEnabled = false;
+	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown("t"))
+		{
+			Logger.Log($"Prevent death: {preventDeath}");
+			OnDeathReceived(null);
+		}
+	}
+
+	private static void SendDeath()
+	{
+		if (instance.diedFromDeathLink)
+		{
+			instance.diedFromDeathLink = false;
+			return;
+		}
+
+		Logger.Log("You died! Sending death to everyone...");
+		string player = Archipelago.Instance.CurrentPlayer.Name;
+		string message = instance.deathMessages[Random.Range(0, instance.deathMessages.Count - 1)];
+		string cause = message.Replace("{name}", player);
+		Logger.Log(cause);
+		instance.deathLinkService.SendDeathLink(new DeathLink(player, cause));
+	}
+
+	private void OnDeathReceived(DeathLink deathLink)
+	{
+		if (!preventDeath)
+		{
+			StartCoroutine(DoDeathReceived(deathLink));
+		}
+	}
+
+	private IEnumerator DoDeathReceived(DeathLink deathLink)
+	{
+		Logger.Log("Received death! You will die when next possible...");
+		PlayerGlobal player = PlayerGlobal.instance;
+		preventDeath = true;
+
+		if (damageable == null)
+		{
+			damageable = player.GetComponent<DamageablePlayer>();
+		}
+
+		if (pauseController == null)
+		{
+			pauseController = FindObjectOfType<UIMenuPauseController>();
+		}
+
+		while (!CanDie())
+		{
+			yield return null;
+		}
+
+		diedFromDeathLink = true;
+
+		// Apply damage instead of calling Die method to avoid issues
+		damageable.SetHealth(1);
+		damageable.ReceiveDamage(1, 0, player.transform.position, player.transform.position, Damageable.DamageType.Hole, 1);
+		StartCoroutine(DeathCooldownTimer());
+	}
+
+	private IEnumerator DeathCooldownTimer()
+	{
+		yield return new WaitForSecondsRealtime(deathCooldown);
+		preventDeath = false;
+	}
+
+	private bool CanDie()
+	{
+		return damageable != null && !PlayerGlobal.instance.InputPaused() && PlayerGlobal.instance.IsAlive();
+	}
+
+	[HarmonyPostfix, HarmonyPatch(typeof(DamageablePlayer), nameof(DamageablePlayer.Die))]
+	public static void DeathLinkSendDeathPatch()
+	{
+		if (IsDeathLinkEnabled)
+		{
+			SendDeath();
+		}
+	}
+}

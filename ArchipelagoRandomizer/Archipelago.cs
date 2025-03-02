@@ -1,5 +1,6 @@
 ﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Helpers;
 using System;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -12,7 +13,19 @@ class Archipelago
 
 	public static Archipelago Instance => instance;
 	public ArchipelagoSession Session { get; private set; }
-	private bool IsConnected => Session != null && Session.Socket.Connected;
+	public bool IsConnected => Session != null && Session.Socket.Connected;
+	public PlayerInfo CurrentPlayer
+	{
+		get
+		{
+			if (Session == null)
+			{
+				return null;
+			}
+
+			return Session.Players.GetPlayerInfo(Session.ConnectionInfo.Slot);
+		}
+	}
 
 	private Archipelago() { }
 

@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using HarmonyLib;
 using AGM = DDoor.AlternativeGameModes;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -19,10 +20,12 @@ public class Plugin : BaseUnityPlugin
 			Logger = base.Logger;
 			Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
-			AGM.AlternativeGameModes.Add("Archipelago", () =>
+			AGM.AlternativeGameModes.Add("ARCHIPELAGO", () =>
 			{
-				StartGame();
+				ArchipelagoRandomizerMod.Instance.OnFileCreated();
 			});
+
+			new Harmony("deathsdoor.archipelagorandomizer").PatchAll();
 
 			InitStatus = 1;
 		}
@@ -30,33 +33,6 @@ public class Plugin : BaseUnityPlugin
 		{
 			InitStatus = 2;
 			throw err;
-		}
-	}
-
-	private void StartGame()
-	{
-		// TODO: Remove static data when we can configure this in game
-		Archipelago.APConnectionInfo connectionInfo = new()
-		{
-			URL = "localhost",
-			Port = 38281,
-			SlotName = "test",
-			Password = ""
-		};
-
-		try
-		{
-			// Once connected, start item randomizer
-			if (Archipelago.Instance.Connect(connectionInfo) != null)
-			{
-				ItemRandomizer.Instance.OnFileStarted();
-			}
-		}
-		catch (LoginValidationException ex)
-		{
-			// TODO: Find a way to reset the title screen UI to allow re-entering file without restarting game
-			// Currently, it'll start a vanilla file without informing user of failed connection
-			Logger.LogError(ex.Message);
 		}
 	}
 }
