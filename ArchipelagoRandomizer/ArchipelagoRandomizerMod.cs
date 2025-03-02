@@ -22,7 +22,6 @@ internal class ArchipelagoRandomizerMod
 		GameSave.currentSave.SetKeyState("ArchipelagoRandomizer", true);
 
 		InitMod();
-		EnableMod();
 	}
 
 	/// <summary>
@@ -44,21 +43,12 @@ internal class ArchipelagoRandomizerMod
 	/// <summary>
 	/// Enables the mod. This runs every time an Archipelago save file is loaded.
 	/// </summary>
-	private void EnableMod()
+	public void EnableMod(Archipelago.APConnectionInfo connectionInfo)
 	{
 		if (!hasInited)
 		{
 			InitMod();
 		}
-
-		// TODO: Remove static data when we can configure this in game
-		Archipelago.APConnectionInfo connectionInfo = new()
-		{
-			URL = "localhost",
-			Port = 54762,
-			SlotName = "test",
-			Password = ""
-		};
 
 		try
 		{
@@ -100,7 +90,7 @@ internal class ArchipelagoRandomizerMod
 
 			if (__instance.saveFile.IsLoaded() && GameSave.currentSave.IsKeyUnlocked("ArchipelagoRandomizer"))
 			{
-				Instance.EnableMod();
+				// TODO: Load AP data from save file
 			}
 		}
 	}
