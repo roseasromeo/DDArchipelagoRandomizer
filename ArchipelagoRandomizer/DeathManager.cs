@@ -48,15 +48,6 @@ internal class DeathManager : MonoBehaviour
 		IsDeathLinkEnabled = false;
 	}
 
-	private void Update()
-	{
-		if (Input.GetKeyDown("t"))
-		{
-			Logger.Log($"Prevent death: {preventDeath}");
-			OnDeathReceived(null);
-		}
-	}
-
 	private static void SendDeath()
 	{
 		if (instance.diedFromDeathLink)
