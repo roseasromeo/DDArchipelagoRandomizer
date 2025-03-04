@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using IC = DDoor.ItemChanger;
 
 namespace DDoor.ArchipelagoRandomizer;
 
-class ItemRandomizer : MonoBehaviour
+internal class ItemRandomizer : MonoBehaviour
 {
 	private static ItemRandomizer instance;
 
@@ -17,22 +18,13 @@ class ItemRandomizer : MonoBehaviour
 
 	private void OnEnable()
 	{
-		// Test items
-		// TOOD: Replace with actual item placements received from AP
-		List<ItemPlacement> itemPlacements =
-		[
-			new("Hookshot", "Seed-Cemetery Left of Main Entrance"),
-			new("Bomb", "Soul Orb-Cemetery Under Bridge"),
-			new("Fire", "Seed-Cemetery Broken Bridge"),
-			new("Arrow Upgrade", "Seed-Cemetery Near Tablet Gate"),
-		];
-
-		PlaceItems(itemPlacements);
+		PlaceItems();
 		Logger.Log("Item randomizer started!");
 	}
 
-	private void PlaceItems(List<ItemPlacement> itemPlacements)
+	private void PlaceItems()
 	{
+		List<ItemPlacement> itemPlacements = Archipelago.Instance.ScoutedPlacements.Select(kvp => new ItemPlacement(kvp.Value, kvp.Key)).ToList();
 		IC.SaveData data = IC.SaveData.Open();
 
 		foreach (ItemPlacement itemPlacement in itemPlacements)
@@ -40,6 +32,8 @@ class ItemRandomizer : MonoBehaviour
 			data.Place(itemPlacement.Item, itemPlacement.Location);
 			Logger.Log($"Placed {itemPlacement.Item} at {itemPlacement.Location}");
 		}
+
+		TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.Save();
 	}
 
 	private struct ItemPlacement(string item, string location)

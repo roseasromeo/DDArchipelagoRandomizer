@@ -66,12 +66,12 @@ internal class ArchipelagoRandomizerMod
 		ConnectToArchipelago(connectionInfo, saveInfoToSlotIndex, isAlreadyLoading: true);
 	}
 
-	private void ConnectToArchipelago(APConnectionInfo connectionInfo, int saveInfoToSlotIndex = 0, bool isAlreadyLoading = false)
+	private async void ConnectToArchipelago(APConnectionInfo connectionInfo, int saveInfoToSlotIndex = 0, bool isAlreadyLoading = false)
 	{
 		try
 		{
 			// Once connected, start item randomizer
-			if (Archipelago.Instance.Connect(connectionInfo, saveInfoToSlotIndex) != null)
+			if (await Archipelago.Instance.Connect(connectionInfo, saveInfoToSlotIndex) != null)
 			{
 				archipelagoRandomizer = new GameObject("ArchipelagoRandomizer");
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();

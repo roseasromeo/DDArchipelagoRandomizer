@@ -1,10 +1,13 @@
 ﻿using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
+using Archipelago.MultiClient.Net.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -14,6 +17,7 @@ internal class Archipelago
 	public static event Action OnConnected;
 	public static event Action OnDisconnected;
 	private static readonly Archipelago instance = new();
+	private readonly string apConnectionInfoSavePath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#_APConnectionInfo.json";
 	private Dictionary<string, object> slotData;
 
 	public static Archipelago Instance => instance;
@@ -31,10 +35,11 @@ internal class Archipelago
 			return Session.Players.GetPlayerInfo(Session.ConnectionInfo.Slot);
 		}
 	}
+	public Dictionary<string, string> ScoutedPlacements { get; private set; }
 
 	private Archipelago() { }
 
-	public LoginSuccessful Connect(APConnectionInfo info, int saveInfoToSlotIndex = 0)
+	public async Task<LoginSuccessful> Connect(APConnectionInfo info, int saveInfoToSlotIndex = 0)
 	{
 		Session = ArchipelagoSessionFactory.CreateSession(info.URL, info.Port);
 
@@ -54,6 +59,7 @@ internal class Archipelago
 			case LoginSuccessful success:
 				Session.Socket.SocketClosed += OnSocketClosed;
 				slotData = success.SlotData;
+				await ScoutAllLocations();
 				OnConnected?.Invoke();
 				SaveConnectionInfo(info, saveInfoToSlotIndex);
 				Logger.Log($"Successfully connected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
@@ -97,14 +103,24 @@ internal class Archipelago
 		OnDisconnected?.Invoke();
 	}
 
-	private readonly string apConnectionInfoSavePath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#_APConnectionInfo.json";
-
 	private void SaveConnectionInfo(APConnectionInfo info, int saveInfoToSlotIndex)
 	{
 		string path = apConnectionInfoSavePath.Replace("#", (saveInfoToSlotIndex + 1).ToString());
 		string json = JsonConvert.SerializeObject(info, Formatting.Indented);
 		File.WriteAllText(path, json);
 		Logger.Log($"Saved AP connection data to: {path}");
+	}
+
+	private async Task ScoutAllLocations()
+	{
+		Dictionary<long, ScoutedItemInfo> scoutedLocations = await Session.Locations.ScoutLocationsAsync(
+			Session.Locations.AllLocations.ToArray()
+		);
+
+		ScoutedPlacements = scoutedLocations.ToDictionary(
+			kvp => kvp.Value.LocationName,
+			kvp => kvp.Value.ItemName
+		);
 	}
 
 	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)
