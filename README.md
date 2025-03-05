@@ -60,4 +60,8 @@ Thanks to [lunix33](https://github.com/lunix33) for starting this project with t
 
 Thanks to [BadMagic](https://github.com/BadMagic100) for their work on
 [Hollow Knight's Archipelago client](https://github.com/ArchipelagoMW-HollowKnight/Archipelago.HollowKnight),
-which I used as a reference for the MSBuild properties of this project.
+which I used as a reference for the MSBuild properties of this project, and for their answering my questions!
+
+Thanks to [Silent](https://github.com/silent-destroyer) and [Scipio Wright](https://github.com/ScipioWright)
+for their work on [Tunic's Archipelago client](https://github.com/ScipioWright/tunic-randomizer-archipelago-ER),
+which I used as a reference for some of the Archipelago integration!
