@@ -4,6 +4,8 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,10 +21,16 @@ internal class Archipelago
 	private static readonly Archipelago instance = new();
 	private readonly string apConnectionInfoSavePath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#_APConnectionInfo.json";
 	private Dictionary<string, object> slotData;
+	private IEnumerator checkItemsReceived;
+	private IEnumerator incomingItemHandler;
+	private ConcurrentQueue<(ItemInfo item, int index)> incomingItems;
+	private int itemIndex;
+	private bool isConnected;
+	private bool hasCompleted;
+	private readonly float itemReceiveDelay = 3f;
 
 	public static Archipelago Instance => instance;
 	public ArchipelagoSession Session { get; private set; }
-	public bool IsConnected => Session != null && Session.Socket.Connected;
 	public PlayerInfo CurrentPlayer
 	{
 		get
@@ -57,12 +65,8 @@ internal class Archipelago
 				string errors = string.Join(", ", failure.Errors);
 				throw new LoginValidationException($"Failed to connect to Archipelago: {errors}");
 			case LoginSuccessful success:
-				Session.Socket.SocketClosed += OnSocketClosed;
-				slotData = success.SlotData;
-				await ScoutAllLocations();
-				OnConnected?.Invoke();
-				SaveConnectionInfo(info, saveInfoToSlotIndex);
-				Logger.Log($"Successfully connected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
+				await OnSocketOpened(success, info, saveInfoToSlotIndex);
+				Logger.Log($"Successfully isConnected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
 				return success;
 			default:
 				throw new LoginValidationException($"Unexpected LoginResult type when connecting to Archipelago: {loginResult}");
@@ -85,6 +89,35 @@ internal class Archipelago
 		}
 	}
 
+	public void Update()
+	{
+		if (!isConnected)
+		{
+			return;
+		}
+
+		checkItemsReceived?.MoveNext();
+
+		if (CanPlayerReceiveItems())
+		{
+			incomingItemHandler?.MoveNext();
+		}
+	}
+
+	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)
+	{
+		string path = apConnectionInfoSavePath.Replace("#", (slotIndex + 1).ToString());
+		string json = File.ReadAllText(path);
+		APConnectionInfo info = JsonConvert.DeserializeObject<APConnectionInfo>(json);
+
+		if (info == null)
+		{
+			Logger.LogError($"Failed to find AP connection info save file for slot {slotIndex}:");
+		}
+
+		return info;
+	}
+
 	public T GetSlotData<T>(string key)
 	{
 		object value = default(T);
@@ -98,9 +131,70 @@ internal class Archipelago
 		return (T)value;
 	}
 
+	private async Task OnSocketOpened(LoginSuccessful loginSuccess, APConnectionInfo connectionInfo, int saveInfoToSlotIndex)
+	{
+		slotData = loginSuccess.SlotData;
+		checkItemsReceived = CheckItemsReceieved();
+		incomingItemHandler = IncomingItemHandler();
+		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
+		SaveConnectionInfo(connectionInfo, saveInfoToSlotIndex);
+		Session.Socket.SocketClosed += OnSocketClosed;
+
+		await ScoutAllLocations();
+
+		isConnected = true;
+		OnConnected?.Invoke();
+	}
+
 	private void OnSocketClosed(string reason)
 	{
+		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
+		isConnected = false;
 		OnDisconnected?.Invoke();
+	}
+
+	private IEnumerator CheckItemsReceieved()
+	{
+		while (isConnected)
+		{
+			if (Session.Items.AllItemsReceived.Count > itemIndex)
+			{
+				ItemInfo item = Session.Items.AllItemsReceived[itemIndex];
+				incomingItems.Enqueue((item, itemIndex));
+				itemIndex++;
+				yield return true;
+			}
+			else
+			{
+				yield return true;
+				continue;
+			}
+		}
+	}
+
+	private IEnumerator IncomingItemHandler()
+	{
+		while (isConnected)
+		{
+			if (!incomingItems.TryPeek(out (ItemInfo item, int index) pendingItem))
+			{
+				yield return true;
+				continue;
+			}
+
+			// Add delay between each item received so player has time to read the notifications
+			float delay = Time.time;
+			while (Time.time - delay < itemReceiveDelay)
+			{
+				yield return null;
+			}
+
+			ItemInfo item = pendingItem.item;
+			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.Player.Name);
+			incomingItems.TryDequeue(out _);
+
+			yield return true;
+		}
 	}
 
 	private void SaveConnectionInfo(APConnectionInfo info, int saveInfoToSlotIndex)
@@ -123,18 +217,14 @@ internal class Archipelago
 		);
 	}
 
-	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)
+	private bool CanPlayerReceiveItems()
 	{
-		string path = apConnectionInfoSavePath.Replace("#", (slotIndex + 1).ToString());
-		string json = File.ReadAllText(path);
-		APConnectionInfo info = JsonConvert.DeserializeObject<APConnectionInfo>(json);
-
-		if (info == null)
-		{
-			Logger.LogError($"Failed to find AP connection info save file for slot {slotIndex}:");
-		}
-
-		return info;
+		return (
+			!hasCompleted &&
+			PlayerGlobal.instance != null &&
+			!PlayerGlobal.instance.InputPaused() &&
+			PlayerGlobal.instance.IsAlive()
+		);
 	}
 
 	public class APConnectionInfo

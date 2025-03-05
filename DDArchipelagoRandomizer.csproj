@@ -28,6 +28,14 @@
 		<ExportDir>$(OutputPath)\Export</ExportDir>
 		<ManagedDir>$(PluginsPath)\..\..\DeathsDoor_Data\Managed</ManagedDir>
 	</PropertyGroup>
+	<ItemGroup>
+		<Icons Include="$(ProjectDir)Icons\**\*.*" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="ArchipelagoRandomizer\Icons\**" />
+	  <EmbeddedResource Remove="ArchipelagoRandomizer\Icons\**" />
+	  <None Remove="ArchipelagoRandomizer\Icons\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
@@ -67,6 +75,7 @@
 		<MakeDir Condition="!Exists('$(PluginsPath)/$(ModName)/')" Directories="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(PluginsPath)/$(ModName)/" />
+		<Copy SourceFiles="@(Icons)" DestinationFolder="$(PluginsPath)/$(ModName)/Icons/" />
 		<Copy SourceFiles="$(ProjectDir)\README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(ExportDir)/zip/" />
 		<ZipDirectory SourceDirectory="$(ExportDir)/zip/" DestinationFile="$(ExportDir)/$(ModName).zip" />
@@ -83,5 +92,11 @@
 
 	<ItemGroup>
 	  <None Include="D:\Files\Work\Hobbies\Modding\Death's Door\DDArchipelagoRandomizer\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Icons\**">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>

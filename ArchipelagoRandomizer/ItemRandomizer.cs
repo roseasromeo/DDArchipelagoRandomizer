@@ -14,12 +14,42 @@ internal class ItemRandomizer : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		IC.ItemIcons.AddPath(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location) + "/Icons");
 	}
 
 	private void OnEnable()
 	{
 		PlaceItems();
 		Logger.Log("Item randomizer started!");
+	}
+
+	private void Update()
+	{
+		Archipelago.Instance.Update();
+	}
+
+	public void ReceievedItem(string itemName, string playerName)
+	{
+		Sprite icon;
+		string message;
+
+		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
+		{
+			Logger.LogError($"Received unknown item {itemName} from {playerName}");
+			icon = IC.ItemIcons.Get("Unknown");
+			message = $"You got an unknown item: {itemName}. Please report!";
+			IC.CornerPopup.Show(icon, message);
+			return;
+		}
+		else
+		{
+			Logger.Log($"Received {itemName} from {playerName}");
+			icon = IC.ItemIcons.Get(item.Icon);
+			message = $"You got {item.DisplayName} from {playerName}!";
+		}
+
+		IC.CornerPopup.Show(icon, message);
+		item?.Trigger();
 	}
 
 	private void PlaceItems()
