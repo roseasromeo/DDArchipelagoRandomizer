@@ -23,7 +23,9 @@ internal class Archipelago
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
 	private IEnumerator incomingItemHandler;
+	private IEnumerator outgoingItemHandler;
 	private ConcurrentQueue<(ItemInfo item, int index)> incomingItems;
+	private ConcurrentQueue<ItemInfo> outgoingItems;
 	private int itemIndex;
 	private bool isConnected;
 	private bool hasCompleted;
@@ -43,7 +45,7 @@ internal class Archipelago
 			return Session.Players.GetPlayerInfo(Session.ConnectionInfo.Slot);
 		}
 	}
-	public Dictionary<string, string> ScoutedPlacements { get; private set; }
+	public List<ItemRandomizer.ItemPlacement> ScoutedPlacements { get; private set; }
 
 	private Archipelago() { }
 
@@ -66,7 +68,7 @@ internal class Archipelago
 				throw new LoginValidationException($"Failed to connect to Archipelago: {errors}");
 			case LoginSuccessful success:
 				await OnSocketOpened(success, info, saveInfoToSlotIndex);
-				Logger.Log($"Successfully isConnected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
+				Logger.Log($"Successfully connected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
 				return success;
 			default:
 				throw new LoginValidationException($"Unexpected LoginResult type when connecting to Archipelago: {loginResult}");
@@ -101,7 +103,14 @@ internal class Archipelago
 		if (CanPlayerReceiveItems())
 		{
 			incomingItemHandler?.MoveNext();
+			outgoingItemHandler?.MoveNext();
 		}
+	}
+
+	public void SendLocationChecked(string locationName)
+	{
+		long locationId = Session.Locations.GetLocationIdFromName(Session.ConnectionInfo.Game, locationName);
+		Session.Locations.CompleteLocationChecks(locationId);
 	}
 
 	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)
@@ -136,7 +145,9 @@ internal class Archipelago
 		slotData = loginSuccess.SlotData;
 		checkItemsReceived = CheckItemsReceieved();
 		incomingItemHandler = IncomingItemHandler();
+		outgoingItemHandler = OutgoingItemHandler();
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
+		outgoingItems = new ConcurrentQueue<ItemInfo>();
 		SaveConnectionInfo(connectionInfo, saveInfoToSlotIndex);
 		Session.Socket.SocketClosed += OnSocketClosed;
 
@@ -148,7 +159,10 @@ internal class Archipelago
 
 	private void OnSocketClosed(string reason)
 	{
+		incomingItemHandler = null;
+		outgoingItemHandler = null;
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
+		outgoingItems = new ConcurrentQueue<ItemInfo>();
 		isConnected = false;
 		OnDisconnected?.Invoke();
 	}
@@ -190,8 +204,27 @@ internal class Archipelago
 			}
 
 			ItemInfo item = pendingItem.item;
-			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.Player.Name);
+			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.Player);
 			incomingItems.TryDequeue(out _);
+
+			yield return true;
+		}
+	}
+
+	private IEnumerator OutgoingItemHandler()
+	{
+		while (isConnected)
+		{
+			if (!outgoingItems.TryDequeue(out ItemInfo item))
+			{
+				yield return true;
+				continue;
+			}
+
+			if (item.Player != CurrentPlayer)
+			{
+				Logger.Log($"Sent {item.ItemName} at {item.LocationDisplayName} to {item.Player.Name}");
+			}
 
 			yield return true;
 		}
@@ -207,14 +240,14 @@ internal class Archipelago
 
 	private async Task ScoutAllLocations()
 	{
-		Dictionary<long, ScoutedItemInfo> scoutedLocations = await Session.Locations.ScoutLocationsAsync(
+		ScoutedPlacements = (await Session.Locations.ScoutLocationsAsync(
 			Session.Locations.AllLocations.ToArray()
-		);
-
-		ScoutedPlacements = scoutedLocations.ToDictionary(
-			kvp => kvp.Value.LocationName,
-			kvp => kvp.Value.ItemName
-		);
+		)).Select(kvp => new ItemRandomizer.ItemPlacement(
+			kvp.Value.ItemDisplayName,
+			kvp.Value.LocationName,
+			kvp.Value.Player.Name,
+			kvp.Value.Player != CurrentPlayer
+		)).ToList();
 	}
 
 	private bool CanPlayerReceiveItems()

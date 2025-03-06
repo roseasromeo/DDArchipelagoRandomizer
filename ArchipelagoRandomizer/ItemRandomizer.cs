@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using IC = DDoor.ItemChanger;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -28,8 +26,15 @@ internal class ItemRandomizer : MonoBehaviour
 		Archipelago.Instance.Update();
 	}
 
-	public void ReceievedItem(string itemName, string playerName)
+	public void ReceievedItem(string itemName, int playerSlot)
 	{
+		if (GameSave.currentSave.IsKeyUnlocked($"PickedUp{itemName}"))
+		{
+			Logger.Log($"Already picked up {itemName}, so don't receive it again");
+			return;
+		}
+
+		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
 		Sprite icon;
 		string message;
 
@@ -55,40 +60,51 @@ internal class ItemRandomizer : MonoBehaviour
 	private void PickedUpItem(DDItem item)
 	{
 		Logger.Log($"Picked up {item.DisplayName} at {item.Location}!");
+		GameSave.currentSave.SetKeyState($"PickedUp{item.DisplayName}", true, true);
+		Archipelago.Instance.SendLocationChecked(item.Location);
 	}
 
 	private void PlaceItems()
 	{
 		// Get ItemPlacements from scouted placements
-		List<ItemPlacement> itemPlacements = Archipelago.Instance.ScoutedPlacements.Select(kvp => new ItemPlacement(kvp.Value, kvp.Key)).ToList();
 		IC.SaveData data = IC.SaveData.Open();
 
-		foreach (ItemPlacement itemPlacement in itemPlacements)
+		foreach (ItemPlacement itemPlacement in Archipelago.Instance.ScoutedPlacements)
 		{
 			// Get predefined item to use its icon
 			IC.Predefined.TryGetItem(itemPlacement.Item, out IC.Item predefinedItem);
 
 			// Don't use predefined icon for weapons because it errors at this point, since player doesn't exist yet,
 			// so it doesn't have a way to reference WeaponSwitcher to determine upgrade level
-			string icon = (itemPlacement.Item is "Bomb" or "Fire" or "Hookshot")
+			string icon = itemPlacement.IsForAnotherPlayer
+				? "AP"
+				: (itemPlacement.Item is "Bomb" or "Fire" or "Hookshot")
 				? itemPlacement.Item
 				: predefinedItem?.Icon ?? "Unknown";
 
+			// Change name of item so it displays receiving player's name in message
+			string itemName = itemPlacement.IsForAnotherPlayer
+				? $"{itemPlacement.Item} for {itemPlacement.ForPlayer}"
+				: itemPlacement.Item;
+
 			// Place item. Using custom item here so we can override the Trigger() method
 			// for knowing when an item was picked up to send it to server
-			IC.Item item = new DDItem(itemPlacement.Item, icon, itemPlacement.Location);
+			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location);
 			data.Place(item, itemPlacement.Location);
-			Logger.Log($"Placed {itemPlacement.Item} at {itemPlacement.Location}");
+
+			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
 		}
 
 		// Save, since ItemChanger doesn't do it for us due to when we run this method
 		TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.Save();
 	}
 
-	private struct ItemPlacement(string item, string location)
+	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
 	{
 		public string Item { get; private set; } = item;
 		public string Location { get; private set; } = location;
+		public string ForPlayer { get; private set; } = forPlayer;
+		public bool IsForAnotherPlayer { get; private set; } = isForAnotherPlayer;
 	}
 
 	private readonly struct DDItem : IC.Item
@@ -97,7 +113,7 @@ internal class ItemRandomizer : MonoBehaviour
 		public string Icon { get; }
 		public string Location { get; }
 
-		public readonly void Trigger()
+		public void Trigger()
 		{
 			Instance.PickedUpItem(this);
 		}
