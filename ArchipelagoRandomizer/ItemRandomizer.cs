@@ -6,6 +6,7 @@ namespace DDoor.ArchipelagoRandomizer;
 internal class ItemRandomizer : MonoBehaviour
 {
 	private static ItemRandomizer instance;
+	private IC.SaveData icSaveData;
 
 	public static ItemRandomizer Instance => instance;
 
@@ -26,15 +27,16 @@ internal class ItemRandomizer : MonoBehaviour
 		Archipelago.Instance.Update();
 	}
 
-	public void ReceievedItem(string itemName, int playerSlot)
+	public void ReceievedItem(string itemName, string location, int playerSlot)
 	{
-		if (GameSave.currentSave.IsKeyUnlocked($"PickedUp{itemName}"))
+		if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}"))
 		{
-			Logger.Log($"Already picked up {itemName}, so don't receive it again");
+			Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
 			return;
 		}
 
 		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
+		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
 
@@ -46,28 +48,44 @@ internal class ItemRandomizer : MonoBehaviour
 			IC.CornerPopup.Show(icon, message);
 			return;
 		}
-		else
+
+		Logger.Log($"Received {itemName} from {playerName}");
+		icon = IC.ItemIcons.Get(item.Icon);
+		message = $"You got {item.DisplayName}";
+
+		if (!receivedFromSelf)
 		{
-			Logger.Log($"Received {itemName} from {playerName}");
-			icon = IC.ItemIcons.Get(item.Icon);
-			message = $"You got {item.DisplayName} from {playerName}!";
+			message += $" from {playerName}!";
 		}
 
+		GameSave.currentSave.IncreaseCountKey("AP_ItemsReceived");
 		IC.CornerPopup.Show(icon, message);
 		item?.Trigger();
+
+		// Update recent items display
+		IC.TrackerLogEntry logEntry = new IC.TrackerLogEntry()
+		{
+			LocationName = location,
+			ItemName = itemName,
+			ItemDisplayName = receivedFromSelf ? item.DisplayName : item.DisplayName + $" from {playerName}",
+			ItemIcon = item.Icon
+		};
+		icSaveData.AddToTrackerLog(logEntry);
+
+		GameSave.SaveGameState();
 	}
 
 	private void PickedUpItem(DDItem item)
 	{
 		Logger.Log($"Picked up {item.DisplayName} at {item.Location}!");
-		GameSave.currentSave.SetKeyState($"PickedUp{item.DisplayName}", true, true);
+		GameSave.currentSave.SetKeyState($"AP_PickedUp-{item.Location}", true, true);
 		Archipelago.Instance.SendLocationChecked(item.Location);
 	}
 
 	private void PlaceItems()
 	{
 		// Get ItemPlacements from scouted placements
-		IC.SaveData data = IC.SaveData.Open();
+		icSaveData = IC.SaveData.Open();
 
 		foreach (ItemPlacement itemPlacement in Archipelago.Instance.ScoutedPlacements)
 		{
@@ -90,7 +108,7 @@ internal class ItemRandomizer : MonoBehaviour
 			// Place item. Using custom item here so we can override the Trigger() method
 			// for knowing when an item was picked up to send it to server
 			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location);
-			data.Place(item, itemPlacement.Location);
+			icSaveData.Place(item, itemPlacement.Location);
 
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
 		}

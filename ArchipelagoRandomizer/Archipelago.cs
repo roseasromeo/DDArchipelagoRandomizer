@@ -77,18 +77,14 @@ internal class Archipelago
 
 	public void Disconnect()
 	{
-		if (Session?.Socket != null)
+		if (!isConnected)
 		{
-			Session.Socket.SocketClosed -= OnSocketClosed;
-
-			if (Session.Socket.Connected)
-			{
-				Session.Socket.DisconnectAsync();
-			}
-
-			Session = null;
-			Logger.Log("Disconnected from Archipelago server.");
+			return;
 		}
+
+		Session.Socket.SocketClosed -= OnSocketClosed;
+		Session.Socket.DisconnectAsync();
+		Session = null;
 	}
 
 	public void Update()
@@ -109,6 +105,11 @@ internal class Archipelago
 
 	public void SendLocationChecked(string locationName)
 	{
+		if (!isConnected)
+		{
+			return;
+		}
+
 		long locationId = Session.Locations.GetLocationIdFromName(Session.ConnectionInfo.Game, locationName);
 		Session.Locations.CompleteLocationChecks(locationId);
 	}
@@ -143,6 +144,7 @@ internal class Archipelago
 	private async Task OnSocketOpened(LoginSuccessful loginSuccess, APConnectionInfo connectionInfo, int saveInfoToSlotIndex)
 	{
 		slotData = loginSuccess.SlotData;
+		itemIndex = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.GetCountKey("AP_ItemsReceived");
 		checkItemsReceived = CheckItemsReceieved();
 		incomingItemHandler = IncomingItemHandler();
 		outgoingItemHandler = OutgoingItemHandler();
@@ -165,13 +167,14 @@ internal class Archipelago
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
 		isConnected = false;
 		OnDisconnected?.Invoke();
+		Logger.Log("Disconnected from Archipelago!");
 	}
 
 	private IEnumerator CheckItemsReceieved()
 	{
 		while (isConnected)
 		{
-			if (Session.Items.AllItemsReceived.Count > itemIndex)
+			if (Session.Items.Index > itemIndex)
 			{
 				ItemInfo item = Session.Items.AllItemsReceived[itemIndex];
 				incomingItems.Enqueue((item, itemIndex));
@@ -198,13 +201,13 @@ internal class Archipelago
 
 			// Add delay between each item received so player has time to read the notifications
 			float delay = Time.time;
-			while (Time.time - delay < itemReceiveDelay)
+			while (Time.time - delay < (incomingItems.Count < 5 ? itemReceiveDelay : 1))
 			{
 				yield return null;
 			}
 
 			ItemInfo item = pendingItem.item;
-			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.Player);
+			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.LocationDisplayName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
