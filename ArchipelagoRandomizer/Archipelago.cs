@@ -168,6 +168,12 @@ internal class Archipelago
 		SaveConnectionInfo(connectionInfo, saveInfoToSlotIndex);
 		Session.Socket.SocketClosed += OnSocketClosed;
 
+		Logger.Log("Slot data:");
+		foreach (KeyValuePair<string, object> kvp in slotData)
+		{
+			Logger.Log($"     {kvp.Key}: {kvp.Value}");
+		}
+
 		await ScoutAllLocations();
 
 		isConnected = true;

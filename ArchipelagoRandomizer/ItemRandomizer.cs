@@ -85,9 +85,9 @@ internal class ItemRandomizer : MonoBehaviour
 
 	private void PlaceItems()
 	{
-		// Get ItemPlacements from scouted placements
 		icSaveData = IC.SaveData.Open();
 
+		// Get ItemPlacements from scouted placements
 		foreach (ItemPlacement itemPlacement in Archipelago.Instance.ScoutedPlacements)
 		{
 			// Get predefined item to use its icon
@@ -114,8 +114,22 @@ internal class ItemRandomizer : MonoBehaviour
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
 		}
 
+		// Determine starting weapon
+		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon");
+		string startingWeaponId = startingWeaponName switch
+		{
+			"Rogue Daggers" => "daggers",
+			"Discarded Umbrella" => "umbrella",
+			"Reaper's Greatsword" => "sword_heavy",
+			"Thunder Hammer" => "hammer",
+			_ => "sword"
+		};
+		icSaveData.StartingWeapon = startingWeaponId;
+
 		// Save, since ItemChanger doesn't do it for us due to when we run this method
-		TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.Save();
+		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile;
+		saveFile.weaponId = icSaveData.StartingWeapon;
+		saveFile.Save();
 	}
 
 	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
@@ -149,7 +163,7 @@ internal class ItemRandomizer : MonoBehaviour
 	private class Patches
 	{
 		/// <summary>
-		/// Enables the mod if a compatible save file is loaded
+		/// Sends completion for main ending
 		/// </summary>
 		[HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))]
 		private static void EndGameCsPatch()
