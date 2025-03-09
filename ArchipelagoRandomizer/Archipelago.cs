@@ -2,6 +2,7 @@
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -112,6 +113,20 @@ internal class Archipelago
 
 		long locationId = Session.Locations.GetLocationIdFromName(Session.ConnectionInfo.Game, locationName);
 		Session.Locations.CompleteLocationChecks(locationId);
+	}
+
+	public void SendCompletion()
+	{
+		if (hasCompleted || !isConnected)
+		{
+			return;
+		}
+
+		Logger.Log("Goal completed. Sending completion...");
+		StatusUpdatePacket statusUpdatePacket = new StatusUpdatePacket();
+		statusUpdatePacket.Status = ArchipelagoClientState.ClientGoal;
+		Session.Socket.SendPacket(statusUpdatePacket);
+		hasCompleted = true;
 	}
 
 	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 using IC = DDoor.ItemChanger;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -141,6 +142,19 @@ internal class ItemRandomizer : MonoBehaviour
 			DisplayName = displayName;
 			Icon = icon;
 			Location = location;
+		}
+	}
+
+	[HarmonyPatch]
+	private class Patches
+	{
+		/// <summary>
+		/// Enables the mod if a compatible save file is loaded
+		/// </summary>
+		[HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))]
+		private static void EndGameCsPatch()
+		{
+			Archipelago.Instance.SendCompletion();
 		}
 	}
 }
