@@ -2,6 +2,8 @@
 using MagicUI.Core;
 using MagicUI.Elements;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using AGM = DDoor.AlternativeGameModes;
 
 namespace DDoor.ArchipelagoRandomizer.UI;
@@ -13,6 +15,8 @@ internal class ConnectionMenu : CustomUI
 	private TextInput portInput;
 	private TextInput slotNameInput;
 	private TextInput passwordInput;
+	private TextInput[] tabbableInputs;
+	private int currentInputFieldIndex;
 
 	protected override string Name { get; set; } = "ConnectionMenu";
 	protected override Padding Padding { get; set; } = new Padding(15);
@@ -20,8 +24,17 @@ internal class ConnectionMenu : CustomUI
 
 	public override void Show()
 	{
+		currentInputFieldIndex = 1;
 		base.Show();
 		Prefill();
+		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
+		Plugin.Instance.StartCoroutine(CheckForInputs());
+	}
+
+	public override void Hide()
+	{
+		base.Hide();
+		Plugin.Instance.StopCoroutine(CheckForInputs());
 	}
 
 	protected override void Create()
@@ -54,6 +67,13 @@ internal class ConnectionMenu : CustomUI
 		Button backBtn = CreateButton("BackBtn", "Back", ClickedBack);
 		mainStack.Children.Add(CreateStackLayout("ButtonsStack", connectBtn, backBtn));
 		rootPanel.Child = mainStack;
+
+		tabbableInputs = [
+			urlInput,
+			portInput,
+			slotNameInput,
+			passwordInput,
+		];
 	}
 
 	private void Prefill()
@@ -141,6 +161,32 @@ internal class ConnectionMenu : CustomUI
 		return newButton;
 	}
 
+	private IEnumerator CheckForInputs()
+	{
+		while (IsShowing)
+		{
+			GameObject selected = EventSystem.current.currentSelectedGameObject;
+
+			// If not in text input field
+			if (selected == null || selected.GetComponent<UnityEngine.UI.InputField>() == null)
+			{
+				yield return null;
+			}
+
+			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+			{
+				ClickedConnect(null);
+			}
+			else if (Input.GetKeyDown(KeyCode.Tab))
+			{
+				currentInputFieldIndex = (currentInputFieldIndex + 1) % tabbableInputs.Length;
+				tabbableInputs[currentInputFieldIndex].SelectAndActivate();
+			}
+
+			yield return null;
+		}
+	}
+
 	private IEnumerator ReturnToSaveMenu()
 	{
 		// Wait for fade to finish
@@ -153,6 +199,14 @@ internal class ConnectionMenu : CustomUI
 		// Nullify transitionButton to ensure we return to title screen on back input
 		saveMenu.transitionButton = null;
 		saveMenu.openSubMenu();
+	}
+
+	private IEnumerator SelectFirstTextInput()
+	{
+		// Wait for end of frame so we can select it after the others have been created
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		portInput.SelectAndActivate();
 	}
 
 	[HarmonyPatch]

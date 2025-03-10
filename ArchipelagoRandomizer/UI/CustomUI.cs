@@ -31,6 +31,7 @@ internal abstract class CustomUI
 	protected virtual bool Persist { get; set; } = false;
 	protected virtual bool DoFade { get; set; } = true;
 
+	protected bool IsShowing { get; private set; }
 	protected bool IsFading { get; private set; }
 
 	public static void CacheBackgroundSprite()
@@ -58,6 +59,8 @@ internal abstract class CustomUI
 		{
 			Plugin.Instance.StartCoroutine(FadeIn());
 		}
+
+		IsShowing = true;
 	}
 
 	public virtual void Hide()
@@ -75,6 +78,8 @@ internal abstract class CustomUI
 		{
 			layoutRoot.Canvas.SetActive(false);
 		}
+
+		IsShowing = false;
 	}
 
 	protected virtual void Create()
