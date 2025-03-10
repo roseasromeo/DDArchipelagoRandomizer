@@ -26,9 +26,12 @@ internal abstract class CustomUI
 	protected virtual int PanelHeight { get; set; } = 100;
 	protected virtual HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
 	protected virtual VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Center;
+	protected virtual Padding Padding { get; set; } = new Padding(0);
 	protected virtual float FadeDuration { get; set; } = 0.5f;
 	protected virtual bool Persist { get; set; } = false;
 	protected virtual bool DoFade { get; set; } = true;
+
+	protected bool IsFading { get; private set; }
 
 	public static void CacheBackgroundSprite()
 	{
@@ -42,11 +45,11 @@ internal abstract class CustomUI
 		};
 	}
 
-	protected virtual void Show()
+	public virtual void Show()
 	{
-		if (layoutRoot == null)
+		if (layoutRoot == null || layoutRoot.Canvas == null)
 		{
-			return;
+			Create();
 		}
 
 		layoutRoot.Canvas.SetActive(true);
@@ -59,7 +62,7 @@ internal abstract class CustomUI
 
 	public virtual void Hide()
 	{
-		if (layoutRoot == null)
+		if (layoutRoot == null || layoutRoot.Canvas == null)
 		{
 			return;
 		}
@@ -76,7 +79,7 @@ internal abstract class CustomUI
 
 	protected virtual void Create()
 	{
-		if (layoutRoot != null)
+		if (layoutRoot != null && layoutRoot.Canvas != null)
 		{
 			return;
 		}
@@ -86,6 +89,7 @@ internal abstract class CustomUI
 		{
 			HorizontalAlignment = HorizontalAlignment,
 			VerticalAlignment = VerticalAlignment,
+			Padding = Padding,
 		};
 	}
 
@@ -104,6 +108,7 @@ internal abstract class CustomUI
 	{
 		layoutRoot.Opacity = 0;
 		layoutRoot.BeginFade(1, FadeDuration);
+		IsFading = true;
 
 		yield return new WaitForSeconds(FadeDuration);
 
@@ -112,12 +117,17 @@ internal abstract class CustomUI
 		{
 			layoutRoot.Canvas.SetActive(false);
 		}
+
+		IsFading = false;
 	}
 
 	private IEnumerator FadeOut()
 	{
 		layoutRoot.BeginFade(0, FadeDuration);
+		IsFading = true;
 
 		yield return new WaitForSeconds(FadeDuration);
+
+		IsFading = false;
 	}
 }

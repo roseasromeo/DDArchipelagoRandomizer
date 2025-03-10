@@ -80,14 +80,14 @@ internal class ArchipelagoRandomizerMod
 
 				if (!isAlreadyLoading)
 				{
-					ConnectionMenu.Instance.HideAPMenuAndStartGame();
+					UIManager.Instance.HideConnectionMenu();
+					SaveMenu saveMenu = TitleScreen.instance.saveMenu;
+					saveMenu.saveSlots[saveMenu.index].LoadSave();
 				}
 			}
 		}
 		catch (LoginValidationException ex)
 		{
-			// TODO: Find a way to reset the title screen UI to allow re-entering file without restarting game
-			// Currently, it'll start a vanilla file without informing user of failed connection
 			Logger.LogError(ex.Message);
 		}
 	}

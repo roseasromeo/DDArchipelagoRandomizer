@@ -19,20 +19,9 @@ internal class NotificationPopup : CustomUI
 
 	public void Show(string message)
 	{
-		if (layoutRoot == null)
-		{
-			Create();
-		}
-
-		textObj.Text = message;
 		base.Show();
-
+		textObj.Text = message;
 		Plugin.Instance.StartCoroutine(HideAfterTime());
-	}
-
-	public override void Hide()
-	{
-		base.Hide();
 	}
 
 	protected override void Create()
