@@ -1,9 +1,9 @@
-# Death's Door Archipelago Randomizer
+# Death's Door Archipelago Randomizer Client
 
 This is a work in progress Archipelago randomizer mod for Death's Door.
 
 > [!IMPORTANT]
-> This is in very early alpha stage and is not yet playable.
+> This is in very early alpha stage and is not yet playable. A playable version will be coming soon!
 
 ## Contributing
 
