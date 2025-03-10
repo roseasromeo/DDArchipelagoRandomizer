@@ -29,12 +29,8 @@
 		<ManagedDir>$(PluginsPath)\..\..\DeathsDoor_Data\Managed</ManagedDir>
 	</PropertyGroup>
 	<ItemGroup>
-		<Icons Include="$(ProjectDir)Icons\**\*.*" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Remove="ArchipelagoRandomizer\Icons\**" />
-	  <EmbeddedResource Remove="ArchipelagoRandomizer\Icons\**" />
-	  <None Remove="ArchipelagoRandomizer\Icons\**" />
+		<ItemChangerIcons Include="$(ProjectDir)Resources\Item Changer Icons\**\*.*" />
+		<Resources Include="$(ProjectDir)Resources\*.*" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,6 +49,9 @@
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp" Publicize="true">
 			<HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath>
 		</Reference>
 		<Reference Include="AlternativeGameModes">
 			<HintPath>$(PluginsPath)/AlternativeGameModes/AlternativeGameModes.dll</HintPath>
@@ -75,7 +74,8 @@
 		<MakeDir Condition="!Exists('$(PluginsPath)/$(ModName)/')" Directories="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(PluginsPath)/$(ModName)/" />
-		<Copy SourceFiles="@(Icons)" DestinationFolder="$(PluginsPath)/$(ModName)/Icons/" />
+		<Copy SourceFiles="@(ItemChangerIcons)" DestinationFolder="$(PluginsPath)/$(ModName)/Resources/Item Changer Icons/" />
+		<Copy SourceFiles="@(Resources)" DestinationFolder="$(PluginsPath)/$(ModName)/Resources" />
 		<Copy SourceFiles="$(ProjectDir)\README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(ExportDir)/zip/" />
 		<ZipDirectory SourceDirectory="$(ExportDir)/zip/" DestinationFile="$(ExportDir)/$(ModName).zip" />
@@ -95,7 +95,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Icons\**">
+	  <None Update="Resources\Item Changer Icons\**">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

@@ -80,7 +80,7 @@ internal class ArchipelagoRandomizerMod
 
 				if (!isAlreadyLoading)
 				{
-					UIManager.Instance.HideAPMenuAndStartGame();
+					ConnectionMenu.Instance.HideAPMenuAndStartGame();
 				}
 			}
 		}

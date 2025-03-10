@@ -21,6 +21,7 @@ internal class Archipelago
 	public static event Action OnDisconnected;
 	private static readonly Archipelago instance = new();
 	private readonly string apConnectionInfoSavePath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#_APConnectionInfo.json";
+	private UIManager uiManager;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
 	private IEnumerator incomingItemHandler;
@@ -53,6 +54,8 @@ internal class Archipelago
 	public async Task<LoginSuccessful> Connect(APConnectionInfo info, int saveInfoToSlotIndex = 0)
 	{
 		Session = ArchipelagoSessionFactory.CreateSession(info.URL, info.Port);
+		string message;
+		uiManager = UIManager.Instance;
 
 		LoginResult loginResult = Session.TryConnectAndLogin(
 			"Death's Door",
@@ -66,13 +69,17 @@ internal class Archipelago
 		{
 			case LoginFailure failure:
 				string errors = string.Join(", ", failure.Errors);
-				throw new LoginValidationException($"Failed to connect to Archipelago: {errors}");
+				message = $"Failed to connect to Archipelago: {errors}";
+				uiManager.ShowNotification(message);
+				throw new LoginValidationException(message);
 			case LoginSuccessful success:
 				await OnSocketOpened(success, info, saveInfoToSlotIndex);
 				Logger.Log($"Successfully connected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
 				return success;
 			default:
-				throw new LoginValidationException($"Unexpected LoginResult type when connecting to Archipelago: {loginResult}");
+				message = $"Unexpected LoginResult type when connecting to Archipelago: {loginResult}";
+				uiManager.ShowNotification(message);
+				throw new LoginValidationException(message);
 		}
 	}
 

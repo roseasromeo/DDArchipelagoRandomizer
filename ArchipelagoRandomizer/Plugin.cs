@@ -12,11 +12,15 @@ namespace DDoor.ArchipelagoRandomizer;
 public class Plugin : BaseUnityPlugin
 {
 	internal static new ManualLogSource Logger;
+	private static Plugin instance;
 
+	public static Plugin Instance => instance;
 	public int InitStatus { get; internal set; } = 0;
 
 	private void Awake()
 	{
+		instance = this;
+
 		try
 		{
 			Logger = base.Logger;
