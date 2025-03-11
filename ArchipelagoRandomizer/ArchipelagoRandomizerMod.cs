@@ -50,28 +50,28 @@ internal class ArchipelagoRandomizerMod
 	/// <summary>
 	/// Enables the mod. This runs every time an Archipelago save file is loaded.
 	/// </summary>
-	public void EnableMod(APConnectionInfo connectionInfo, int saveInfoToSlotIndex)
+	public void EnableMod(APSaveData connectionInfo)
 	{
 		if (!hasInited)
 		{
 			InitMod();
 		}
 
-		ConnectToArchipelago(connectionInfo, saveInfoToSlotIndex);
+		ConnectToArchipelago(connectionInfo);
 	}
 
-	public void EnableMod(int saveInfoToSlotIndex)
+	public void EnableMod()
 	{
-		APConnectionInfo connectionInfo = Archipelago.Instance.GetConnectionInfoForFile(saveInfoToSlotIndex);
-		ConnectToArchipelago(connectionInfo, saveInfoToSlotIndex, isAlreadyLoading: true);
+		APSaveData connectionInfo = Archipelago.Instance.GetAPSaveData();
+		ConnectToArchipelago(connectionInfo, isAlreadyLoading: true);
 	}
 
-	private async void ConnectToArchipelago(APConnectionInfo connectionInfo, int saveInfoToSlotIndex = 0, bool isAlreadyLoading = false)
+	private async void ConnectToArchipelago(APSaveData connectionInfo, bool isAlreadyLoading = false)
 	{
 		try
 		{
 			// Once connected, start item randomizer
-			if (await Archipelago.Instance.Connect(connectionInfo, saveInfoToSlotIndex) != null)
+			if (await Archipelago.Instance.Connect(connectionInfo) != null)
 			{
 				archipelagoRandomizer = new GameObject("ArchipelagoRandomizer");
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();
@@ -117,7 +117,7 @@ internal class ArchipelagoRandomizerMod
 				// If loading AP file
 				if (AGM.AlternativeGameModes.SelectedModeName == "START")
 				{
-					instance.EnableMod(TitleScreen.instance.saveMenu.index);
+					instance.EnableMod();
 				}
 			}
 		}

@@ -78,7 +78,7 @@ internal class ConnectionMenu : CustomUI
 
 	private void Prefill()
 	{
-		Archipelago.APConnectionInfo connectioninfo = Archipelago.Instance.GetConnectionInfoForFile(saveMenu.index);
+		Archipelago.APSaveData connectioninfo = Archipelago.Instance.GetAPSaveData();
 
 		if (connectioninfo == null)
 		{
@@ -103,14 +103,14 @@ internal class ConnectionMenu : CustomUI
 			return;
 		}
 
-		Archipelago.APConnectionInfo connectionInfo = new()
+		Archipelago.APSaveData connectionInfo = new()
 		{
 			URL = url,
 			Port = port,
 			SlotName = slotName,
 			Password = password
 		};
-		ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo, saveMenu.index);
+		ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo);
 	}
 
 	private void ClickedBack(Button _)

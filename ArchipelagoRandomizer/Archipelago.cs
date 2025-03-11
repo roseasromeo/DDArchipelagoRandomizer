@@ -4,6 +4,7 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -20,7 +21,8 @@ internal class Archipelago
 	public static event Action OnConnected;
 	public static event Action OnDisconnected;
 	private static readonly Archipelago instance = new();
-	private readonly string apConnectionInfoSavePath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#_APConnectionInfo.json";
+	private readonly string apSaveDataPath = $"{Application.persistentDataPath}/SAVEDATA/Save_slot#-Archipelago.json";
+	private APSaveData apSaveData;
 	private UIManager uiManager;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
@@ -51,17 +53,17 @@ internal class Archipelago
 
 	private Archipelago() { }
 
-	public async Task<LoginSuccessful> Connect(APConnectionInfo info, int saveInfoToSlotIndex = 0)
+	public async Task<LoginSuccessful> Connect(APSaveData apSaveData)
 	{
-		Session = ArchipelagoSessionFactory.CreateSession(info.URL, info.Port);
+		Session = ArchipelagoSessionFactory.CreateSession(apSaveData.URL, apSaveData.Port);
 		string message;
 		uiManager = UIManager.Instance;
 
 		LoginResult loginResult = Session.TryConnectAndLogin(
 			"Death's Door",
-			info.SlotName,
+			apSaveData.SlotName,
 			ItemsHandlingFlags.AllItems,
-			password: info.Password,
+			password: apSaveData.Password,
 			requestSlotData: true
 		);
 
@@ -73,8 +75,8 @@ internal class Archipelago
 				uiManager.ShowNotification(message);
 				throw new LoginValidationException(message);
 			case LoginSuccessful success:
-				await OnSocketOpened(success, info, saveInfoToSlotIndex);
-				Logger.Log($"Successfully connected to Archipelago at {info.URL}:{info.Port} as {info.SlotName} on team {success.Team}. Have fun!");
+				await OnSocketOpened(success, apSaveData);
+				Logger.Log($"Successfully connected to Archipelago at {apSaveData.URL}:{apSaveData.Port} as {apSaveData.SlotName} on team {success.Team}. Have fun!");
 				return success;
 			default:
 				message = $"Unexpected LoginResult type when connecting to Archipelago: {loginResult}";
@@ -134,18 +136,23 @@ internal class Archipelago
 		hasCompleted = true;
 	}
 
-	public APConnectionInfo GetConnectionInfoForFile(int slotIndex)
+	public APSaveData GetAPSaveData()
 	{
-		string path = apConnectionInfoSavePath.Replace("#", (slotIndex + 1).ToString());
-		string json = File.ReadAllText(path);
-		APConnectionInfo info = JsonConvert.DeserializeObject<APConnectionInfo>(json);
+		int saveIndex = GetSaveIndex();
 
-		if (info == null)
+		if (apSaveData == null)
 		{
-			Logger.LogError($"Failed to find AP connection info save file for slot {slotIndex}:");
+			string path = apSaveDataPath.Replace("#", (saveIndex).ToString());
+			string json = File.ReadAllText(path);
+			apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
 		}
 
-		return info;
+		if (apSaveData == null)
+		{
+			Logger.LogError($"Failed to find AP connection apSaveData save file for slot {saveIndex}:");
+		}
+
+		return apSaveData;
 	}
 
 	public T GetSlotData<T>(string key)
@@ -161,7 +168,7 @@ internal class Archipelago
 		return (T)value;
 	}
 
-	private async Task OnSocketOpened(LoginSuccessful loginSuccess, APConnectionInfo connectionInfo, int saveInfoToSlotIndex)
+	private async Task OnSocketOpened(LoginSuccessful loginSuccess, APSaveData apSaveData)
 	{
 		slotData = loginSuccess.SlotData;
 		itemIndex = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.GetCountKey("AP_ItemsReceived");
@@ -170,8 +177,8 @@ internal class Archipelago
 		outgoingItemHandler = OutgoingItemHandler();
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
-		SaveConnectionInfo(connectionInfo, saveInfoToSlotIndex);
 		Session.Socket.SocketClosed += OnSocketClosed;
+		SaveAPData(apSaveData);
 
 		Logger.Log("Slot data:");
 		foreach (KeyValuePair<string, object> kvp in slotData)
@@ -182,6 +189,7 @@ internal class Archipelago
 		await ScoutAllLocations();
 
 		isConnected = true;
+		SyncLocationsChecked(apSaveData);
 		OnConnected?.Invoke();
 	}
 
@@ -203,6 +211,21 @@ internal class Archipelago
 
 		OnDisconnected?.Invoke();
 		Logger.Log("Disconnected from Archipelago!");
+	}
+
+	private void SyncLocationsChecked(APSaveData apSaveData)
+	{
+		int locationsCheckedOnServer = Session.Locations.AllLocationsChecked.Count;
+		int locationsCheckedOnSave = apSaveData.LocationsChecked.Count;
+
+		if (locationsCheckedOnServer < locationsCheckedOnSave)
+		{
+			for (int i = locationsCheckedOnServer; i < locationsCheckedOnSave; i++)
+			{
+				string checkedLocation = apSaveData.LocationsChecked[i];
+				SendLocationChecked(checkedLocation);
+			}
+		}
 	}
 
 	private IEnumerator CheckItemsReceieved()
@@ -268,12 +291,39 @@ internal class Archipelago
 		}
 	}
 
-	private void SaveConnectionInfo(APConnectionInfo info, int saveInfoToSlotIndex)
+	private void SaveAPData(APSaveData data)
 	{
-		string path = apConnectionInfoSavePath.Replace("#", (saveInfoToSlotIndex + 1).ToString());
-		string json = JsonConvert.SerializeObject(info, Formatting.Indented);
-		File.WriteAllText(path, json);
-		Logger.Log($"Saved AP connection data to: {path}");
+		string path = GetAPSaveDataPath();
+
+		// Create file
+		if (!File.Exists(path))
+		{
+			string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+			File.WriteAllText(path, json);
+			Logger.Log($"Created AP save data file at: {path}");
+		}
+		// Update connection info
+		else
+		{
+			apSaveData.UpdateConnectionInfo(data);
+
+			if (Session.Locations.AllLocationsChecked.Count < 1)
+			{
+				apSaveData.ClearLocationsChecked();
+			}
+			else if (data.LocationsChecked.Count < 1)
+			{
+				foreach (long checkedLocationId in Session.Locations.AllLocationsChecked)
+				{
+					string checkedLocationName = Session.Locations.GetLocationNameFromId(checkedLocationId);
+					apSaveData.AddCheckedLocation(checkedLocationName);
+				}
+			}
+
+			Logger.Log($"Updated AP save data file at: {path}");
+		}
+
+		apSaveData = data;
 	}
 
 	private async Task ScoutAllLocations()
@@ -298,11 +348,90 @@ internal class Archipelago
 		);
 	}
 
-	public class APConnectionInfo
+	private string GetAPSaveDataPath()
+	{
+		return apSaveDataPath.Replace("#", (GetSaveIndex()).ToString());
+	}
+
+	private int GetSaveIndex()
+	{
+		return TitleScreen.instance != null
+			? TitleScreen.instance.saveMenu.index + 1
+			: int.Parse(GameSave.currentSave.saveId.Substring(4));
+	}
+
+	public class APSaveData
 	{
 		public string URL { get; set; }
 		public int Port { get; set; }
 		public string SlotName { get; set; }
 		public string Password { get; set; }
+		public List<string> LocationsChecked
+		{
+			get
+			{
+				JObject jObject = GetJSONObject();
+				return jObject[nameof(LocationsChecked)]?.ToObject<List<string>>();
+			}
+		}
+
+		public void UpdateConnectionInfo(APSaveData data)
+		{
+			JObject jObject = GetJSONObject();
+
+			if (jObject.Value<string>(nameof(URL)) != data.URL)
+			{
+				jObject[nameof(URL)] = data.URL;
+			}
+
+			if (jObject.Value<int>(nameof(Port)) != data.Port)
+			{
+				jObject[nameof(Port)] = data.Port;
+			}
+
+			if (jObject.Value<string>(nameof(SlotName)) != data.SlotName)
+			{
+				jObject[nameof(SlotName)] = data.SlotName;
+			}
+
+			if (jObject.Value<string>(nameof(Password)) != data.Password)
+			{
+				jObject[nameof(Password)] = data.Password;
+			}
+
+			UpdateJSON(jObject);
+		}
+
+		public void AddCheckedLocation(string location)
+		{
+			JObject jObject = GetJSONObject();
+			JArray jArray = (JArray)jObject[nameof(LocationsChecked)];
+			jArray.Add(location);
+			UpdateJSON(jObject);
+		}
+
+		public void ClearLocationsChecked()
+		{
+			LocationsChecked.Clear();
+			JObject jObject = GetJSONObject();
+			jObject[nameof(LocationsChecked)] = new JArray();
+			UpdateJSON(jObject);
+		}
+
+		private void UpdateJSON(JObject jObject)
+		{
+			using StreamWriter sw = new StreamWriter(instance.GetAPSaveDataPath());
+			using (JsonTextWriter jtw = new JsonTextWriter(sw) { Formatting = Formatting.Indented })
+			{
+				jObject.WriteTo(jtw);
+			}
+		}
+
+		private JObject GetJSONObject()
+		{
+			string apSaveDataPath = instance.GetAPSaveDataPath();
+			string json = File.ReadAllText(apSaveDataPath);
+			return JObject.Parse(json);
+		}
 	}
 }

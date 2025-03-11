@@ -78,8 +78,8 @@ internal class ItemRandomizer : MonoBehaviour
 
 	private void PickedUpItem(DDItem item)
 	{
-		Logger.Log($"Picked up {item.DisplayName} at {item.Location}!");
 		GameSave.currentSave.SetKeyState($"AP_PickedUp-{item.Location}", true, true);
+		Archipelago.Instance.GetAPSaveData().AddCheckedLocation(item.Location);
 		Archipelago.Instance.SendLocationChecked(item.Location);
 	}
 
