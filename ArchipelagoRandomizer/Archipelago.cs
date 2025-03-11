@@ -90,9 +90,7 @@ internal class Archipelago
 			return;
 		}
 
-		Session.Socket.SocketClosed -= OnSocketClosed;
 		Session.Socket.DisconnectAsync();
-		Session = null;
 	}
 
 	public void Update()
@@ -189,11 +187,20 @@ internal class Archipelago
 
 	private void OnSocketClosed(string reason)
 	{
+		isConnected = false;
 		incomingItemHandler = null;
 		outgoingItemHandler = null;
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
-		isConnected = false;
+
+		Session.Socket.SocketClosed -= OnSocketClosed;
+		Session = null;
+
+		if (PlayerGlobal.instance != null)
+		{
+			UIManager.Instance.ShowNotification("You were disconnected from Archipelago. Return to title screen to reconnect.\nAny items obtained now will be sent once you reconnect.");
+		}
+
 		OnDisconnected?.Invoke();
 		Logger.Log("Disconnected from Archipelago!");
 	}

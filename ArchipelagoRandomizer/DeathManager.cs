@@ -38,13 +38,19 @@ internal class DeathManager : MonoBehaviour
 	{
 		deathLinkService.EnableDeathLink();
 		deathLinkService.OnDeathLinkReceived += OnDeathReceived;
+		Archipelago.OnDisconnected += OnDisable;
 		IsDeathLinkEnabled = true;
 	}
 
 	private void OnDisable()
 	{
-		deathLinkService.DisableDeathLink();
+		if (!IsDeathLinkEnabled)
+		{
+			return;
+		}
+
 		deathLinkService.OnDeathLinkReceived -= OnDeathReceived;
+		Archipelago.OnDisconnected -= OnDisable;
 		IsDeathLinkEnabled = false;
 	}
 
