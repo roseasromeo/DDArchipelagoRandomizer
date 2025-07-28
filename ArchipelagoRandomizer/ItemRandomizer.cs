@@ -30,16 +30,15 @@ internal class ItemRandomizer : MonoBehaviour
 
 	public void ReceievedItem(string itemName, string location, int playerSlot)
 	{
-		if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}"))
-		{
-			Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
-			return;
-		}
-
 		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
 		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
+		if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}") & receivedFromSelf)
+		{
+			Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
+			return;
+		}
 
 		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
 		{
