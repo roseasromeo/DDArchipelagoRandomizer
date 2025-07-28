@@ -143,8 +143,16 @@ internal class Archipelago
 		if (apSaveData == null)
 		{
 			string path = apSaveDataPath.Replace("#", (saveIndex).ToString());
-			string json = File.ReadAllText(path);
-			apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
+			if (File.Exists(path))
+			{
+				string json = File.ReadAllText(path);
+				apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
+			}
+			else
+			{
+				apSaveData = new APSaveData();
+				apSaveData.CreateEmptySave();
+			}	
 		}
 
 		if (apSaveData == null)
@@ -350,7 +358,7 @@ internal class Archipelago
 
 	private string GetAPSaveDataPath()
 	{
-		return apSaveDataPath.Replace("#", (GetSaveIndex()).ToString());
+		return apSaveDataPath.Replace("#", GetSaveIndex().ToString());
 	}
 
 	private int GetSaveIndex()
@@ -373,6 +381,13 @@ internal class Archipelago
 				JObject jObject = GetJSONObject();
 				return jObject[nameof(LocationsChecked)]?.ToObject<List<string>>();
 			}
+		}
+
+		public void CreateEmptySave()
+		{
+			JObject jObject = [];
+			jObject[nameof(LocationsChecked)] = new JArray();
+			UpdateJSON(jObject);
 		}
 
 		public void UpdateConnectionInfo(APSaveData data)
