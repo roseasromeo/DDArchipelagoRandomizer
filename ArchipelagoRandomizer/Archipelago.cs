@@ -273,7 +273,7 @@ internal class Archipelago
 			}
 
 			ItemInfo item = pendingItem.item;
-			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.LocationDisplayName, item.Player);
+			ItemRandomizer.Instance.ReceivedItem(item.ItemDisplayName, item.LocationDisplayName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
@@ -349,7 +349,7 @@ internal class Archipelago
 	private bool CanPlayerReceiveItems()
 	{
 		return (
-			!hasCompleted &&
+			// !hasCompleted && AP games can continue after goal
 			PlayerGlobal.instance != null &&
 			!PlayerGlobal.instance.InputPaused() &&
 			PlayerGlobal.instance.IsAlive()

@@ -28,17 +28,17 @@ internal class ItemRandomizer : MonoBehaviour
 		Archipelago.Instance.Update();
 	}
 
-	public void ReceievedItem(string itemName, string location, int playerSlot)
+	public void ReceivedItem(string itemName, string location, int playerSlot)
 	{
 		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
 		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
-		if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}") & receivedFromSelf)
-		{
-			Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
-			return;
-		}
+		// if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}") & receivedFromSelf)
+		// {
+		// 	Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
+		// 	return;
+		// } // The corner popup seems more informative on this version, so currently allowing both to trigger
 
 		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
 		{
@@ -179,5 +179,6 @@ internal class ItemRandomizer : MonoBehaviour
 		{
 			Archipelago.Instance.SendCompletion();
 		}
+
 	}
 }
