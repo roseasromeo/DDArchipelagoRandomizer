@@ -273,7 +273,8 @@ internal class Archipelago
 			}
 
 			ItemInfo item = pendingItem.item;
-			ItemRandomizer.Instance.ReceivedItem(item.ItemDisplayName, item.LocationDisplayName, item.Player);
+			string itemChangerName = Items.itemData.First(entry => entry.apItemId == item.ItemId).itemChangerName;
+			ItemRandomizer.Instance.ReceivedItem(itemChangerName, item.LocationDisplayName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
