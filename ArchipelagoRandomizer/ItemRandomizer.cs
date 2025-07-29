@@ -164,7 +164,17 @@ internal class ItemRandomizer : MonoBehaviour
 		/// <summary>
 		/// Sends completion for main ending
 		/// </summary>
-		[HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))]
+		// [HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))] //this triggers goal on killing any of the bosses for a giant soul
+		// private static void EndGameCsPatch()
+		// {
+		// 	Archipelago.Instance.SendCompletion();
+		// }
+
+		// / <summary>
+		// / Sends completion for main ending
+		// / </summary>
+		// I think this will work?
+		[HarmonyPrefix, HarmonyPatch(typeof(LodBoss2), nameof(LodBoss2.NextPhase))]
 		private static void EndGameCsPatch()
 		{
 			Archipelago.Instance.SendCompletion();
