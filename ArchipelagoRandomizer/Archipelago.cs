@@ -116,9 +116,9 @@ internal class Archipelago
 		if (!isConnected)
 		{
 			return;
-		}
+		}		
 
-		long locationId = Session.Locations.GetLocationIdFromName(Session.ConnectionInfo.Game, locationName);
+		long locationId = Locations.locationData.First(entry => entry.itemChangerName == locationName).apLocationId;
 		Session.Locations.CompleteLocationChecks(locationId);
 	}
 
@@ -274,7 +274,16 @@ internal class Archipelago
 
 			ItemInfo item = pendingItem.item;
 			string itemChangerName = Items.itemData.First(entry => entry.apItemId == item.ItemId).itemChangerName;
-			ItemRandomizer.Instance.ReceivedItem(itemChangerName, item.LocationDisplayName, item.Player);
+			string locationName = "";
+			if (item.LocationGame == "Death's Door")
+			{
+				locationName = Locations.locationData.First(entry => entry.apLocationId == item.LocationId).itemChangerName;
+			}
+			else
+			{
+				locationName = item.LocationDisplayName;
+			}
+			ItemRandomizer.Instance.ReceivedItem(itemChangerName, locationName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
