@@ -38,7 +38,7 @@ internal class ItemRandomizer : MonoBehaviour
 		// {
 		// 	Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
 		// 	return;
-		// } // The corner popup seems more informative on this version, so currently allowing both to trigger
+		// } // The corner popup seems more informative on with the second version, so currently allowing both to trigger
 
 		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
 		{
@@ -114,7 +114,7 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		// Determine starting weapon
-		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon");
+		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon"); // TODO: handle this with starting inventory?
 		string startingWeaponId = startingWeaponName switch
 		{
 			"Rogue Daggers" => "daggers",
