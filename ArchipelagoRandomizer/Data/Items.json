@@ -1,0 +1,526 @@
+[
+    {
+        "apItemId": 100,
+        "itemChangerName": "Life Seed"
+    },
+    {
+        "apItemId": 200,
+        "itemChangerName": "Fire"
+    },
+    {
+        "apItemId": 210,
+        "itemChangerName": "Bomb"
+    },
+    {
+        "apItemId": 220,
+        "itemChangerName": "Hookshot"
+    },
+    {
+        "apItemId": 230,
+        "itemChangerName": "Arrow Upgrade"
+    },
+    {
+        "apItemId": 300,
+        "itemChangerName": "Reaper's Sword"
+    },
+    {
+        "apItemId": 301,
+        "itemChangerName": "Rogue Daggers"
+    },
+    {
+        "apItemId": 302,
+        "itemChangerName": "Discarded Umbrella"
+    },
+    {
+        "apItemId": 303,
+        "itemChangerName": "Reaper's Greatsword"
+    },
+    {
+        "apItemId": 304,
+        "itemChangerName": "Thunder Hammer"
+    },
+    {
+        "apItemId": 400,
+        "itemChangerName": "Vitality Shard"
+    },
+    {
+        "apItemId": 450,
+        "itemChangerName": "Magic Shard"
+    },
+    {
+        "apItemId": 500,
+        "itemChangerName": "100 Souls"
+    },
+    {
+        "apItemId": 600,
+        "itemChangerName": "Pink Key"
+    },
+    {
+        "apItemId": 610,
+        "itemChangerName": "Green Key"
+    },
+    {
+        "apItemId": 620,
+        "itemChangerName": "Yellow Key"
+    },
+    {
+        "apItemId": 700,
+        "itemChangerName": "Engagement Ring"
+    },
+    {
+        "apItemId": 701,
+        "itemChangerName": "Old Compass"
+    },
+    {
+        "apItemId": 702,
+        "itemChangerName": "Incense"
+    },
+    {
+        "apItemId": 703,
+        "itemChangerName": "Undying Blossom"
+    },
+    {
+        "apItemId": 704,
+        "itemChangerName": "Old Photograph"
+    },
+    {
+        "apItemId": 705,
+        "itemChangerName": "Sludge-Filled Urn"
+    },
+    {
+        "apItemId": 706,
+        "itemChangerName": "Token of Death"
+    },
+    {
+        "apItemId": 707,
+        "itemChangerName": "Rusty Garden Trowel"
+    },
+    {
+        "apItemId": 708,
+        "itemChangerName": "Captain's Log"
+    },
+    {
+        "apItemId": 709,
+        "itemChangerName": "Giant Arrowhead"
+    },
+    {
+        "apItemId": 710,
+        "itemChangerName": "Malformed Seed"
+    },
+    {
+        "apItemId": 711,
+        "itemChangerName": "Corrupted Antler"
+    },
+    {
+        "apItemId": 712,
+        "itemChangerName": "Magical Forest Horn"
+    },
+    {
+        "apItemId": 713,
+        "itemChangerName": "Ancient Crown"
+    },
+    {
+        "apItemId": 714,
+        "itemChangerName": "Grunt's Old Mask"
+    },
+    {
+        "apItemId": 715,
+        "itemChangerName": "Ancient Door Scale Model"
+    },
+    {
+        "apItemId": 716,
+        "itemChangerName": "Modern Door Scale Model"
+    },
+    {
+        "apItemId": 717,
+        "itemChangerName": "Rusty Belltower Key"
+    },
+    {
+        "apItemId": 718,
+        "itemChangerName": "Surveillance Device"
+    },
+    {
+        "apItemId": 719,
+        "itemChangerName": "Shiny Medallion"
+    },
+    {
+        "apItemId": 720,
+        "itemChangerName": "Ink-Covered Teddy Bear"
+    },
+    {
+        "apItemId": 721,
+        "itemChangerName": "Death's Contract"
+    },
+    {
+        "apItemId": 722,
+        "itemChangerName": "Makeshift Soul Key"
+    },
+    {
+        "apItemId": 723,
+        "itemChangerName": "Mysterious Locket"
+    },
+    {
+        "apItemId": 800,
+        "itemChangerName": "Red Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 801,
+        "itemChangerName": "Yellow Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 802,
+        "itemChangerName": "Green Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 803,
+        "itemChangerName": "Cyan Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 804,
+        "itemChangerName": "Blue Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 805,
+        "itemChangerName": "Purple Ancient Tablet of Knowledge"
+    },
+    {
+        "apItemId": 900,
+        "itemChangerName": "Lever-Bomb Exit"
+    },
+    {
+        "apItemId": 901,
+        "itemChangerName": "Lever-Cemetery Sewer"
+    },
+    {
+        "apItemId": 902,
+        "itemChangerName": "Lever-Guardian of the Door Access"
+    },
+    {
+        "apItemId": 903,
+        "itemChangerName": "Lever-Cemetery Shortcut to East Tree"
+    },
+    {
+        "apItemId": 904,
+        "itemChangerName": "Lever-Cemetery East Tree"
+    },
+    {
+        "apItemId": 905,
+        "itemChangerName": "Lever-Catacombs Tower"
+    },
+    {
+        "apItemId": 906,
+        "itemChangerName": "Lever-Cemetery Exit to Estate"
+    },
+    {
+        "apItemId": 907,
+        "itemChangerName": "Lever-Catacombs Exit"
+    },
+    {
+        "apItemId": 908,
+        "itemChangerName": "Lever-Hookshot Silent Servant"
+    },
+    {
+        "apItemId": 909,
+        "itemChangerName": "Lever-Sailor Turncam Upper"
+    },
+    {
+        "apItemId": 910,
+        "itemChangerName": "Lever-Sailor Turncam Lower"
+    },
+    {
+        "apItemId": 911,
+        "itemChangerName": "Lever-Sailor Greatsword Gate"
+    },
+    {
+        "apItemId": 912,
+        "itemChangerName": "Lever-Lockstone East Start Shortcut"
+    },
+    {
+        "apItemId": 913,
+        "itemChangerName": "Lever-Lockstone Entrance"
+    },
+    {
+        "apItemId": 914,
+        "itemChangerName": "Lever-Lockstone East Lower"
+    },
+    {
+        "apItemId": 915,
+        "itemChangerName": "Lever-Lockstone Upper Shortcut"
+    },
+    {
+        "apItemId": 916,
+        "itemChangerName": "Lever-Lockstone Dual Laser Puzzle"
+    },
+    {
+        "apItemId": 917,
+        "itemChangerName": "Lever-Lockstone Tracking Beam Puzzle"
+    },
+    {
+        "apItemId": 918,
+        "itemChangerName": "Lever-Lockstone Vertical Laser Puzzle"
+    },
+    {
+        "apItemId": 919,
+        "itemChangerName": "Lever-Lockstone North Puzzle"
+    },
+    {
+        "apItemId": 920,
+        "itemChangerName": "Lever-Lockstone Shrine"
+    },
+    {
+        "apItemId": 921,
+        "itemChangerName": "Lever-Lockstone Hookshot Puzzle"
+    },
+    {
+        "apItemId": 922,
+        "itemChangerName": "Lever-Lockstone Upper Puzzle"
+    },
+    {
+        "apItemId": 923,
+        "itemChangerName": "Lever-Lockstone Upper Dual Laser Puzzle"
+    },
+    {
+        "apItemId": 924,
+        "itemChangerName": "Lever-Watchtowers Before Ice Arena"
+    },
+    {
+        "apItemId": 925,
+        "itemChangerName": "Lever-Watchtowers After Ice Skating"
+    },
+    {
+        "apItemId": 926,
+        "itemChangerName": "Lever-Watchtowers After Boomers"
+    },
+    {
+        "apItemId": 927,
+        "itemChangerName": "Lever-Ruins Settlement Gate"
+    },
+    {
+        "apItemId": 928,
+        "itemChangerName": "Lever-Ruins Upper Dungeon Entrance"
+    },
+    {
+        "apItemId": 929,
+        "itemChangerName": "Lever-Ruins Ladder Left of Lord of Doors Arena"
+    },
+    {
+        "apItemId": 930,
+        "itemChangerName": "Lever-Ruins Entrance Ladder Shortcut"
+    },
+    {
+        "apItemId": 931,
+        "itemChangerName": "Lever-Ruins Main Gate"
+    },
+    {
+        "apItemId": 932,
+        "itemChangerName": "Lever-Dungeon Entrance Right Gate"
+    },
+    {
+        "apItemId": 933,
+        "itemChangerName": "Lever-Dungeon Entrance Left Gate"
+    },
+    {
+        "apItemId": 934,
+        "itemChangerName": "Lever-Dungeon Above Rightmost Crow"
+    },
+    {
+        "apItemId": 935,
+        "itemChangerName": "Lever-Fortress Bomb"
+    },
+    {
+        "apItemId": 936,
+        "itemChangerName": "Lever-Fortress Main Gate"
+    },
+    {
+        "apItemId": 937,
+        "itemChangerName": "Lever-Fortress Central Shortcut"
+    },
+    {
+        "apItemId": 938,
+        "itemChangerName": "Lever-Fortress Statue"
+    },
+    {
+        "apItemId": 939,
+        "itemChangerName": "Lever-Fortress Watchtower Lower"
+    },
+    {
+        "apItemId": 940,
+        "itemChangerName": "Lever-Fortress Bridge"
+    },
+    {
+        "apItemId": 941,
+        "itemChangerName": "Lever-Fortress Pre-Main Gate"
+    },
+    {
+        "apItemId": 942,
+        "itemChangerName": "Lever-Fortress Watchtower Upper"
+    },
+    {
+        "apItemId": 943,
+        "itemChangerName": "Lever-Fortress North West"
+    },
+    {
+        "apItemId": 944,
+        "itemChangerName": "Lever-Estate Elevator Left"
+    },
+    {
+        "apItemId": 945,
+        "itemChangerName": "Lever-Estate Elevator Right"
+    },
+    {
+        "apItemId": 946,
+        "itemChangerName": "Lever-Garden of Love"
+    },
+    {
+        "apItemId": 947,
+        "itemChangerName": "Lever-Garden of Life End"
+    },
+    {
+        "apItemId": 948,
+        "itemChangerName": "Lever-Garden of Peace"
+    },
+    {
+        "apItemId": 949,
+        "itemChangerName": "Lever-Garden of Joy"
+    },
+    {
+        "apItemId": 950,
+        "itemChangerName": "Lever-Garden of Love Turncam"
+    },
+    {
+        "apItemId": 951,
+        "itemChangerName": "Lever-Garden of Life Lanterns"
+    },
+    {
+        "apItemId": 952,
+        "itemChangerName": "Lever-Estate Underground Urn Shed"
+    },
+    {
+        "apItemId": 953,
+        "itemChangerName": "Lever-Manor Big Pot Arena"
+    },
+    {
+        "apItemId": 954,
+        "itemChangerName": "Lever-Manor Bookshelf Shortcut"
+    },
+    {
+        "apItemId": 1001,
+        "itemChangerName": "Grove of Spirits Door"
+    },
+    {
+        "apItemId": 1002,
+        "itemChangerName": "Lost Cemetery Door"
+    },
+    {
+        "apItemId": 1003,
+        "itemChangerName": "Stranded Sailor Door"
+    },
+    {
+        "apItemId": 1004,
+        "itemChangerName": "Castle Lockstone Door"
+    },
+    {
+        "apItemId": 1005,
+        "itemChangerName": "Camp of the Free Crows Door"
+    },
+    {
+        "apItemId": 1006,
+        "itemChangerName": "Old Watchtowers Door"
+    },
+    {
+        "apItemId": 1007,
+        "itemChangerName": "Betty's Lair Door"
+    },
+    {
+        "apItemId": 1008,
+        "itemChangerName": "Overgrown Ruins Door"
+    },
+    {
+        "apItemId": 1009,
+        "itemChangerName": "Mushroom Dungeon Door"
+    },
+    {
+        "apItemId": 1010,
+        "itemChangerName": "Flooded Fortress Door"
+    },
+    {
+        "apItemId": 1011,
+        "itemChangerName": "Throne of the Frog King Door"
+    },
+    {
+        "apItemId": 1012,
+        "itemChangerName": "Estate of the Urn Witch Door"
+    },
+    {
+        "apItemId": 1013,
+        "itemChangerName": "Ceramic Manor Door"
+    },
+    {
+        "apItemId": 1014,
+        "itemChangerName": "Inner Furnace Door"
+    },
+    {
+        "apItemId": 1015,
+        "itemChangerName": "The Urn Witch's Laboratory Door"
+    },
+    {
+        "apItemId": 1200,
+        "itemChangerName": "Giant Soul of The Urn Witch"
+    },
+    {
+        "apItemId": 1201,
+        "itemChangerName": "Giant Soul of The Frog King"
+    },
+    {
+        "apItemId": 1202,
+        "itemChangerName": "Giant Soul of Betty"
+    },
+    {
+        "apItemId": 1100,
+        "itemChangerName": "Crow-Manor After Torch Puzzle"
+    },
+    {
+        "apItemId": 1101,
+        "itemChangerName": "Crow-Manor Imp Loft"
+    },
+    {
+        "apItemId": 1102,
+        "itemChangerName": "Crow-Manor Library"
+    },
+    {
+        "apItemId": 1103,
+        "itemChangerName": "Crow-Manor Bedroom"
+    },
+    {
+        "apItemId": 1104,
+        "itemChangerName": "Crow-Dungeon Hall"
+    },
+    {
+        "apItemId": 1105,
+        "itemChangerName": "Crow-Dungeon Water Arena"
+    },
+    {
+        "apItemId": 1106,
+        "itemChangerName": "Crow-Dungeon Cobweb"
+    },
+    {
+        "apItemId": 1107,
+        "itemChangerName": "Crow-Dungeon Rightmost"
+    },
+    {
+        "apItemId": 1108,
+        "itemChangerName": "Crow-Lockstone East"
+    },
+    {
+        "apItemId": 1109,
+        "itemChangerName": "Crow-Lockstone West"
+    },
+    {
+        "apItemId": 1110,
+        "itemChangerName": "Crow-Lockstone West Locked"
+    },
+    {
+        "apItemId": 1111,
+        "itemChangerName": "Crow-Lockstone South West"
+    }
+]

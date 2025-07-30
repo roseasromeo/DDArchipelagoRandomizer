@@ -67,6 +67,11 @@
 		</Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+    	<EmbeddedResource Include="ArchipelagoRandomizer/Data/Locations.json" />
+    	<EmbeddedResource Include="ArchipelagoRandomizer/Data/Items.json" />
+  	</ItemGroup>
+
 	<Target Name="CopyMod" AfterTargets="PostBuildEvent">
 		<RemoveDir Directories="$(ExportDir)/" />
 		<MakeDir Directories="$(ExportDir)/" />
