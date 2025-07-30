@@ -175,9 +175,12 @@ internal class ItemRandomizer : MonoBehaviour
 		// / </summary>
 		// I think this will work?
 		[HarmonyPrefix, HarmonyPatch(typeof(LodBoss2), nameof(LodBoss2.NextPhase))]
-		private static void EndGameCsPatch()
+		private static void EndGameCsPatch(LodBoss2 __instance)
 		{
-			Archipelago.Instance.SendCompletion();
+			if (__instance.deathCutscene)
+			{
+				Archipelago.Instance.SendCompletion();
+			}
 		}
 
 	}
