@@ -346,14 +346,14 @@ internal class Archipelago
 
 	private async Task ScoutAllLocations()
 	{
-		ScoutedPlacements = (await Session.Locations.ScoutLocationsAsync(
+		ScoutedPlacements = [.. (await Session.Locations.ScoutLocationsAsync(
 			Session.Locations.AllLocations.ToArray()
 		)).Select(kvp => new ItemRandomizer.ItemPlacement(
 			kvp.Value.ItemDisplayName,
-			kvp.Value.LocationName,
+			Locations.locationData.First(entry => entry.apLocationId == kvp.Value.LocationId).itemChangerName,
 			kvp.Value.Player.Name,
 			kvp.Value.Player != CurrentPlayer
-		)).ToList();
+		))];
 	}
 
 	private bool CanPlayerReceiveItems()
