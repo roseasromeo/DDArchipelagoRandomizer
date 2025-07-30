@@ -116,9 +116,9 @@ internal class Archipelago
 		if (!isConnected)
 		{
 			return;
-		}
+		}		
 
-		long locationId = Session.Locations.GetLocationIdFromName(Session.ConnectionInfo.Game, locationName);
+		long locationId = Locations.locationData.First(entry => entry.itemChangerName == locationName).apLocationId;
 		Session.Locations.CompleteLocationChecks(locationId);
 	}
 
@@ -143,8 +143,16 @@ internal class Archipelago
 		if (apSaveData == null)
 		{
 			string path = apSaveDataPath.Replace("#", (saveIndex).ToString());
-			string json = File.ReadAllText(path);
-			apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
+			if (File.Exists(path))
+			{
+				string json = File.ReadAllText(path);
+				apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
+			}
+			else
+			{
+				apSaveData = new APSaveData();
+				apSaveData.CreateEmptySave();
+			}	
 		}
 
 		if (apSaveData == null)
@@ -265,7 +273,17 @@ internal class Archipelago
 			}
 
 			ItemInfo item = pendingItem.item;
-			ItemRandomizer.Instance.ReceievedItem(item.ItemDisplayName, item.LocationDisplayName, item.Player);
+			string itemChangerName = Items.itemData.First(entry => entry.apItemId == item.ItemId).itemChangerName;
+			string locationName = "";
+			if (item.LocationGame == "Death's Door")
+			{
+				locationName = Locations.locationData.First(entry => entry.apLocationId == item.LocationId).itemChangerName;
+			}
+			else
+			{
+				locationName = item.LocationDisplayName;
+			}
+			ItemRandomizer.Instance.ReceivedItem(itemChangerName, locationName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
@@ -328,20 +346,20 @@ internal class Archipelago
 
 	private async Task ScoutAllLocations()
 	{
-		ScoutedPlacements = (await Session.Locations.ScoutLocationsAsync(
+		ScoutedPlacements = [.. (await Session.Locations.ScoutLocationsAsync(
 			Session.Locations.AllLocations.ToArray()
 		)).Select(kvp => new ItemRandomizer.ItemPlacement(
 			kvp.Value.ItemDisplayName,
-			kvp.Value.LocationName,
+			Locations.locationData.First(entry => entry.apLocationId == kvp.Value.LocationId).itemChangerName,
 			kvp.Value.Player.Name,
 			kvp.Value.Player != CurrentPlayer
-		)).ToList();
+		))];
 	}
 
 	private bool CanPlayerReceiveItems()
 	{
 		return (
-			!hasCompleted &&
+			// !hasCompleted && AP games can continue after goal
 			PlayerGlobal.instance != null &&
 			!PlayerGlobal.instance.InputPaused() &&
 			PlayerGlobal.instance.IsAlive()
@@ -350,7 +368,7 @@ internal class Archipelago
 
 	private string GetAPSaveDataPath()
 	{
-		return apSaveDataPath.Replace("#", (GetSaveIndex()).ToString());
+		return apSaveDataPath.Replace("#", GetSaveIndex().ToString());
 	}
 
 	private int GetSaveIndex()
@@ -373,6 +391,13 @@ internal class Archipelago
 				JObject jObject = GetJSONObject();
 				return jObject[nameof(LocationsChecked)]?.ToObject<List<string>>();
 			}
+		}
+
+		public void CreateEmptySave()
+		{
+			JObject jObject = [];
+			jObject[nameof(LocationsChecked)] = new JArray();
+			UpdateJSON(jObject);
 		}
 
 		public void UpdateConnectionInfo(APSaveData data)

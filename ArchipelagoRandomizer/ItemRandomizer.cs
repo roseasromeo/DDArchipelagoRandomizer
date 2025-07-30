@@ -28,18 +28,17 @@ internal class ItemRandomizer : MonoBehaviour
 		Archipelago.Instance.Update();
 	}
 
-	public void ReceievedItem(string itemName, string location, int playerSlot)
+	public void ReceivedItem(string itemName, string location, int playerSlot)
 	{
-		if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}"))
-		{
-			Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
-			return;
-		}
-
 		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
 		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
+		// if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}") & receivedFromSelf)
+		// {
+		// 	Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
+		// 	return;
+		// } // The corner popup seems more informative on with the second version, so currently allowing both to trigger
 
 		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
 		{
@@ -115,7 +114,7 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		// Determine starting weapon
-		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon");
+		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon"); // TODO: handle this with starting inventory?
 		string startingWeaponId = startingWeaponName switch
 		{
 			"Rogue Daggers" => "daggers",
@@ -165,10 +164,24 @@ internal class ItemRandomizer : MonoBehaviour
 		/// <summary>
 		/// Sends completion for main ending
 		/// </summary>
-		[HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))]
-		private static void EndGameCsPatch()
+		// [HarmonyPrefix, HarmonyPatch(typeof(SoulAbsorbCutscene), nameof(SoulAbsorbCutscene.StartCutscene))] //this triggers goal on killing any of the bosses for a giant soul
+		// private static void EndGameCsPatch()
+		// {
+		// 	Archipelago.Instance.SendCompletion();
+		// }
+
+		// / <summary>
+		// / Sends completion for main ending
+		// / </summary>
+		// I think this will work?
+		[HarmonyPrefix, HarmonyPatch(typeof(LodBoss2), nameof(LodBoss2.NextPhase))]
+		private static void EndGameCsPatch(LodBoss2 __instance)
 		{
-			Archipelago.Instance.SendCompletion();
+			if (__instance.deathCutscene)
+			{
+				Archipelago.Instance.SendCompletion();
+			}
 		}
+
 	}
 }

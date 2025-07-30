@@ -1,0 +1,1074 @@
+[
+    {
+        "apLocationId": 200,
+        "itemChangerName": "Fire Avarice"
+    },
+    {
+        "apLocationId": 210,
+        "itemChangerName": "Bomb Avarice"
+    },
+    {
+        "apLocationId": 220,
+        "itemChangerName": "Hookshot Avarice"
+    },
+    {
+        "apLocationId": 201,
+        "itemChangerName": "Fire Silent Servant"
+    },
+    {
+        "apLocationId": 211,
+        "itemChangerName": "Bomb Silent Servant"
+    },
+    {
+        "apLocationId": 221,
+        "itemChangerName": "Hookshot Silent Servant"
+    },
+    {
+        "apLocationId": 230,
+        "itemChangerName": "Arrow Silent Servant"
+    },
+    {
+        "apLocationId": 301,
+        "itemChangerName": "Rogue Daggers"
+    },
+    {
+        "apLocationId": 302,
+        "itemChangerName": "Discarded Umbrella"
+    },
+    {
+        "apLocationId": 303,
+        "itemChangerName": "Reaper's Greatsword"
+    },
+    {
+        "apLocationId": 304,
+        "itemChangerName": "Thunder Hammer"
+    },
+    {
+        "apLocationId": 1200,
+        "itemChangerName": "Betty"
+    },
+    {
+        "apLocationId": 1201,
+        "itemChangerName": "Frog King"
+    },
+    {
+        "apLocationId": 1202,
+        "itemChangerName": "Grandma"
+    },
+    {
+        "apLocationId": 400,
+        "itemChangerName": "Heart Shrine-Cemetery Behind Entrance"
+    },
+    {
+        "apLocationId": 450,
+        "itemChangerName": "Magic Shrine-Cemetery After Smough Arena"
+    },
+    {
+        "apLocationId": 401,
+        "itemChangerName": "Heart Shrine-Cemetery Winding Bridge End"
+    },
+    {
+        "apLocationId": 402,
+        "itemChangerName": "Heart Shrine-Hookshot Arena"
+    },
+    {
+        "apLocationId": 451,
+        "itemChangerName": "Magic Shrine-Sailor Turncam"
+    },
+    {
+        "apLocationId": 452,
+        "itemChangerName": "Magic Shrine-Lockstone Secret West"
+    },
+    {
+        "apLocationId": 403,
+        "itemChangerName": "Heart Shrine-Camp Ice Skating"
+    },
+    {
+        "apLocationId": 453,
+        "itemChangerName": "Magic Shrine-Ruins Hookshot Arena"
+    },
+    {
+        "apLocationId": 454,
+        "itemChangerName": "Magic Shrine-Ruins Turncam"
+    },
+    {
+        "apLocationId": 404,
+        "itemChangerName": "Heart Shrine-Dungeon Water Arena"
+    },
+    {
+        "apLocationId": 405,
+        "itemChangerName": "Heart Shrine-Ruins Sewer"
+    },
+    {
+        "apLocationId": 455,
+        "itemChangerName": "Magic Shrine-Fortress Bow Secret"
+    },
+    {
+        "apLocationId": 456,
+        "itemChangerName": "Magic Shrine-Estate Left of Manor"
+    },
+    {
+        "apLocationId": 406,
+        "itemChangerName": "Heart Shrine-Garden of Life"
+    },
+    {
+        "apLocationId": 457,
+        "itemChangerName": "Magic Shrine-Manor Bathroom Puzzle"
+    },
+    {
+        "apLocationId": 407,
+        "itemChangerName": "Heart Shrine-Furnace Cart Puzzle"
+    },
+    {
+        "apLocationId": 700,
+        "itemChangerName": "Engagement Ring"
+    },
+    {
+        "apLocationId": 701,
+        "itemChangerName": "Old Compass"
+    },
+    {
+        "apLocationId": 702,
+        "itemChangerName": "Incense"
+    },
+    {
+        "apLocationId": 703,
+        "itemChangerName": "Undying Blossom"
+    },
+    {
+        "apLocationId": 704,
+        "itemChangerName": "Old Photograph"
+    },
+    {
+        "apLocationId": 705,
+        "itemChangerName": "Sludge-Filled Urn"
+    },
+    {
+        "apLocationId": 706,
+        "itemChangerName": "Token of Death"
+    },
+    {
+        "apLocationId": 707,
+        "itemChangerName": "Rusty Garden Trowel"
+    },
+    {
+        "apLocationId": 708,
+        "itemChangerName": "Captain's Log"
+    },
+    {
+        "apLocationId": 709,
+        "itemChangerName": "Giant Arrowhead"
+    },
+    {
+        "apLocationId": 710,
+        "itemChangerName": "Malformed Seed"
+    },
+    {
+        "apLocationId": 711,
+        "itemChangerName": "Corrupted Antler"
+    },
+    {
+        "apLocationId": 712,
+        "itemChangerName": "Magical Forest Horn"
+    },
+    {
+        "apLocationId": 713,
+        "itemChangerName": "Ancient Crown"
+    },
+    {
+        "apLocationId": 714,
+        "itemChangerName": "Grunt's Old Mask"
+    },
+    {
+        "apLocationId": 715,
+        "itemChangerName": "Ancient Door Scale Model"
+    },
+    {
+        "apLocationId": 716,
+        "itemChangerName": "Modern Door Scale Model"
+    },
+    {
+        "apLocationId": 717,
+        "itemChangerName": "Rusty Belltower Key"
+    },
+    {
+        "apLocationId": 718,
+        "itemChangerName": "Surveillance Device"
+    },
+    {
+        "apLocationId": 719,
+        "itemChangerName": "Shiny Medallion"
+    },
+    {
+        "apLocationId": 720,
+        "itemChangerName": "Ink-Covered Teddy Bear"
+    },
+    {
+        "apLocationId": 721,
+        "itemChangerName": "Death's Contract"
+    },
+    {
+        "apLocationId": 722,
+        "itemChangerName": "Makeshift Soul Key"
+    },
+    {
+        "apLocationId": 723,
+        "itemChangerName": "Mysterious Locket"
+    },
+    {
+        "apLocationId": 100,
+        "itemChangerName": "Seed-Cemetery Broken Bridge"
+    },
+    {
+        "apLocationId": 101,
+        "itemChangerName": "Seed-Catacombs Tower"
+    },
+    {
+        "apLocationId": 102,
+        "itemChangerName": "Seed-Cemetery Left of Main Entrance"
+    },
+    {
+        "apLocationId": 103,
+        "itemChangerName": "Seed-Cemetery Near Tablet Gate"
+    },
+    {
+        "apLocationId": 104,
+        "itemChangerName": "Seed-Between Cemetery and Sailor"
+    },
+    {
+        "apLocationId": 105,
+        "itemChangerName": "Seed-Sailor Upper"
+    },
+    {
+        "apLocationId": 106,
+        "itemChangerName": "Seed-Lockstone Upper East"
+    },
+    {
+        "apLocationId": 107,
+        "itemChangerName": "Seed-Lockstone Soul Door"
+    },
+    {
+        "apLocationId": 108,
+        "itemChangerName": "Seed-Lockstone Behind Bars"
+    },
+    {
+        "apLocationId": 109,
+        "itemChangerName": "Seed-Lockstone Entrance West"
+    },
+    {
+        "apLocationId": 110,
+        "itemChangerName": "Seed-Lockstone North"
+    },
+    {
+        "apLocationId": 111,
+        "itemChangerName": "Seed-Camp Ledge With Huts"
+    },
+    {
+        "apLocationId": 112,
+        "itemChangerName": "Seed-Camp Stall"
+    },
+    {
+        "apLocationId": 113,
+        "itemChangerName": "Seed-Camp Rooftops"
+    },
+    {
+        "apLocationId": 114,
+        "itemChangerName": "Seed-Watchtowers Ice Skating"
+    },
+    {
+        "apLocationId": 115,
+        "itemChangerName": "Seed-Watchtowers Tablet Door"
+    },
+    {
+        "apLocationId": 116,
+        "itemChangerName": "Seed-Watchtowers Archer Platform"
+    },
+    {
+        "apLocationId": 117,
+        "itemChangerName": "Seed-Watchtowers Boxes"
+    },
+    {
+        "apLocationId": 118,
+        "itemChangerName": "Seed-Dungeon Fire Puzzle Near Water Arena"
+    },
+    {
+        "apLocationId": 119,
+        "itemChangerName": "Seed-Ruins Lord of Doors Arena"
+    },
+    {
+        "apLocationId": 120,
+        "itemChangerName": "Seed-Ruins Fire Plant Corridor"
+    },
+    {
+        "apLocationId": 121,
+        "itemChangerName": "Seed-Dungeon Water Arena Left Exit"
+    },
+    {
+        "apLocationId": 122,
+        "itemChangerName": "Seed-Ruins Right Middle"
+    },
+    {
+        "apLocationId": 123,
+        "itemChangerName": "Seed-Ruins On Settlement Wall"
+    },
+    {
+        "apLocationId": 124,
+        "itemChangerName": "Seed-Ruins Behind Boxes"
+    },
+    {
+        "apLocationId": 125,
+        "itemChangerName": "Seed-Ruins Down Through Bomb Wall"
+    },
+    {
+        "apLocationId": 126,
+        "itemChangerName": "Seed-Dungeon Above Rightmost Crow"
+    },
+    {
+        "apLocationId": 127,
+        "itemChangerName": "Seed-Dungeon Right Above Key"
+    },
+    {
+        "apLocationId": 128,
+        "itemChangerName": "Seed-Dungeon Avarice Bridge"
+    },
+    {
+        "apLocationId": 129,
+        "itemChangerName": "Seed-Fortress Watchtower"
+    },
+    {
+        "apLocationId": 130,
+        "itemChangerName": "Seed-Fortress Statue"
+    },
+    {
+        "apLocationId": 131,
+        "itemChangerName": "Seed-Fortress Bridge"
+    },
+    {
+        "apLocationId": 132,
+        "itemChangerName": "Seed-Fortress Intro Crate"
+    },
+    {
+        "apLocationId": 133,
+        "itemChangerName": "Seed-Fortress East After Statue"
+    },
+    {
+        "apLocationId": 134,
+        "itemChangerName": "Seed-Estate Family Tomb"
+    },
+    {
+        "apLocationId": 135,
+        "itemChangerName": "Seed-Estate Entrance"
+    },
+    {
+        "apLocationId": 136,
+        "itemChangerName": "Seed-Estate Hedge Gaps"
+    },
+    {
+        "apLocationId": 137,
+        "itemChangerName": "Seed-Garden of Joy"
+    },
+    {
+        "apLocationId": 138,
+        "itemChangerName": "Seed-Manor Boxes"
+    },
+    {
+        "apLocationId": 139,
+        "itemChangerName": "Seed-Manor Near Brazier"
+    },
+    {
+        "apLocationId": 140,
+        "itemChangerName": "Seed-Manor Below Big Pot Arena"
+    },
+    {
+        "apLocationId": 141,
+        "itemChangerName": "Seed-Manor Rafters"
+    },
+    {
+        "apLocationId": 142,
+        "itemChangerName": "Seed-Manor Main Room Upper"
+    },
+    {
+        "apLocationId": 143,
+        "itemChangerName": "Seed-Manor Spinny Pot Room"
+    },
+    {
+        "apLocationId": 144,
+        "itemChangerName": "Seed-Manor Library Shelf"
+    },
+    {
+        "apLocationId": 145,
+        "itemChangerName": "Seed-Cart Puzzle"
+    },
+    {
+        "apLocationId": 146,
+        "itemChangerName": "Seed-Furnace Entrance"
+    },
+    {
+        "apLocationId": 147,
+        "itemChangerName": "Seed-Inner Furnace Horizontal Pistons"
+    },
+    {
+        "apLocationId": 148,
+        "itemChangerName": "Seed-Inner Furnace Conveyor Bridge"
+    },
+    {
+        "apLocationId": 149,
+        "itemChangerName": "Seed-Inner Furnace Conveyor Gauntlet"
+    },
+    {
+        "apLocationId": 500,
+        "itemChangerName": "Soul Orb-Fire Return Upper"
+    },
+    {
+        "apLocationId": 501,
+        "itemChangerName": "Soul Orb-Hookshot Secret"
+    },
+    {
+        "apLocationId": 502,
+        "itemChangerName": "Soul Orb-Bomb Return"
+    },
+    {
+        "apLocationId": 503,
+        "itemChangerName": "Soul Orb-Bomb Secret"
+    },
+    {
+        "apLocationId": 504,
+        "itemChangerName": "Soul Orb-Hookshot Return"
+    },
+    {
+        "apLocationId": 505,
+        "itemChangerName": "Soul Orb-Fire Return Lower"
+    },
+    {
+        "apLocationId": 506,
+        "itemChangerName": "Soul Orb-Fire Secret"
+    },
+    {
+        "apLocationId": 507,
+        "itemChangerName": "Soul Orb-Catacombs Exit"
+    },
+    {
+        "apLocationId": 508,
+        "itemChangerName": "Soul Orb-Cemetery Hookshot Towers"
+    },
+    {
+        "apLocationId": 509,
+        "itemChangerName": "Soul Orb-Cemetery Under Bridge"
+    },
+    {
+        "apLocationId": 510,
+        "itemChangerName": "Soul Orb-Cemetery East Tree"
+    },
+    {
+        "apLocationId": 511,
+        "itemChangerName": "Soul Orb-Cemetery Winding Bridge End"
+    },
+    {
+        "apLocationId": 512,
+        "itemChangerName": "Soul Orb-Catacombs Room 2"
+    },
+    {
+        "apLocationId": 513,
+        "itemChangerName": "Soul Orb-Catacombs Room 1"
+    },
+    {
+        "apLocationId": 514,
+        "itemChangerName": "Soul Orb-Cemetery Gated Sewer"
+    },
+    {
+        "apLocationId": 515,
+        "itemChangerName": "Soul Orb-Catacombs Entrance"
+    },
+    {
+        "apLocationId": 516,
+        "itemChangerName": "Soul Orb-Cemetery Cave"
+    },
+    {
+        "apLocationId": 517,
+        "itemChangerName": "Soul Orb-Sailor Turncam"
+    },
+    {
+        "apLocationId": 518,
+        "itemChangerName": "Soul Orb-North Lockstone Sewer"
+    },
+    {
+        "apLocationId": 519,
+        "itemChangerName": "Soul Orb-Lockstone Hookshot North"
+    },
+    {
+        "apLocationId": 520,
+        "itemChangerName": "Soul Orb-Lockstone Exit"
+    },
+    {
+        "apLocationId": 521,
+        "itemChangerName": "Soul Orb-West Lockstone Sewer"
+    },
+    {
+        "apLocationId": 522,
+        "itemChangerName": "Soul Orb-Camp Rooftops"
+    },
+    {
+        "apLocationId": 523,
+        "itemChangerName": "Soul Orb-Camp Broken Bridge"
+    },
+    {
+        "apLocationId": 524,
+        "itemChangerName": "Soul Orb-Watchtowers Behind Barb Elevator"
+    },
+    {
+        "apLocationId": 525,
+        "itemChangerName": "Soul Orb-Dungeon Vine"
+    },
+    {
+        "apLocationId": 526,
+        "itemChangerName": "Soul Orb-Ruins Stump"
+    },
+    {
+        "apLocationId": 527,
+        "itemChangerName": "Soul Orb-Ruins Outside Left Dungeon Exit"
+    },
+    {
+        "apLocationId": 528,
+        "itemChangerName": "Soul Orb-Dungeon Cobweb"
+    },
+    {
+        "apLocationId": 529,
+        "itemChangerName": "Soul Orb-Ruins Left After Key Door"
+    },
+    {
+        "apLocationId": 530,
+        "itemChangerName": "Soul Orb-Ruins Lower Bomb Wall"
+    },
+    {
+        "apLocationId": 531,
+        "itemChangerName": "Soul Orb-Ruins Lord of Doors Arena Hookshot"
+    },
+    {
+        "apLocationId": 532,
+        "itemChangerName": "Soul Orb-Dungeon Lower Entrance"
+    },
+    {
+        "apLocationId": 533,
+        "itemChangerName": "Soul Orb-Ruins Upper Above Horn"
+    },
+    {
+        "apLocationId": 534,
+        "itemChangerName": "Soul Orb-Ruins Above Three Plants"
+    },
+    {
+        "apLocationId": 535,
+        "itemChangerName": "Soul Orb-Ruins Up Turncam Ladder"
+    },
+    {
+        "apLocationId": 536,
+        "itemChangerName": "Soul Orb-Ruins Above Entrance Gate"
+    },
+    {
+        "apLocationId": 537,
+        "itemChangerName": "Soul Orb-Ruins Upper Bomb Wall"
+    },
+    {
+        "apLocationId": 538,
+        "itemChangerName": "Soul Orb-Dungeon Left Exit Shelf"
+    },
+    {
+        "apLocationId": 539,
+        "itemChangerName": "Soul Orb-Ruins Lower Hookshot"
+    },
+    {
+        "apLocationId": 540,
+        "itemChangerName": "Soul Orb-Fortress Bomb"
+    },
+    {
+        "apLocationId": 541,
+        "itemChangerName": "Soul Orb-Fortress Hidden Sewer"
+    },
+    {
+        "apLocationId": 542,
+        "itemChangerName": "Soul Orb-Fortress Drop"
+    },
+    {
+        "apLocationId": 543,
+        "itemChangerName": "Soul Orb-Estate Access Crypt"
+    },
+    {
+        "apLocationId": 544,
+        "itemChangerName": "Soul Orb-Estate Balcony"
+    },
+    {
+        "apLocationId": 545,
+        "itemChangerName": "Soul Orb-Garden of Love Turncam"
+    },
+    {
+        "apLocationId": 546,
+        "itemChangerName": "Soul Orb-Garden of Life Hookshot Loop"
+    },
+    {
+        "apLocationId": 547,
+        "itemChangerName": "Soul Orb-Garden of Love Bomb Walls"
+    },
+    {
+        "apLocationId": 548,
+        "itemChangerName": "Soul Orb-Garden of Life Bomb Wall"
+    },
+    {
+        "apLocationId": 549,
+        "itemChangerName": "Soul Orb-Estate Broken Boardwalk"
+    },
+    {
+        "apLocationId": 550,
+        "itemChangerName": "Soul Orb-Estate Secret Cave"
+    },
+    {
+        "apLocationId": 551,
+        "itemChangerName": "Soul Orb-Estate Twin Benches"
+    },
+    {
+        "apLocationId": 552,
+        "itemChangerName": "Soul Orb-Estate Sewer Middle"
+    },
+    {
+        "apLocationId": 553,
+        "itemChangerName": "Soul Orb-Estate Sewer End"
+    },
+    {
+        "apLocationId": 554,
+        "itemChangerName": "Soul Orb-Garden of Peace"
+    },
+    {
+        "apLocationId": 555,
+        "itemChangerName": "Soul Orb-Manor Imp Loft"
+    },
+    {
+        "apLocationId": 556,
+        "itemChangerName": "Soul Orb-Manor Library Shelf"
+    },
+    {
+        "apLocationId": 557,
+        "itemChangerName": "Soul Orb-Manor Chandelier"
+    },
+    {
+        "apLocationId": 558,
+        "itemChangerName": "Soul Orb-Furnace Lantern Chain"
+    },
+    {
+        "apLocationId": 559,
+        "itemChangerName": "Soul Orb-Small Room"
+    },
+    {
+        "apLocationId": 560,
+        "itemChangerName": "Soul Orb-Furnace Entrance Sewer"
+    },
+    {
+        "apLocationId": 800,
+        "itemChangerName": "Red Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 801,
+        "itemChangerName": "Yellow Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 802,
+        "itemChangerName": "Green Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 803,
+        "itemChangerName": "Cyan Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 804,
+        "itemChangerName": "Blue Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 805,
+        "itemChangerName": "Purple Ancient Tablet of Knowledge"
+    },
+    {
+        "apLocationId": 806,
+        "itemChangerName": "Estate Owl"
+    },
+    {
+        "apLocationId": 807,
+        "itemChangerName": "Ruins Owl"
+    },
+    {
+        "apLocationId": 808,
+        "itemChangerName": "Watchtowers Owl"
+    },
+    {
+        "apLocationId": 900,
+        "itemChangerName": "Lever-Bomb Exit"
+    },
+    {
+        "apLocationId": 901,
+        "itemChangerName": "Lever-Cemetery Sewer"
+    },
+    {
+        "apLocationId": 902,
+        "itemChangerName": "Lever-Guardian of the Door Access"
+    },
+    {
+        "apLocationId": 903,
+        "itemChangerName": "Lever-Cemetery Shortcut to East Tree"
+    },
+    {
+        "apLocationId": 904,
+        "itemChangerName": "Lever-Cemetery East Tree"
+    },
+    {
+        "apLocationId": 905,
+        "itemChangerName": "Lever-Catacombs Tower"
+    },
+    {
+        "apLocationId": 906,
+        "itemChangerName": "Lever-Cemetery Exit to Estate"
+    },
+    {
+        "apLocationId": 907,
+        "itemChangerName": "Lever-Catacombs Exit"
+    },
+    {
+        "apLocationId": 908,
+        "itemChangerName": "Lever-Hookshot Silent Servant"
+    },
+    {
+        "apLocationId": 909,
+        "itemChangerName": "Lever-Sailor Turncam Upper"
+    },
+    {
+        "apLocationId": 910,
+        "itemChangerName": "Lever-Sailor Turncam Lower"
+    },
+    {
+        "apLocationId": 911,
+        "itemChangerName": "Lever-Sailor Greatsword Gate"
+    },
+    {
+        "apLocationId": 912,
+        "itemChangerName": "Lever-Lockstone East Start Shortcut"
+    },
+    {
+        "apLocationId": 913,
+        "itemChangerName": "Lever-Lockstone Entrance"
+    },
+    {
+        "apLocationId": 914,
+        "itemChangerName": "Lever-Lockstone East Lower"
+    },
+    {
+        "apLocationId": 915,
+        "itemChangerName": "Lever-Lockstone Upper Shortcut"
+    },
+    {
+        "apLocationId": 916,
+        "itemChangerName": "Lever-Lockstone Dual Laser Puzzle"
+    },
+    {
+        "apLocationId": 917,
+        "itemChangerName": "Lever-Lockstone Tracking Beam Puzzle"
+    },
+    {
+        "apLocationId": 918,
+        "itemChangerName": "Lever-Lockstone Vertical Laser Puzzle"
+    },
+    {
+        "apLocationId": 919,
+        "itemChangerName": "Lever-Lockstone North Puzzle"
+    },
+    {
+        "apLocationId": 920,
+        "itemChangerName": "Lever-Lockstone Shrine"
+    },
+    {
+        "apLocationId": 921,
+        "itemChangerName": "Lever-Lockstone Hookshot Puzzle"
+    },
+    {
+        "apLocationId": 922,
+        "itemChangerName": "Lever-Lockstone Upper Puzzle"
+    },
+    {
+        "apLocationId": 923,
+        "itemChangerName": "Lever-Lockstone Upper Dual Laser Puzzle"
+    },
+    {
+        "apLocationId": 924,
+        "itemChangerName": "Lever-Watchtowers Before Ice Arena"
+    },
+    {
+        "apLocationId": 925,
+        "itemChangerName": "Lever-Watchtowers After Ice Skating"
+    },
+    {
+        "apLocationId": 926,
+        "itemChangerName": "Lever-Watchtowers After Boomers"
+    },
+    {
+        "apLocationId": 927,
+        "itemChangerName": "Lever-Ruins Settlement Gate"
+    },
+    {
+        "apLocationId": 928,
+        "itemChangerName": "Lever-Ruins Upper Dungeon Entrance"
+    },
+    {
+        "apLocationId": 929,
+        "itemChangerName": "Lever-Ruins Ladder Left of Lord of Doors Arena"
+    },
+    {
+        "apLocationId": 930,
+        "itemChangerName": "Lever-Ruins Entrance Ladder Shortcut"
+    },
+    {
+        "apLocationId": 931,
+        "itemChangerName": "Lever-Ruins Main Gate"
+    },
+    {
+        "apLocationId": 932,
+        "itemChangerName": "Lever-Dungeon Entrance Right Gate"
+    },
+    {
+        "apLocationId": 933,
+        "itemChangerName": "Lever-Dungeon Entrance Left Gate"
+    },
+    {
+        "apLocationId": 934,
+        "itemChangerName": "Lever-Dungeon Above Rightmost Crow"
+    },
+    {
+        "apLocationId": 935,
+        "itemChangerName": "Lever-Fortress Bomb"
+    },
+    {
+        "apLocationId": 936,
+        "itemChangerName": "Lever-Fortress Main Gate"
+    },
+    {
+        "apLocationId": 937,
+        "itemChangerName": "Lever-Fortress Central Shortcut"
+    },
+    {
+        "apLocationId": 938,
+        "itemChangerName": "Lever-Fortress Statue"
+    },
+    {
+        "apLocationId": 939,
+        "itemChangerName": "Lever-Fortress Watchtower Lower"
+    },
+    {
+        "apLocationId": 940,
+        "itemChangerName": "Lever-Fortress Bridge"
+    },
+    {
+        "apLocationId": 941,
+        "itemChangerName": "Lever-Fortress Pre-Main Gate"
+    },
+    {
+        "apLocationId": 942,
+        "itemChangerName": "Lever-Fortress Watchtower Upper"
+    },
+    {
+        "apLocationId": 943,
+        "itemChangerName": "Lever-Fortress North West"
+    },
+    {
+        "apLocationId": 944,
+        "itemChangerName": "Lever-Estate Elevator Left"
+    },
+    {
+        "apLocationId": 945,
+        "itemChangerName": "Lever-Estate Elevator Right"
+    },
+    {
+        "apLocationId": 946,
+        "itemChangerName": "Lever-Garden of Love"
+    },
+    {
+        "apLocationId": 947,
+        "itemChangerName": "Lever-Garden of Life End"
+    },
+    {
+        "apLocationId": 948,
+        "itemChangerName": "Lever-Garden of Peace"
+    },
+    {
+        "apLocationId": 949,
+        "itemChangerName": "Lever-Garden of Joy"
+    },
+    {
+        "apLocationId": 950,
+        "itemChangerName": "Lever-Garden of Love Turncam"
+    },
+    {
+        "apLocationId": 951,
+        "itemChangerName": "Lever-Garden of Life Lanterns"
+    },
+    {
+        "apLocationId": 952,
+        "itemChangerName": "Lever-Estate Underground Urn Shed"
+    },
+    {
+        "apLocationId": 953,
+        "itemChangerName": "Lever-Manor Big Pot Arena"
+    },
+    {
+        "apLocationId": 954,
+        "itemChangerName": "Lever-Manor Bookshelf Shortcut"
+    },
+    {
+        "apLocationId": 1001,
+        "itemChangerName": "Grove of Spirits Door"
+    },
+    {
+        "apLocationId": 1002,
+        "itemChangerName": "Lost Cemetery Door"
+    },
+    {
+        "apLocationId": 1003,
+        "itemChangerName": "Stranded Sailor Door"
+    },
+    {
+        "apLocationId": 1004,
+        "itemChangerName": "Castle Lockstone Door"
+    },
+    {
+        "apLocationId": 1005,
+        "itemChangerName": "Camp of the Free Crows Door"
+    },
+    {
+        "apLocationId": 1006,
+        "itemChangerName": "Old Watchtowers Door"
+    },
+    {
+        "apLocationId": 1007,
+        "itemChangerName": "Betty's Lair Door"
+    },
+    {
+        "apLocationId": 1008,
+        "itemChangerName": "Overgrown Ruins Door"
+    },
+    {
+        "apLocationId": 1009,
+        "itemChangerName": "Mushroom Dungeon Door"
+    },
+    {
+        "apLocationId": 1010,
+        "itemChangerName": "Flooded Fortress Door"
+    },
+    {
+        "apLocationId": 1011,
+        "itemChangerName": "Throne of the Frog King Door"
+    },
+    {
+        "apLocationId": 1012,
+        "itemChangerName": "Estate of the Urn Witch Door"
+    },
+    {
+        "apLocationId": 1013,
+        "itemChangerName": "Ceramic Manor Door"
+    },
+    {
+        "apLocationId": 1014,
+        "itemChangerName": "Inner Furnace Door"
+    },
+    {
+        "apLocationId": 1015,
+        "itemChangerName": "The Urn Witch's Laboratory Door"
+    },
+    {
+        "apLocationId": 600,
+        "itemChangerName": "Key-Cemetery Central"
+    },
+    {
+        "apLocationId": 601,
+        "itemChangerName": "Key-Cemetery Grey Crow"
+    },
+    {
+        "apLocationId": 602,
+        "itemChangerName": "Key-Camp of the Free Crows"
+    },
+    {
+        "apLocationId": 603,
+        "itemChangerName": "Key-Lockstone West"
+    },
+    {
+        "apLocationId": 604,
+        "itemChangerName": "Key-Lockstone North"
+    },
+    {
+        "apLocationId": 610,
+        "itemChangerName": "Key-Overgrown Ruins"
+    },
+    {
+        "apLocationId": 611,
+        "itemChangerName": "Key-Dungeon Hall"
+    },
+    {
+        "apLocationId": 612,
+        "itemChangerName": "Key-Dungeon Right"
+    },
+    {
+        "apLocationId": 613,
+        "itemChangerName": "Key-Dungeon Near Water Arena"
+    },
+    {
+        "apLocationId": 620,
+        "itemChangerName": "Key-Manor Under Dining Room"
+    },
+    {
+        "apLocationId": 621,
+        "itemChangerName": "Key-Manor After Spinny Pot Room"
+    },
+    {
+        "apLocationId": 622,
+        "itemChangerName": "Key-Manor Library"
+    },
+    {
+        "apLocationId": 1100,
+        "itemChangerName": "Crow-Manor After Torch Puzzle"
+    },
+    {
+        "apLocationId": 1101,
+        "itemChangerName": "Crow-Manor Imp Loft"
+    },
+    {
+        "apLocationId": 1102,
+        "itemChangerName": "Crow-Manor Library"
+    },
+    {
+        "apLocationId": 1103,
+        "itemChangerName": "Crow-Manor Bedroom"
+    },
+    {
+        "apLocationId": 1104,
+        "itemChangerName": "Crow-Dungeon Hall"
+    },
+    {
+        "apLocationId": 1105,
+        "itemChangerName": "Crow-Dungeon Water Arena"
+    },
+    {
+        "apLocationId": 1106,
+        "itemChangerName": "Crow-Dungeon Cobweb"
+    },
+    {
+        "apLocationId": 1107,
+        "itemChangerName": "Crow-Dungeon Rightmost"
+    },
+    {
+        "apLocationId": 1108,
+        "itemChangerName": "Crow-Lockstone East"
+    },
+    {
+        "apLocationId": 1109,
+        "itemChangerName": "Crow-Lockstone West"
+    },
+    {
+        "apLocationId": 1110,
+        "itemChangerName": "Crow-Lockstone West Locked"
+    },
+    {
+        "apLocationId": 1111,
+        "itemChangerName": "Crow-Lockstone South West"
+    }
+]
