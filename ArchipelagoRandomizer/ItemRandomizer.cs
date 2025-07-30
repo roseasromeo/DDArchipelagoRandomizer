@@ -128,6 +128,13 @@ internal class ItemRandomizer : MonoBehaviour
 		// Save, since ItemChanger doesn't do it for us due to when we run this method
 		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
 		saveFile.weaponId = icSaveData.StartingWeapon;
+		if (Archipelago.Instance.GetSlotData<long>("start_day_or_night") == 1)
+		{
+			Logger.Log("Should be Night, but now on the save file");
+			LightNight.nightTime = true;
+			saveFile.SetNightState(true);
+		}
+		
 		saveFile.Save();
 	}
 
