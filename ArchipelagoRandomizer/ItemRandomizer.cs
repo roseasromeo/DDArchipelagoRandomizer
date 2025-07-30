@@ -127,7 +127,7 @@ internal class ItemRandomizer : MonoBehaviour
 		icSaveData.StartingWeapon = startingWeaponId;
 
 		// Save, since ItemChanger doesn't do it for us due to when we run this method
-		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile;
+		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
 		saveFile.weaponId = icSaveData.StartingWeapon;
 		saveFile.Save();
 	}
