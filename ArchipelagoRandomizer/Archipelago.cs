@@ -349,11 +349,23 @@ internal class Archipelago
 		ScoutedPlacements = [.. (await Session.Locations.ScoutLocationsAsync(
 			Session.Locations.AllLocations.ToArray()
 		)).Select(kvp => new ItemRandomizer.ItemPlacement(
-			kvp.Value.ItemDisplayName,
+			APItemNameToDDItemName(kvp.Value),
 			Locations.locationData.First(entry => entry.apLocationId == kvp.Value.LocationId).itemChangerName,
 			kvp.Value.Player.Name,
 			kvp.Value.Player != CurrentPlayer
 		))];
+	}
+
+	private string APItemNameToDDItemName(ScoutedItemInfo scoutedItemInfo)
+	{
+		if (scoutedItemInfo.ItemGame == "Death's Door")
+		{
+			return Items.itemData.First(entry => entry.apItemId == scoutedItemInfo.ItemId).itemChangerName;
+		}
+		else
+		{
+			return scoutedItemInfo.ItemDisplayName;
+		}
 	}
 
 	private bool CanPlayerReceiveItems()
