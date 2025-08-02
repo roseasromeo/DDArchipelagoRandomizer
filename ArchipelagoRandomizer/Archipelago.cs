@@ -185,6 +185,7 @@ internal class Archipelago
 		outgoingItemHandler = OutgoingItemHandler();
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
+		apSaveData.Seed = GetSeed();
 		Session.Socket.SocketClosed += OnSocketClosed;
 		SaveAPData(apSaveData);
 
@@ -390,12 +391,25 @@ internal class Archipelago
 			: int.Parse(GameSave.currentSave.saveId.Substring(4));
 	}
 
+	private string GetSeed()
+	{
+		if (Session != null)
+		{
+			return Session.RoomState.Seed;
+		}
+		else
+		{
+			return "";
+		}
+	}
+
 	public class APSaveData
 	{
 		public string URL { get; set; }
 		public int Port { get; set; }
 		public string SlotName { get; set; }
 		public string Password { get; set; }
+		public string Seed { get; set; }
 		public List<string> LocationsChecked
 		{
 			get
