@@ -138,6 +138,11 @@ internal class ItemRandomizer : MonoBehaviour
 		saveFile.Save();
 	}
 
+	public void TriggerGroveOfSpiritsDoorCheck()
+	{
+		icSaveData.UnnamedPlacements["sdoor_tutorial"].Trigger();
+	}
+
 	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
 	{
 		public string Item { get; private set; } = item;
