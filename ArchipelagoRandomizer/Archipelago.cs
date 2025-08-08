@@ -3,6 +3,7 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
+using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -401,7 +402,8 @@ internal class Archipelago
 
 		public void Erase()
 		{
-			File.Delete(GetAPSaveDataPath(SaveSlotIndex));
+			string path = GetAPSaveDataPath(SaveSlotIndex);
+			if (File.Exists(path)) { File.Delete(path); }
 		}
 
 		public void AddCheckedLocation(string location)
@@ -411,4 +413,16 @@ internal class Archipelago
 		}
 	}
 #nullable disable
+
+	[HarmonyPatch]
+	private class Patches
+	{
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.EraseSave))]
+		private static void Postfix(SaveSlot __instance)
+		{
+			Logger.Log(__instance.saveId);
+			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length-1)));
+		}
+	}
 }
