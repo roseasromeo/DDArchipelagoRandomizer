@@ -166,7 +166,7 @@ internal class Archipelago
 	private async Task OnSocketOpened(LoginSuccessful loginSuccess, APSaveData apSaveData)
 	{
 		slotData = loginSuccess.SlotData;
-		itemIndex = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.index].saveFile.GetCountKey("AP_ItemsReceived");
+		itemIndex = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile.GetCountKey("AP_ItemsReceived");
 		checkItemsReceived = CheckItemsReceieved();
 		incomingItemHandler = IncomingItemHandler();
 		outgoingItemHandler = OutgoingItemHandler();
