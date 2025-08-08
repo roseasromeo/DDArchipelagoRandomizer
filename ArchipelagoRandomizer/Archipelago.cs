@@ -84,6 +84,15 @@ internal class Archipelago
 				uiManager.ShowNotification(message);
 				throw new LoginValidationException(message);
 			case LoginSuccessful success:
+
+				if (apSaveData.Seed != "" && apSaveData.Seed != Session.RoomState.Seed)
+				{
+					// Reject if the saved data has the wrong seed (TODO: possibly other validation?)
+
+					message = $"Failed to connect to Archipelago: Saved data has a different seed than the server. Each new room needs a new save.";
+					uiManager.ShowNotification(message);
+					throw new LoginValidationException(message);
+				}
 				await OnSocketOpened(success, apSaveData);
 				Logger.Log($"Successfully connected to Archipelago at {apSaveData.URL}:{apSaveData.Port} as {apSaveData.SlotName} on team {success.Team}. Have fun!");
 				return success;
