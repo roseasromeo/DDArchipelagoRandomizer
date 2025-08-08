@@ -177,10 +177,23 @@ internal class ConnectionMenu : CustomUI
 			{
 				ClickedConnect(null);
 			}
-			else if (Input.GetKeyDown(KeyCode.Tab))
+			else if (Input.GetKeyDown(KeyCode.Tab) || Buttons.Tapped("MenuRight"))
 			{
 				currentInputFieldIndex = (currentInputFieldIndex + 1) % tabbableInputs.Length;
 				tabbableInputs[currentInputFieldIndex].SelectAndActivate();
+			}
+			else if (Buttons.Tapped("MenuLeft"))
+			{
+				currentInputFieldIndex = (currentInputFieldIndex - 1) % tabbableInputs.Length;
+				if (currentInputFieldIndex < 0)
+				{
+					currentInputFieldIndex += tabbableInputs.Length;
+				}
+				tabbableInputs[currentInputFieldIndex].SelectAndActivate();
+			}
+			else if (Input.GetKeyDown(KeyCode.Escape) || Buttons.Tapped("MenuBack"))
+			{
+				ClickedBack(null);
 			}
 
 			yield return null;
