@@ -46,7 +46,7 @@ internal class ConnectionMenu : CustomUI
 		{
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
-			Padding = new Padding(30),
+			Padding = new Padding(60),
 		};
 		TextObject headingText = new TextObject(layoutRoot, "Heading")
 		{
