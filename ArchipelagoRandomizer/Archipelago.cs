@@ -174,6 +174,7 @@ internal class Archipelago
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
 		Session.Socket.SocketClosed += OnSocketClosed;
+		apSaveData.Seed = Session.RoomState.Seed;
 		apSaveData.Save();
 
 		Logger.Log("Slot data:");
@@ -361,6 +362,7 @@ internal class Archipelago
 		public string SlotName { get; set; } = "";
 		public string Password { get; set; } = "";
 		public int SaveSlotIndex { get; }
+		public string Seed { get; set; } = "";
 		public List<string> LocationsChecked { get; } = [];
 
 		public APSaveData(int saveIndex)
