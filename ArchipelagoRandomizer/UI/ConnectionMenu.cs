@@ -219,7 +219,7 @@ internal class ConnectionMenu : CustomUI
 		// Wait for end of frame so we can select it after the others have been created
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		portInput.SelectAndActivate();
+		urlInput.SelectAndActivate();
 	}
 
 	[HarmonyPatch]
