@@ -375,7 +375,7 @@ internal class Archipelago
 		public int Port { get; set; }
 		public string SlotName { get; set; } = "";
 		public string Password { get; set; } = "";
-		public int SaveSlotIndex { get; }
+		public int SaveSlotIndex { get; set; }
 		public string Seed { get; set; } = "";
 		public List<string> LocationsChecked { get; } = [];
 
@@ -406,14 +406,8 @@ internal class Archipelago
 				string json = File.ReadAllText(path);
 				apSaveData = JsonConvert.DeserializeObject<APSaveData>(json);
 			}
-			if (apSaveData == null)
-			{
-				return new APSaveData(saveIndex);
-			}
-			else
-			{
-				return apSaveData;
-			}
+			apSaveData ??= new APSaveData(saveIndex);
+			return apSaveData;
 		}
 
 		public void Erase()
