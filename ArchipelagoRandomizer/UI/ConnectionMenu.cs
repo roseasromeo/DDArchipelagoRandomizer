@@ -102,7 +102,6 @@ internal class ConnectionMenu : CustomUI
 			UIManager.Instance.ShowNotification("You must specify a URL, player name, and a port number!");
 			return;
 		}
-		// TODO: Here's where we reject if the saved data has the wrong seed (and possibly other validation?)
 
 		Archipelago.APSaveData connectionInfo = Archipelago.Instance.GetAPSaveData();
 		connectionInfo.URL = url;
