@@ -415,7 +415,6 @@ internal class Archipelago
 		[HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.EraseSave))]
 		private static void Postfix(SaveSlot __instance)
 		{
-			Logger.Log(__instance.saveId);
 			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length-1)));
 		}
 	}
