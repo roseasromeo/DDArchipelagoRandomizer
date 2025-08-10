@@ -118,7 +118,7 @@ internal class Archipelago
 			return;
 		}		
 
-		long locationId = Locations.locationData.First(entry => entry.itemChangerName == locationName).apLocationId;
+		long locationId = Locations.ItemChangerLocationToAPLocationID(locationName);
 		Session.Locations.CompleteLocationChecks(locationId);
 	}
 
@@ -273,17 +273,9 @@ internal class Archipelago
 			}
 
 			ItemInfo item = pendingItem.item;
-			string itemChangerName = Items.itemData.First(entry => entry.apItemId == item.ItemId).itemChangerName;
-			string locationName = "";
-			if (item.LocationGame == "Death's Door")
-			{
-				locationName = Locations.locationData.First(entry => entry.apLocationId == item.LocationId).itemChangerName;
-			}
-			else
-			{
-				locationName = item.LocationDisplayName;
-			}
-			ItemRandomizer.Instance.ReceivedItem(itemChangerName, locationName, item.Player);
+			string itemItemChangerName = Items.APItemInfoToDDItemName(item);
+			string locationName = Locations.APItemInfoToDDLocationName(item);
+			ItemRandomizer.Instance.ReceivedItem(itemItemChangerName, locationName, item.Player);
 			incomingItems.TryDequeue(out _);
 
 			yield return true;
@@ -302,7 +294,7 @@ internal class Archipelago
 
 			if (item.Player != CurrentPlayer)
 			{
-				Logger.Log($"Sent {item.ItemName} at {item.LocationDisplayName} to {item.Player.Name}");
+				Logger.Log($"Sent {item.ItemDisplayName} at {item.LocationDisplayName} to {item.Player.Name}");
 			}
 
 			yield return true;
@@ -347,25 +339,18 @@ internal class Archipelago
 	private async Task ScoutAllLocations()
 	{
 		ScoutedPlacements = [.. (await Session.Locations.ScoutLocationsAsync(
-			Session.Locations.AllLocations.ToArray()
-		)).Select(kvp => new ItemRandomizer.ItemPlacement(
-			APItemNameToDDItemName(kvp.Value),
-			Locations.locationData.First(entry => entry.apLocationId == kvp.Value.LocationId).itemChangerName,
-			kvp.Value.Player.Name,
-			kvp.Value.Player != CurrentPlayer
-		))];
+			[.. Session.Locations.AllLocations]
+		)).Select(kvp => ItemPlacementForAPItemInfo(kvp.Value))];
 	}
 
-	private string APItemNameToDDItemName(ScoutedItemInfo scoutedItemInfo)
+	private ItemRandomizer.ItemPlacement ItemPlacementForAPItemInfo(ItemInfo itemInfo)
 	{
-		if (scoutedItemInfo.ItemGame == "Death's Door")
-		{
-			return Items.itemData.First(entry => entry.apItemId == scoutedItemInfo.ItemId).itemChangerName;
-		}
-		else
-		{
-			return scoutedItemInfo.ItemDisplayName;
-		}
+		// Split out for ScoutAllLocations() for debugging
+		string item = Items.APItemInfoToDDItemName(itemInfo);
+		string location = Locations.APItemInfoToDDLocationName(itemInfo);
+		string forPlayer = itemInfo.Player.Name;
+		bool isForAnotherPlayer = itemInfo.Player != CurrentPlayer;
+		return new ItemRandomizer.ItemPlacement(item, location, forPlayer, isForAnotherPlayer);
 	}
 
 	private bool CanPlayerReceiveItems()
