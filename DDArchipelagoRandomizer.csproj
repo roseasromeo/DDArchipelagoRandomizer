@@ -57,12 +57,16 @@
 			<HintPath>$(PluginsPath)/AlternativeGameModes/AlternativeGameModes.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
-		<Reference Include="ItemChanger">
+		<Reference Include="ItemChanger" Publicize="true">
 			<HintPath>$(PluginsPath)/ItemChanger/ItemChanger.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="MagicUI">
 			<HintPath>$(PluginsPath)/MagicUI/MagicUI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="AddUIToOptionsMenu">
+			<HintPath>$(PluginsPath)/AddUIToOptionsMenu/AddUIToOptionsMenu.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 	</ItemGroup>
