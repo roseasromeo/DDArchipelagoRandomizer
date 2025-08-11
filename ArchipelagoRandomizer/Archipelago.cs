@@ -422,6 +422,7 @@ internal class Archipelago
 			Save();
 		}
 	}
+#nullable disable
 
 	public class APConfig
 	{
@@ -446,8 +447,6 @@ internal class Archipelago
 			}
 		}
 	}
-}
-#nullable disable
 
 	[HarmonyPatch]
 	private class Patches
@@ -456,7 +455,7 @@ internal class Archipelago
 		[HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.EraseSave))]
 		private static void Postfix(SaveSlot __instance)
 		{
-			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length-1)));
+			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length - 1)));
 		}
 	}
 }
