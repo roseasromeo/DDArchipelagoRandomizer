@@ -31,7 +31,17 @@ internal class DeathManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
-		deathLinkService = Archipelago.Instance.Session.CreateDeathLinkService();
+		if (Archipelago.Instance.apConfig.DeathLinkEnabled)
+		{
+			deathLinkService = Archipelago.Instance.Session.CreateDeathLinkService();
+			enabled = true;
+			IsDeathLinkEnabled = true;
+		}
+		else
+		{
+			enabled = false;
+			IsDeathLinkEnabled = false;
+		}
 	}
 
 	private void OnEnable()
