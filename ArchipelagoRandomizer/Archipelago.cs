@@ -3,6 +3,7 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
+using DDoor.AddUIToOptionsMenu;
 using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,6 +33,8 @@ internal class Archipelago
 		3 => apSaveSlot3Data,
 		_ => throw new IndexOutOfRangeException("Invalid save index"),
 	};
+  private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
+	internal APConfig apConfig = APConfig.LoadAPConfig();
 	private UIManager uiManager;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
@@ -327,6 +330,28 @@ internal class Archipelago
 		);
 	}
 
+	internal void AddDeathlinkToggle()
+	{
+		OptionsToggle optionsToggle = new("DEATHLINK", "UI_ToggleDeathlink", "ToggleDeathlink", [IngameUIManager.RelevantScene.TitleScreen], ToggleDeathlink, InitializeDeathlinkToggle);
+		IngameUIManager.AddOptionsToggle(optionsToggle);
+		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
+	}
+
+	private void ToggleDeathlink(bool newValue)
+	{
+		apConfig.DeathLinkEnabled = newValue;
+		apConfig.SaveAPConfig();
+	}
+
+	private bool InitializeDeathlinkToggle()
+	{
+		return apConfig.DeathLinkEnabled;
+	}
+
+	private string GetAPSaveDataPath()
+	{
+		return apSaveDataPath.Replace("#", GetSaveIndex().ToString());
+	}
 	private static string GetAPSaveDataPath(int saveIndex) => $"{Application.persistentDataPath}/SAVEDATA/Save_slot{saveIndex}-Archipelago.json";
 
 	private int GetSaveIndex()
@@ -413,6 +438,30 @@ internal class Archipelago
 		private static void Postfix(SaveSlot __instance)
 		{
 			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length-1)));
+		}
+	}
+
+	public class APConfig
+	{
+		public bool DeathLinkEnabled { get; set; } = false;
+
+		internal void SaveAPConfig()
+		{
+			string json = JsonConvert.SerializeObject(this);
+			File.WriteAllText(apConfigPath, json);
+		}
+
+		internal static APConfig LoadAPConfig()
+		{
+			if (File.Exists(apConfigPath))
+			{
+				string json = File.ReadAllText(apConfigPath);
+				return JsonConvert.DeserializeObject<APConfig>(json);
+			}
+			else
+			{
+				return new APConfig();
+			}
 		}
 	}
 }
