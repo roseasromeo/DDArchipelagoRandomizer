@@ -172,8 +172,9 @@ internal class ConnectionMenu : CustomUI
 				yield return null;
 			}
 
-			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Buttons.Tapped("MenuOk"))
+			if (!Input.GetKey(KeyCode.Space) & (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Buttons.Tapped("MenuOk")))
 			{
+				//Filter out space so that folks can have spaces in Player names
 				ClickedConnect(null);
 			}
 			else if (Input.GetKeyDown(KeyCode.Tab) || Buttons.Tapped("MenuRight"))
