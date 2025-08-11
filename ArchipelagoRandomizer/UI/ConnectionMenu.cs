@@ -231,12 +231,12 @@ internal class ConnectionMenu : CustomUI
 		[HarmonyPrefix, HarmonyPatch(typeof(SaveMenu), nameof(SaveMenu.startGame))]
 		private static bool StartGamePatch(SaveMenu __instance)
 		{
-			if (AGM.AlternativeGameModes.SelectedModeName == "ARCHIPELAGO")
+			GameSave.currentSave = __instance.saveSlots[__instance.index].saveFile;
+			if (AGM.AlternativeGameModes.SelectedModeName == "ARCHIPELAGO" || (AGM.AlternativeGameModes.SelectedModeName == "START" && GameSave.currentSave.IsKeyUnlocked("ArchipelagoRandomizer")))
 			{
 				UIManager.Instance.ShowConnectionMenu();
 				return false;
 			}
-
 			return true;
 		}
 	}
