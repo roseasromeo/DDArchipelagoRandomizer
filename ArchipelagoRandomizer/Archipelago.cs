@@ -224,16 +224,15 @@ internal class Archipelago
 
 	private void SyncLocationsChecked(APSaveData apSaveData)
 	{
-		// TODO: Fix this to account for collect (need to check location names against server, rather than purely count)
-		int locationsCheckedOnServer = Session.Locations.AllLocationsChecked.Count;
-		int locationsCheckedOnSave = apSaveData.LocationsChecked.Count;
-
-		if (locationsCheckedOnServer < locationsCheckedOnSave)
+		// This resync is now aware of collect/same slot co-op
+		// Some locations may be checked on server and not checked locally
+		// We want to send out any locally checked locations (i.e. if lose connection during play), even if the server has more locations checked than us.
+		foreach (string locationName in apSaveData.LocationsChecked)
 		{
-			for (int i = locationsCheckedOnServer; i < locationsCheckedOnSave; i++)
+			long locationId = Locations.ItemChangerLocationToAPLocationID(locationName);
+			if (!Session.Locations.AllLocationsChecked.Contains(locationId))
 			{
-				string checkedLocation = apSaveData.LocationsChecked[i];
-				SendLocationChecked(checkedLocation);
+				SendLocationChecked(locationName);
 			}
 		}
 	}
