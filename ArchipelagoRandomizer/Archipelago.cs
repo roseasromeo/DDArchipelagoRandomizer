@@ -346,11 +346,7 @@ internal class Archipelago
 	{
 		return apConfig.DeathLinkEnabled;
 	}
-
-	private string GetAPSaveDataPath()
-	{
-		return apSaveDataPath.Replace("#", GetSaveIndex().ToString());
-	}
+	
 	private static string GetAPSaveDataPath(int saveIndex) => $"{Application.persistentDataPath}/SAVEDATA/Save_slot{saveIndex}-Archipelago.json";
 
 	private int GetSaveIndex()
