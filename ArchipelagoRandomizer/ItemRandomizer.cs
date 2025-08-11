@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Linq;
 using UnityEngine;
 using IC = DDoor.ItemChanger;
 
@@ -33,11 +34,6 @@ internal class ItemRandomizer : MonoBehaviour
 		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
-		// if (GameSave.currentSave.IsKeyUnlocked($"AP_PickedUp-{location}") & receivedFromSelf)
-		// {
-		// 	Logger.Log($"Already received item at {location} when it was picked up, so don't receive it again");
-		// 	return;
-		// } // The corner popup seems more informative on with the second version, so currently allowing both to trigger
 
 		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
 		{
@@ -199,6 +195,46 @@ internal class ItemRandomizer : MonoBehaviour
 		private static void LoadFilePatch()
 		{
 			instance.PlaceItems();
+		}
+
+		/// <summary>
+		/// Hooks ItemChanger's CornerPopup to suppress local item notifications for us
+		/// </summary>
+		[HarmonyPrefix, HarmonyPatch(typeof(IC.CornerPopup), nameof(IC.CornerPopup.Show), [typeof(IC.Item)])]
+		private static bool ShowPatch(IC.Item x)
+		{
+			IC.LoggedItem loggedItem = (IC.LoggedItem)x;
+			if (loggedItem.Item.GetType() == typeof(DDItem))
+			{
+				DDItem dDItem = (DDItem)loggedItem.Item;
+				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
+				// Logger.LogWarning($"{IsForAnotherPlayer}");
+				return IsForAnotherPlayer; // if for this player, skip the notification
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Hooks ItemChanger's LoggedItem Trigger to suppress local items being shown in the tracker log for us
+		/// </summary>
+		[HarmonyPrefix, HarmonyPatch(typeof(IC.LoggedItem), nameof(IC.LoggedItem.Trigger))]
+		private static bool TriggerPatch(IC.LoggedItem __instance)
+		{
+			if (__instance.Item.GetType() == typeof(DDItem))
+			{
+				DDItem dDItem = (DDItem)__instance.Item;
+				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
+				if (IsForAnotherPlayer)
+				{
+					return true;
+				}
+				else // if for this player, skip the notification
+				{
+					dDItem.Trigger();
+					return false;
+				} 
+			}
+			return true;
 		}
 
 	}
