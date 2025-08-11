@@ -74,6 +74,8 @@ internal class ArchipelagoRandomizerMod
 				UIManager.Instance.HideConnectionMenu();
 				SaveMenu saveMenu = TitleScreen.instance.saveMenu;
 				saveMenu.saveSlots[saveMenu.index].LoadSave();
+				GameSave.currentSave.SetKeyState("ArchipelagoRandomizer", true);
+				GameSave.currentSave.Save();
 			}
 		}
 		catch (LoginValidationException ex)
