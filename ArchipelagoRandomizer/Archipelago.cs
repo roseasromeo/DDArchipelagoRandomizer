@@ -3,10 +3,8 @@ using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
-using HarmonyLib;
-using DDoor.AddUIToOptionsMenu;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -35,7 +33,7 @@ internal class Archipelago
 	};
 	private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 	internal APConfig apConfig = APConfig.LoadAPConfig();
-	private UIManager uiManager;
+	private UIManager uiManager = UIManager.Instance;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
 	private IEnumerator incomingItemHandler;
@@ -44,6 +42,7 @@ internal class Archipelago
 	private ConcurrentQueue<ItemInfo> outgoingItems;
 	private int itemIndex;
 	private bool isConnected;
+	internal bool IsConnected() => isConnected;
 	private bool hasCompleted;
 	private readonly float itemReceiveDelay = 3f;
 
@@ -69,7 +68,6 @@ internal class Archipelago
 	{
 		Session = ArchipelagoSessionFactory.CreateSession(apSaveData.URL, apSaveData.Port);
 		string message;
-		uiManager = UIManager.Instance;
 
 		LoginResult loginResult = Session.TryConnectAndLogin(
 			"Death's Door",
@@ -329,20 +327,13 @@ internal class Archipelago
 		);
 	}
 
-	internal void AddDeathlinkToggle()
-	{
-		OptionsToggle optionsToggle = new("DEATHLINK", "UI_ToggleDeathlink", "ToggleDeathlink", [IngameUIManager.RelevantScene.TitleScreen], ToggleDeathlink, InitializeDeathlinkToggle);
-		IngameUIManager.AddOptionsToggle(optionsToggle);
-		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
-	}
-
-	private void ToggleDeathlink(bool newValue)
+	internal void ToggleDeathlink(bool newValue)
 	{
 		apConfig.DeathLinkEnabled = newValue;
 		apConfig.SaveAPConfig();
 	}
 
-	private bool InitializeDeathlinkToggle()
+	internal bool InitializeDeathlinkToggle()
 	{
 		return apConfig.DeathLinkEnabled;
 	}
