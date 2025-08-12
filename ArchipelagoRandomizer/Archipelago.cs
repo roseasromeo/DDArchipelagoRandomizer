@@ -32,9 +32,8 @@ internal class Archipelago
 		3 => apSaveSlot3Data,
 		_ => throw new IndexOutOfRangeException("Invalid save index"),
 	};
-	private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 	internal APConfig apConfig = APConfig.LoadAPConfig();
-	private UIManager uiManager = UIManager.Instance;
+	private readonly UIManager uiManager = UIManager.Instance;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
 	private IEnumerator incomingItemHandler;
@@ -424,6 +423,7 @@ internal class Archipelago
 
 	public class APConfig
 	{
+		private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 		public bool DeathLinkEnabled { get; set; } = false;
 
 		internal void SaveAPConfig()
