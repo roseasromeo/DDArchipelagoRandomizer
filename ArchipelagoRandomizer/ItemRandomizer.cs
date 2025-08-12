@@ -242,7 +242,7 @@ internal class ItemRandomizer : MonoBehaviour
 			if (__instance.Item.GetType() == typeof(DDItem))
 			{
 				DDItem dDItem = (DDItem)__instance.Item;
-				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
+				bool IsForAnotherPlayer = dDItem.DisplayName.Contains(" for "); //this a hacky way to do this
 				if (IsForAnotherPlayer)
 				{
 					return true;
