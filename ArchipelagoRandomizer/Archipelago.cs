@@ -320,7 +320,7 @@ internal class Archipelago
 	private bool CanPlayerReceiveItems()
 	{
 		return (
-			// !hasCompleted && AP games can continue after goal
+			// !hasCompleted && // AP games can continue after goal
 			PlayerGlobal.instance != null &&
 			!PlayerGlobal.instance.InputPaused() &&
 			PlayerGlobal.instance.IsAlive()

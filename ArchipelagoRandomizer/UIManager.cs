@@ -29,7 +29,13 @@ internal class UIManager
 		notificationHandler.Show(message);
 	}
 
-	internal void AddDeathlinkToggle()
+	internal void AddOptionsMenuItems()
+	{
+		AddDeathlinkToggle();
+		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
+	}
+
+	private void AddDeathlinkToggle()
 	{
 		OptionsToggle optionsToggle = new(itemText: "DEATHLINK", gameObjectName: "ARCHIPELAGO_UI_ToggleDeathlink", id: "ToggleDeathlink", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleDeathlink, toggleValueInitializer: Archipelago.Instance.InitializeDeathlinkToggle, contextText: "BUTTON:CONFIRM Toggle Deathlink BUTTON:BACK Back");
 		IngameUIManager.AddOptionsMenuItem(optionsToggle);
