@@ -1,8 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
 using UnityEngine.Events;
 using AGM = DDoor.AlternativeGameModes;
 
@@ -20,7 +18,9 @@ public class Plugin : BaseUnityPlugin
 
 	public static Plugin Instance => instance;
 	public int InitStatus { get; internal set; } = 0;
-	internal UnityAction onUpdate;
+
+	#nullable enable
+	internal event UnityAction? OnUpdate;
 
 	private void Awake()
 	{
@@ -50,6 +50,8 @@ public class Plugin : BaseUnityPlugin
 
 	private void Update()
 	{
-		onUpdate.Invoke();
+		OnUpdate?.Invoke();
 	}
 }
+
+#nullable disable
