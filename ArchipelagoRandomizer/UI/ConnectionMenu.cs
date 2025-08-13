@@ -28,7 +28,7 @@ internal class ConnectionMenu : CustomUI
 		base.Show();
 		Prefill();
 		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
-		Plugin.Instance.onUpdate += CheckForInputs;
+		Plugin.Instance.OnUpdate += CheckForInputs;
 	}
 
 	public override void Hide()
