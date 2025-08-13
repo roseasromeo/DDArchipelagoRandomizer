@@ -28,7 +28,7 @@ internal class ConnectionMenu : CustomUI
 		saveMenu = TitleScreen.instance.saveMenu;
 		saveMenu.loseFocus();
 		saveMenu.gameObject.SetActive(false);
-		currentInputFieldIndex = 1;
+		currentInputFieldIndex = 0;
 		base.Show();
 		Prefill();
 		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
