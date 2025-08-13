@@ -226,7 +226,8 @@ internal class ItemRandomizer : MonoBehaviour
 			if (loggedItem.Item.GetType() == typeof(DDItem))
 			{
 				DDItem dDItem = (DDItem)loggedItem.Item;
-				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
+				bool IsForAnotherPlayer = dDItem.DisplayName.Contains(" for ");
+				//Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
 				// Logger.LogWarning($"{IsForAnotherPlayer}");
 				return IsForAnotherPlayer; // if for this player, skip the notification
 			}
