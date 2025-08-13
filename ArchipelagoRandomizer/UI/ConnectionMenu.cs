@@ -34,7 +34,7 @@ internal class ConnectionMenu : CustomUI
 	public override void Hide()
 	{
 		base.Hide();
-		Plugin.Instance.onUpdate -= CheckForInputs;
+		Plugin.Instance.OnUpdate -= CheckForInputs;
 	}
 
 	protected override void Create()
