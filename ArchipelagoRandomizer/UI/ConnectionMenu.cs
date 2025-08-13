@@ -28,13 +28,13 @@ internal class ConnectionMenu : CustomUI
 		base.Show();
 		Prefill();
 		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
-		Plugin.Instance.StartCoroutine(CheckForInputs());
+		Plugin.Instance.onUpdate += CheckForInputs;
 	}
 
 	public override void Hide()
 	{
 		base.Hide();
-		Plugin.Instance.StopCoroutine(CheckForInputs());
+		Plugin.Instance.onUpdate -= CheckForInputs;
 	}
 
 	protected override void Create()
@@ -161,7 +161,7 @@ internal class ConnectionMenu : CustomUI
 		return newButton;
 	}
 
-	private IEnumerator CheckForInputs()
+	public void CheckForInputs()
 	{
 		while (IsShowing)
 		{
@@ -170,12 +170,31 @@ internal class ConnectionMenu : CustomUI
 			// If not in text input field
 			if (selected == null || selected.GetComponent<UnityEngine.UI.InputField>() == null)
 			{
-				yield return null;
+				return;
 			}
 
-			if (!Input.GetKey(KeyCode.Space) & (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Buttons.Tapped("MenuOk")))
+			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
 			{
-				//Filter out space so that folks can have spaces in Player names
+				//If enter/return is pressed, connect
+				ClickedConnect(null);
+				return;
+			}
+			else if (Input.inputString.Length > 0 || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKeyDown(KeyCode.CapsLock) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.V) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Q))
+			{
+				// Filter out ASCII symbols, including backspace, from proc'ing the controller input support
+				// Filter out shift keys and caps lock to allow capital letters
+				// Filter out control keys and specific letters, because CRTL + those letters does not produce an inputString because they are keyboard shortcuts
+				// (While shift/caps/control would not trigger the Buttons code below under default keybinding, assume that the player may have rebound their keyboard controls)
+				// If someone has remapped both their copy/paste/etc. shortcuts AND their Death's Door controls so that they clash but aren't those listed letters, they will run into issues
+				Input.ResetInputAxes(); //required to avoid below controller handling from triggering
+				Buttons.inputPaused = true;
+				return;
+			}
+			Buttons.inputPaused = false;
+
+			// Should only reach this section from Controller inputs or unfiltered keyboard inputs
+			if (Buttons.Tapped("MenuOk")) // Enter and Return are now handled above
+			{
 				ClickedConnect(null);
 			}
 			else if (Input.GetKeyDown(KeyCode.Tab) || Buttons.Tapped("MenuRight"))
@@ -197,7 +216,7 @@ internal class ConnectionMenu : CustomUI
 				ClickedBack(null);
 			}
 
-			yield return null;
+			return;
 		}
 	}
 
