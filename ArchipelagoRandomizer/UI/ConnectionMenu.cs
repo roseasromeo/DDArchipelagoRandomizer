@@ -24,7 +24,7 @@ internal class ConnectionMenu : CustomUI
 
 	public override void Show()
 	{
-		currentInputFieldIndex = 1;
+		currentInputFieldIndex = 0;
 		base.Show();
 		Prefill();
 		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
