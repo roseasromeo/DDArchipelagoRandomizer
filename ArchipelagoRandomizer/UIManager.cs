@@ -1,4 +1,6 @@
-﻿using DDoor.ArchipelagoRandomizer.UI;
+﻿using DDoor.AddUIToOptionsMenu;
+using DDoor.ArchipelagoRandomizer.UI;
+using UnityEngine.SceneManagement;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -10,10 +12,7 @@ internal class UIManager
 
 	public static UIManager Instance => instance;
 
-	private UIManager()
-	{
-		CustomUI.CacheBackgroundSprite();
-	}
+	private UIManager() { }
 
 	public void ShowConnectionMenu()
 	{
@@ -28,5 +27,12 @@ internal class UIManager
 	public void ShowNotification(string message)
 	{
 		notificationHandler.Show(message);
+	}
+
+	internal void AddDeathlinkToggle()
+	{
+		OptionsToggle optionsToggle = new("DEATHLINK", "UI_ToggleDeathlink", "ToggleDeathlink", [IngameUIManager.RelevantScene.TitleScreen], Archipelago.Instance.ToggleDeathlink, Archipelago.Instance.InitializeDeathlinkToggle);
+		IngameUIManager.AddOptionsToggle(optionsToggle);
+		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
 	}
 }

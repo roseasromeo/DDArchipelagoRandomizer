@@ -19,8 +19,11 @@ We talk about the development of this in the Death's Door thread in the `future-
 ### Building
 1. Clone this repository.
 1. Install these mods into your Death's Door plugins folder:
-    - [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes)
-    - [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger)
+    - [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes) (required)
+    - [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger) (required)
+    - [MagicUI](https://github.com/dpinela/DeathsDoor.MagicUI) (required)
+    - [AddUIToOptionsMenu](https://github.com/roseasromeo/DeathsDoor.AddUIToOptionsMenu) (required)
+    - [ReturnToSpawn](https://github.com/roseasromeo/DeathsDoorReturnToSpawn) (recommended, but not required)
 1. Create a new file at the project's root named `config.targets` and add the following code:
     ```xml
     <?xml version="1.0" encoding="utf-8"?>
@@ -31,7 +34,7 @@ We talk about the development of this in the Death's Door thread in the `future-
     </Project>
     ```
     Replace `Path\To\Your\Death's\Door\Plugins\Directory`.
-    This will usually be at [`Game directory]\BepInEx\plugins`, unless you changed the default location.
+    This will usually be at `Game directory]\BepInEx\plugins`, unless you changed the default location.
 1. Navigate to the project's root directory in a terminal and run `dotnet restore` to install packages.
 1. Build the project.
 
@@ -52,8 +55,8 @@ We talk about the development of this in the Death's Door thread in the `future-
 Thanks to [dpinela](https://github.com/dpinela) for their work on the
 [Multiworld Randomizer](https://github.com/dpinela/DeathsDoor.Randomizer)
 (of which I'm using to figure out how to make this mod) and for the dependencies this mod uses:
-[Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes) and
-[Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger)!
+[Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes),
+[Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger), and [MagicUI](https://github.com/dpinela/DeathsDoor.MagicUI)!
 
 Thanks to [lunix33](https://github.com/lunix33) for starting this project with their work on the
 [APWorld](https://github.com/lunix33/Archipelago_DeathsDoor/tree/deaths-door/worlds/deaths_door) side of things!

@@ -10,6 +10,7 @@ namespace DDoor.ArchipelagoRandomizer;
 [BepInDependency("deathsdoor.itemchanger")]
 [BepInDependency("deathsdoor.alternativegamemodes")]
 [BepInDependency("deathsdoor.magicui")]
+[BepInDependency("deathsdoor.adduitooptionsmenu")]
 public class Plugin : BaseUnityPlugin
 {
 	internal static new ManualLogSource Logger;
@@ -36,6 +37,7 @@ public class Plugin : BaseUnityPlugin
 			});
 
 			new Harmony("deathsdoor.archipelagorandomizer").PatchAll();
+			UIManager.Instance.AddDeathlinkToggle();
 
 			InitStatus = 1;
 		}

@@ -65,6 +65,10 @@
 			<HintPath>$(PluginsPath)/MagicUI/MagicUI.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="AddUIToOptionsMenu">
+			<HintPath>$(PluginsPath)/AddUIToOptionsMenu/AddUIToOptionsMenu.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -32,7 +32,8 @@ internal class Archipelago
 		3 => apSaveSlot3Data,
 		_ => throw new IndexOutOfRangeException("Invalid save index"),
 	};
-	private UIManager uiManager;
+	internal APConfig apConfig = APConfig.LoadAPConfig();
+	private readonly UIManager uiManager = UIManager.Instance;
 	private Dictionary<string, object> slotData;
 	private IEnumerator checkItemsReceived;
 	private IEnumerator incomingItemHandler;
@@ -67,7 +68,6 @@ internal class Archipelago
 	{
 		Session = ArchipelagoSessionFactory.CreateSession(apSaveData.URL, apSaveData.Port);
 		string message;
-		uiManager = UIManager.Instance;
 
 		LoginResult loginResult = Session.TryConnectAndLogin(
 			"Death's Door",
@@ -327,6 +327,17 @@ internal class Archipelago
 		);
 	}
 
+	internal void ToggleDeathlink(bool newValue)
+	{
+		apConfig.DeathLinkEnabled = newValue;
+		apConfig.SaveAPConfig();
+	}
+
+	internal bool InitializeDeathlinkToggle()
+	{
+		return apConfig.DeathLinkEnabled;
+	}
+
 	private static string GetAPSaveDataPath(int saveIndex) => $"{Application.persistentDataPath}/SAVEDATA/Save_slot{saveIndex}-Archipelago.json";
 
 	private int GetSaveIndex()
@@ -403,6 +414,31 @@ internal class Archipelago
 		}
 	}
 #nullable disable
+  
+  public class APConfig
+	{
+		private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
+		public bool DeathLinkEnabled { get; set; } = false;
+
+		internal void SaveAPConfig()
+		{
+			string json = JsonConvert.SerializeObject(this);
+			File.WriteAllText(apConfigPath, json);
+		}
+
+		internal static APConfig LoadAPConfig()
+		{
+			if (File.Exists(apConfigPath))
+			{
+				string json = File.ReadAllText(apConfigPath);
+				return JsonConvert.DeserializeObject<APConfig>(json);
+			}
+			else
+			{
+				return new APConfig();
+			}
+		}
+	}
 
 	[HarmonyPatch]
 	private class Patches
