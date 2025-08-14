@@ -38,14 +38,14 @@ internal class UIManager
 
 	private void AddDeathlinkToggle()
 	{
-		OptionsToggle optionsToggle = new("DEATHLINK", "UI_ToggleDeathlink", "ToggleDeathlink", [IngameUIManager.RelevantScene.TitleScreen], Archipelago.Instance.ToggleDeathlink, Archipelago.Instance.InitializeDeathlinkToggle);
-		IngameUIManager.AddOptionsToggle(optionsToggle);
+		OptionsToggle optionsToggle = new(itemText: "DEATHLINK", gameObjectName: "ARCHIPELAGO_UI_ToggleDeathlink", id: "ToggleDeathlink", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleDeathlink, toggleValueInitializer: Archipelago.Instance.InitializeDeathlinkToggle, contextText: "BUTTON:CONFIRM Toggle Deathlink BUTTON:BACK Back");
+		IngameUIManager.AddOptionsMenuItem(optionsToggle);
 	}
 
 	private void AddCutsceneToggle()
 	{
-		OptionsToggle optionsToggle = new("SKIP CUTSCENES", "UI_ToggleSkipCutscenes", "ToggleSkipCutscenes", [IngameUIManager.RelevantScene.TitleScreen], Archipelago.Instance.ToggleSkipCutscenes, Archipelago.Instance.InitializeSkipCutscenes);
-		IngameUIManager.AddOptionsToggle(optionsToggle);
+		OptionsToggle optionsToggle = new(itemText: "SKIP CUTSCENES", gameObjectName: "ARCHIPELAGO_UI_ToggleSkipCutscenes", id: "ToggleSkipCutscenes", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleSkipCutscenes, toggleValueInitializer: Archipelago.Instance.InitializeSkipCutscenes, contextText: "BUTTON:CONFIRM Toggle Skip Cutscenes BUTTON:BACK Back");
+		IngameUIManager.AddOptionsMenuItem(optionsToggle);
 	}
 
 }
