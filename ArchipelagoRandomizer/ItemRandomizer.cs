@@ -114,13 +114,13 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		// Determine starting weapon
-		string startingWeaponName = Archipelago.Instance.GetSlotData<string>("start_weapon"); // TODO: handle this with starting inventory?
-		string startingWeaponId = startingWeaponName switch
+		long startWeapon = Archipelago.Instance.GetSlotData<long>("start_weapon"); // TODO: handle this with starting inventory?
+		string startingWeaponId = startWeapon switch
 		{
-			"Rogue Daggers" => "daggers",
-			"Discarded Umbrella" => "umbrella",
-			"Reaper's Greatsword" => "sword_heavy",
-			"Thunder Hammer" => "hammer",
+			1 => "daggers",
+			2 => "umbrella",
+			3 => "sword_heavy",
+			4 => "hammer",
 			_ => "sword"
 		};
 		icSaveData.StartingWeapon = startingWeaponId;
