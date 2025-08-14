@@ -44,7 +44,7 @@ internal class UIManager
 
 	private void AddItemHandlingToggle()
 	{
-		OptionsToggle optionsToggle = new(itemText: "RECEIVE ITEMS AS FAST AS POSSIBLE", gameObjectName: "ARCHIPELAGO_UI_ToggleItemHandling", id: "ToggleItemHandling", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleItemHandling, toggleValueInitializer: Archipelago.Instance.InitializeItemHandling, contextText: "BUTTON:CONFIRM Toggle Fast Items BUTTON:BACK Back");
+		OptionsToggle optionsToggle = new(itemText: "RECEIVE ITEMS AS FAST AS POSSIBLE", gameObjectName: "ARCHIPELAGO_UI_ToggleItemHandling", id: "ToggleItemHandling", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen, IngameUIManager.RelevantScene.InGame], toggleAction: Archipelago.Instance.ToggleItemHandling, toggleValueInitializer: Archipelago.Instance.InitializeItemHandling, contextText: "BUTTON:CONFIRM Toggle Fast Items BUTTON:BACK Back");
 		IngameUIManager.AddOptionsMenuItem(optionsToggle);
 	}
 }
