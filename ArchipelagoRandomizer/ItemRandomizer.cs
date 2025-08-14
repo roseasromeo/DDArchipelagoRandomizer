@@ -107,7 +107,7 @@ internal class ItemRandomizer : MonoBehaviour
 
 			// Place item. Using custom item here so we can override the Trigger() method
 			// for knowing when an item was picked up to send it to server
-			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location);
+			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location, itemPlacement.IsForAnotherPlayer);
 			icSaveData.Place(item, itemPlacement.Location);
 
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
@@ -151,17 +151,19 @@ internal class ItemRandomizer : MonoBehaviour
 		public string DisplayName { get; }
 		public string Icon { get; }
 		public string Location { get; }
+		public bool IsForAnotherPlayer { get; }
 
 		public void Trigger()
 		{
 			Instance.PickedUpItem(this);
 		}
 
-		public DDItem(string displayName, string icon, string location)
+		public DDItem(string displayName, string icon, string location, bool isForAnotherPlayer)
 		{
 			DisplayName = displayName;
 			Icon = icon;
 			Location = location;
+			IsForAnotherPlayer = isForAnotherPlayer;
 		}
 	}
 
@@ -201,8 +203,7 @@ internal class ItemRandomizer : MonoBehaviour
 			if (loggedItem.Item.GetType() == typeof(DDItem))
 			{
 				DDItem dDItem = (DDItem)loggedItem.Item;
-				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
-				return IsForAnotherPlayer; // if for this player, skip the notification
+				return dDItem.IsForAnotherPlayer; // if for this player, skip the notification
 			}
 			return true;
 		}
@@ -216,8 +217,7 @@ internal class ItemRandomizer : MonoBehaviour
 			if (__instance.Item.GetType() == typeof(DDItem))
 			{
 				DDItem dDItem = (DDItem)__instance.Item;
-				bool IsForAnotherPlayer = Archipelago.Instance.ScoutedPlacements.First(ip => ip.Location == dDItem.Location).IsForAnotherPlayer;
-				if (IsForAnotherPlayer)
+				if (dDItem.IsForAnotherPlayer)
 				{
 					return true;
 				}

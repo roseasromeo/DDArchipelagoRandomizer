@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using IC = DDoor.ItemChanger;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -193,7 +194,13 @@ internal class Archipelago
 			Logger.Log($"     {kvp.Key}: {kvp.Value}");
 		}
 
-		await ScoutAllLocations();
+		//Load the ItemChanger SaveData early so that we can peek and see if we need to scout
+		IC.SaveData.Load("slot" + apSaveData.SaveSlotIndex.ToString());
+		IC.SaveData icSaveData = IC.SaveData.Open();
+		if (icSaveData.UnnamedPlacements.Count == 0)
+		{
+			await ScoutAllLocations();
+		}
 
 		isConnected = true;
 		SyncLocationsChecked(apSaveData);
