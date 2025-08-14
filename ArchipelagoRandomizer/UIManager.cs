@@ -32,12 +32,19 @@ internal class UIManager
 	internal void AddOptionsMenuItems()
 	{
 		AddDeathlinkToggle();
+		AddItemHandlingToggle();
 		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
 	}
 
 	private void AddDeathlinkToggle()
 	{
 		OptionsToggle optionsToggle = new(itemText: "DEATHLINK", gameObjectName: "ARCHIPELAGO_UI_ToggleDeathlink", id: "ToggleDeathlink", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleDeathlink, toggleValueInitializer: Archipelago.Instance.InitializeDeathlinkToggle, contextText: "BUTTON:CONFIRM Toggle Deathlink BUTTON:BACK Back");
+		IngameUIManager.AddOptionsMenuItem(optionsToggle);
+	}
+
+	private void AddItemHandlingToggle()
+	{
+		OptionsToggle optionsToggle = new(itemText: "RECEIVE ITEMS AS FAST AS POSSIBLE", gameObjectName: "ARCHIPELAGO_UI_ToggleItemHandling", id: "ToggleItemHandling", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleItemHandling, toggleValueInitializer: Archipelago.Instance.InitializeItemHandling, contextText: "BUTTON:CONFIRM Toggle Fast Items BUTTON:BACK Back");
 		IngameUIManager.AddOptionsMenuItem(optionsToggle);
 	}
 }
