@@ -44,7 +44,6 @@ internal class Archipelago
 	private bool isConnected;
 	internal bool IsConnected() => isConnected;
 	private bool hasCompleted;
-	private readonly float itemReceiveDelay = 3f;
 
 	public static Archipelago Instance => instance;
 	public ArchipelagoSession Session { get; private set; }
@@ -127,6 +126,7 @@ internal class Archipelago
 		{
 			incomingItemHandler?.MoveNext();
 			outgoingItemHandler?.MoveNext();
+			ItemRandomizer.Instance.itemNotificationHandler?.MoveNext();
 		}
 	}
 
@@ -268,13 +268,6 @@ internal class Archipelago
 			{
 				yield return true;
 				continue;
-			}
-
-			// Add delay between each item received so player has time to read the notifications
-			float delay = Time.time;
-			while (Time.time - delay < (incomingItems.Count < 5 ? itemReceiveDelay : 1))
-			{
-				yield return null;
 			}
 
 			ItemInfo item = pendingItem.item;
