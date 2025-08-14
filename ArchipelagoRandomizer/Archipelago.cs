@@ -352,7 +352,6 @@ internal class Archipelago
 
 	internal bool InitializeSkipCutscenes()
 	{
-		Logger.Log($"{apConfig.SkipCutscenes}");
 		return apConfig.SkipCutscenes;
 	}
 
