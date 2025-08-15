@@ -3,7 +3,7 @@
 This is a work in progress Archipelago randomizer mod for Death's Door.
 
 > [!IMPORTANT]
-> This is in an early alpha stage. You may experience errors that disrupt play. Please report these errors in Issues here or in the Death's Door `future-game-design` thread on the Archipelago Discord (see [Contributing](#contributing) below).
+> This is in an early alpha stage! You may experience errors that disrupt play. Please report these errors in Issues here or in the Death's Door `future-game-design` thread on the Archipelago Discord (see [Contributing](#contributing) below).
 
 ## Installation
 1. Install [BepInEx 5.4.22 or later 5.x versions](https://github.com/bepinex/bepinex/releases/latest)
