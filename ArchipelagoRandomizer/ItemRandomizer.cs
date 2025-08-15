@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using System.Linq;
+using System.Collections;
+using System.Collections.Concurrent;
 using UnityEngine;
 using IC = DDoor.ItemChanger;
 
@@ -12,10 +13,16 @@ internal class ItemRandomizer : MonoBehaviour
 
 	public static ItemRandomizer Instance => instance;
 
+	internal IEnumerator itemNotificationHandler;
+	internal ConcurrentQueue<ItemNotification> itemNotifications;
+	internal readonly float itemNotificationDelay = 3f;
+
 	private void Awake()
 	{
 		instance = this;
 		IC.ItemIcons.AddPath(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location) + "/Resources/Item Changer Icons");
+		itemNotifications = new ConcurrentQueue<ItemNotification>();
+		itemNotificationHandler = ItemNotificationHandler();
 	}
 
 	private void OnEnable()
@@ -31,7 +38,6 @@ internal class ItemRandomizer : MonoBehaviour
 	public void ReceivedItem(string itemName, string location, int playerSlot)
 	{
 		string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
-		bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 		Sprite icon;
 		string message;
 
@@ -45,30 +51,61 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		Logger.Log($"Received {itemName} from {playerName}");
-		icon = IC.ItemIcons.Get(item.Icon);
-		message = $"You got {item.DisplayName}";
-
-		if (!receivedFromSelf)
-		{
-			message += $" from {playerName}!";
-		}
+		itemNotifications.Enqueue(new ItemNotification(itemName, location, playerSlot, item));
 
 		GameSave.currentSave.IncreaseCountKey("AP_ItemsReceived");
-		IC.CornerPopup.Show(icon, message);
 		item?.Trigger();
-
-		// Update recent items display
-		IC.TrackerLogEntry logEntry = new IC.TrackerLogEntry()
-		{
-			LocationName = location,
-			ItemName = itemName,
-			ItemDisplayName = receivedFromSelf ? item.DisplayName : item.DisplayName + $" from {playerName}",
-			ItemIcon = item.Icon
-		};
-		icSaveData.AddToTrackerLog(logEntry);
 
 		GameSave.SaveGameState();
 	}
+
+	private IEnumerator ItemNotificationHandler()
+	{
+		while (Archipelago.Instance.IsConnected())
+		{
+			if (!itemNotifications.TryPeek(out ItemNotification itemNotification))
+			{
+				yield return true;
+				continue;
+			}
+			// Add delay between each item notification received so player has time to read the notifications (only needed if Fast Items is on)
+			if (Archipelago.Instance.apConfig.ReceiveItemsFast)
+			{
+				float timePreDelay = Time.time;
+				while (Time.time - timePreDelay < (itemNotifications.Count < 5 ? itemNotificationDelay : 1))
+				{
+					yield return null;
+				}
+			}
+			int playerSlot = itemNotification.PlayerSlot;
+			IC.Item item = itemNotification.Item;
+			string location = itemNotification.Location;
+			string itemName = itemNotification.ItemName;
+
+			bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
+			string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
+			Sprite icon = IC.ItemIcons.Get(item.Icon);
+			string message = $"You got {item.DisplayName}";
+
+			if (!receivedFromSelf)
+			{
+				message += $" from {playerName}!";
+			}
+
+			IC.CornerPopup.Show(icon, message);
+			// Update recent items display
+			IC.TrackerLogEntry logEntry = new IC.TrackerLogEntry()
+			{
+				LocationName = location,
+				ItemName = itemName,
+				ItemDisplayName = receivedFromSelf ? item.DisplayName : item.DisplayName + $" from {playerName}",
+				ItemIcon = item.Icon
+			};
+			icSaveData.AddToTrackerLog(logEntry);
+			itemNotifications.TryDequeue(out _);
+		}
+	}
+
 
 	private void PickedUpItem(DDItem item)
 	{
@@ -167,6 +204,14 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 	}
 
+	internal struct ItemNotification(string itemName, string location, int playerSlot, IC.Item item)
+	{
+		internal string ItemName = itemName;
+		internal string Location = location;
+		internal int PlayerSlot = playerSlot;
+		internal IC.Item Item = item;
+	}
+
 	[HarmonyPatch]
 	private class Patches
 	{
@@ -225,7 +270,7 @@ internal class ItemRandomizer : MonoBehaviour
 				{
 					dDItem.Trigger();
 					return false;
-				} 
+				}
 			}
 			return true;
 		}

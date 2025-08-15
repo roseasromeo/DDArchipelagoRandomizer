@@ -5,7 +5,6 @@ using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using HarmonyLib;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -45,7 +44,6 @@ internal class Archipelago
 	private bool isConnected;
 	internal bool IsConnected() => isConnected;
 	private bool hasCompleted;
-	private readonly float itemReceiveDelay = 3f;
 
 	public static Archipelago Instance => instance;
 	public ArchipelagoSession Session { get; private set; }
@@ -128,6 +126,7 @@ internal class Archipelago
 		{
 			incomingItemHandler?.MoveNext();
 			outgoingItemHandler?.MoveNext();
+			ItemRandomizer.Instance.itemNotificationHandler?.MoveNext();
 		}
 	}
 
@@ -214,6 +213,7 @@ internal class Archipelago
 		outgoingItemHandler = null;
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
+		ItemRandomizer.Instance.itemNotifications = new ConcurrentQueue<ItemRandomizer.ItemNotification>();
 
 		Session.Socket.SocketClosed -= OnSocketClosed;
 		Session = null;
@@ -271,11 +271,13 @@ internal class Archipelago
 				continue;
 			}
 
-			// Add delay between each item received so player has time to read the notifications
-			float delay = Time.time;
-			while (Time.time - delay < (incomingItems.Count < 5 ? itemReceiveDelay : 1))
+			if (!apConfig.ReceiveItemsFast)
 			{
-				yield return null;
+				float timePreDelay = Time.time;
+				while (Time.time - timePreDelay < (incomingItems.Count < 5 ? ItemRandomizer.Instance.itemNotificationDelay : 1))
+				{
+					yield return null;
+				}
 			}
 
 			ItemInfo item = pendingItem.item;
@@ -327,7 +329,7 @@ internal class Archipelago
 	private bool CanPlayerReceiveItems()
 	{
 		return (
-			// !hasCompleted && AP games can continue after goal
+			// !hasCompleted && // AP games can continue after goal
 			PlayerGlobal.instance != null &&
 			!PlayerGlobal.instance.InputPaused() &&
 			PlayerGlobal.instance.IsAlive()
@@ -343,6 +345,17 @@ internal class Archipelago
 	internal bool InitializeDeathlinkToggle()
 	{
 		return apConfig.DeathLinkEnabled;
+	}
+
+	internal void ToggleItemHandling(bool newValue)
+	{
+		apConfig.ReceiveItemsFast = newValue;
+		apConfig.SaveAPConfig();
+	}
+
+	internal bool InitializeItemHandling()
+	{
+		return apConfig.ReceiveItemsFast;
 	}
 
 	private static string GetAPSaveDataPath(int saveIndex) => $"{Application.persistentDataPath}/SAVEDATA/Save_slot{saveIndex}-Archipelago.json";
@@ -373,7 +386,7 @@ internal class Archipelago
 		public int Port { get; set; }
 		public string SlotName { get; set; } = "";
 		public string Password { get; set; } = "";
-    public int SaveSlotIndex { get; set; }
+    	public int SaveSlotIndex { get; set; }
 		public string Seed { get; set; } = "";
 		public List<string> LocationsChecked { get; } = [];
 
@@ -426,6 +439,7 @@ internal class Archipelago
 	{
 		private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 		public bool DeathLinkEnabled { get; set; } = false;
+		public bool ReceiveItemsFast { get; set; } = false;
 
 		internal void SaveAPConfig()
 		{
