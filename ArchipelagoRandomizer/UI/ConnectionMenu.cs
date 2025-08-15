@@ -25,6 +25,9 @@ internal class ConnectionMenu : CustomUI
 
 	public override void Show()
 	{
+		saveMenu = TitleScreen.instance.saveMenu;
+		saveMenu.loseFocus();
+		saveMenu.gameObject.SetActive(false);
 		currentInputFieldIndex = 0;
 		base.Show();
 		Prefill();
@@ -41,8 +44,6 @@ internal class ConnectionMenu : CustomUI
 	protected override void Create()
 	{
 		base.Create();
-
-		saveMenu = TitleScreen.instance.saveMenu;
 		StackLayout mainStack = new StackLayout(layoutRoot, "MainStack")
 		{
 			HorizontalAlignment = HorizontalAlignment.Center,
@@ -102,29 +103,35 @@ internal class ConnectionMenu : CustomUI
 
 	private void ClickedConnect(Button _)
 	{
-		string url = urlInput.Text;
-		string slotName = slotNameInput.Text;
-		string password = passwordInput.Text;
-
-		if (!int.TryParse(portInput.Text, out int port) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(slotName))
+		if (IsShowing)
 		{
-			UIManager.Instance.ShowNotification("You must specify a URL, player name, and a port number!");
-			return;
+			string url = urlInput.Text;
+			string slotName = slotNameInput.Text;
+			string password = passwordInput.Text;
+
+			if (!int.TryParse(portInput.Text, out int port) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(slotName))
+			{
+				UIManager.Instance.ShowNotification("You must specify a URL, player name, and a port number!");
+				return;
+			}
+
+			Archipelago.APSaveData connectionInfo = Archipelago.Instance.GetAPSaveData();
+			connectionInfo.URL = url;
+			connectionInfo.Port = port;
+			connectionInfo.SlotName = slotName;
+			connectionInfo.Password = password;
+
+			ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo);
 		}
-
-		Archipelago.APSaveData connectionInfo = Archipelago.Instance.GetAPSaveData();
-		connectionInfo.URL = url;
-		connectionInfo.Port = port;
-		connectionInfo.SlotName = slotName;
-		connectionInfo.Password = password;
-
-		ArchipelagoRandomizerMod.Instance.EnableMod(connectionInfo);
 	}
 
 	private void ClickedBack(Button _)
 	{
-		Hide();
-		Plugin.Instance.StartCoroutine(ReturnToSaveMenu());
+		if (IsShowing)
+		{
+			Hide();
+			Plugin.Instance.StartCoroutine(ReturnToSaveMenu());
+		}
 	}
 
 	private StackLayout CreateStackLayout(string name, params ArrangableElement[] children)
@@ -248,10 +255,9 @@ internal class ConnectionMenu : CustomUI
 			yield return null;
 		}
 
-		saveMenu.GainFocus(true);
-		// Nullify transitionButton to ensure we return to title screen on back input
-		saveMenu.transitionButton = null;
-		saveMenu.openSubMenu();
+		saveMenu.gameObject.SetActive(true);
+		saveMenu.gainFocus(); //Important to use gainFocus instead of GainFocus because GainFocus has other knockon effects because it engages the UITransition system
+		yield return null;
 	}
 
 	private IEnumerator SelectFirstTextInput()
@@ -265,17 +271,23 @@ internal class ConnectionMenu : CustomUI
 	[HarmonyPatch]
 	private class Patches()
 	{
-		/// <summary>
-		/// Shows connection menu when selecting Archipelago mode
-		/// </summary>
-		[HarmonyPrefix, HarmonyPatch(typeof(SaveMenu), nameof(SaveMenu.startGame))]
-		private static bool StartGamePatch(SaveMenu __instance)
+		[HarmonyPrefix, HarmonyPatch(typeof(SaveMenu), nameof(SaveMenu.GotClicked))]
+		private static bool GotClickedPatch(SaveMenu __instance, UIButton button)
 		{
 			GameSave.currentSave = __instance.saveSlots[__instance.index].saveFile;
-			if (AGM.AlternativeGameModes.SelectedModeName == "ARCHIPELAGO" || (AGM.AlternativeGameModes.SelectedModeName == "START" && GameSave.currentSave.IsKeyUnlocked("ArchipelagoRandomizer")))
+			if (__instance.selectedSlot)
 			{
-				UIManager.Instance.ShowConnectionMenu();
-				return false;
+				if (__instance.currentPrompt == null)
+				{
+					if (button == __instance.selectedOptions[0])
+					{
+						if (AGM.AlternativeGameModes.SelectedModeName == "ARCHIPELAGO" || (AGM.AlternativeGameModes.SelectedModeName == "START" && GameSave.currentSave.IsKeyUnlocked("ArchipelagoRandomizer")))
+						{
+							UIManager.Instance.ShowConnectionMenu();
+							return false;
+						}
+					}
+				}
 			}
 			return true;
 		}
