@@ -23,7 +23,7 @@ This is a work in progress Archipelago randomizer mod for Death's Door.
 1. Install the mods as instructed above.
 1. Generate and host a world using the Death's Door apworld as instructed in the [Death's Door apworld](https://github.com/roseasromeo/DeathsDoorAPWorld) README.
 1. After selecting Start on the Title Screen and selecting a new save file, you'll be able to navigate left and right on the "Start" button to choose "Archipelago." Select "Archipelago".
-1. Enter in the connection details for your generated world and slot. If you generated a solo world with the default template, your slot name is Player1.
+1. Enter in the connection details for your generated world and slot. If you generated a solo world with the default template, your Player Name is Player1.
 1. If you entered in your details correctly and your room is currently open, then you will load into game.
 1. As you play, you should see item notifications pop up in the bottom right of your screen as you send and receive items. Items you pick up for yourself will have slightly more delay because we wait to notify you until you have received it.
 1. If playing over multiple sessions, you can resume your save by clicking Start or Archipelago on your existing save, and updating your connection information if the port changes.
