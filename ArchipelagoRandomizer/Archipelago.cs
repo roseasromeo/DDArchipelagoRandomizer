@@ -5,7 +5,6 @@ using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using HarmonyLib;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -214,6 +213,7 @@ internal class Archipelago
 		outgoingItemHandler = null;
 		incomingItems = new ConcurrentQueue<(ItemInfo item, int index)>();
 		outgoingItems = new ConcurrentQueue<ItemInfo>();
+		ItemRandomizer.Instance.itemNotifications = new ConcurrentQueue<ItemRandomizer.ItemNotification>();
 
 		Session.Socket.SocketClosed -= OnSocketClosed;
 		Session = null;
@@ -269,6 +269,15 @@ internal class Archipelago
 			{
 				yield return true;
 				continue;
+			}
+
+			if (!apConfig.ReceiveItemsFast)
+			{
+				float timePreDelay = Time.time;
+				while (Time.time - timePreDelay < (incomingItems.Count < 5 ? ItemRandomizer.Instance.itemNotificationDelay : 1))
+				{
+					yield return null;
+				}
 			}
 
 			ItemInfo item = pendingItem.item;

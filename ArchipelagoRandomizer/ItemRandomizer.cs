@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Linq;
 using UnityEngine;
 using IC = DDoor.ItemChanger;
 
@@ -15,8 +14,8 @@ internal class ItemRandomizer : MonoBehaviour
 	public static ItemRandomizer Instance => instance;
 
 	internal IEnumerator itemNotificationHandler;
-	private ConcurrentQueue<ItemNotification> itemNotifications;
-	private readonly float itemNotificationDelay = 3f;
+	internal ConcurrentQueue<ItemNotification> itemNotifications;
+	internal readonly float itemNotificationDelay = 3f;
 
 	private void Awake()
 	{
@@ -69,11 +68,14 @@ internal class ItemRandomizer : MonoBehaviour
 				yield return true;
 				continue;
 			}
-			// Add delay between each item notification received so player has time to read the notifications
-			float timePreDelay = Time.time;
-			while (Time.time - timePreDelay < (itemNotifications.Count < 5 ? itemNotificationDelay : 1))
+			// Add delay between each item notification received so player has time to read the notifications (only needed if Fast Items is on)
+			if (Archipelago.Instance.apConfig.ReceiveItemsFast)
 			{
-				yield return null;
+				float timePreDelay = Time.time;
+				while (Time.time - timePreDelay < (itemNotifications.Count < 5 ? itemNotificationDelay : 1))
+				{
+					yield return null;
+				}
 			}
 			int playerSlot = itemNotification.PlayerSlot;
 			IC.Item item = itemNotification.Item;
@@ -103,7 +105,6 @@ internal class ItemRandomizer : MonoBehaviour
 			itemNotifications.TryDequeue(out _);
 		}
 	}
-
 
 
 	private void PickedUpItem(DDItem item)
@@ -210,7 +211,6 @@ internal class ItemRandomizer : MonoBehaviour
 		internal int PlayerSlot = playerSlot;
 		internal IC.Item Item = item;
 	}
-	
 
 	[HarmonyPatch]
 	private class Patches
@@ -270,7 +270,7 @@ internal class ItemRandomizer : MonoBehaviour
 				{
 					dDItem.Trigger();
 					return false;
-				} 
+				}
 			}
 			return true;
 		}
