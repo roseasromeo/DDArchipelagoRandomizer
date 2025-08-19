@@ -227,6 +227,21 @@ internal class ItemRandomizer : MonoBehaviour
 			}
 		}
 
+		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.GainSoul))]
+		private static void CurrencyMultiplierPatch1(ref int count)
+		{
+			count *= (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier");
+		}
+
+		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), [typeof(InventoryItem), typeof(int)])]
+		private static void CurrencyMultiplierPatch2(InventoryItem i, ref int quantity)
+		{
+			if (i.id == "currency")
+			{
+				quantity *= (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier");
+			}
+		}
+
 		[HarmonyPrefix, HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
 		[HarmonyAfter("deathsdoor.itemchanger")] // Needs to go after ItemChanger has loaded its save
 		private static void LoadFilePatch()
