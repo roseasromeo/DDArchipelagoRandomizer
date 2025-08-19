@@ -370,14 +370,7 @@ internal class Archipelago
 
 	public void ClearAPSaveSlot(int saveIndex)
 	{
-		GetAPSaveDataForSlot(saveIndex).Erase();
-		switch (saveIndex)
-		{
-			case 1: apSaveSlot1Data = new(1); break;
-			case 2: apSaveSlot2Data = new(2); break;
-			case 3: apSaveSlot3Data = new(3); break;
-			default: throw new IndexOutOfRangeException("Invalid save index");
-		}
+		GetAPSaveDataForSlot(saveIndex).Clear();
 	}
 
 #nullable enable
@@ -387,7 +380,7 @@ internal class Archipelago
 		public int Port { get; set; }
 		public string SlotName { get; set; } = "";
 		public string Password { get; set; } = "";
-    	public int SaveSlotIndex { get; set; }
+		public int SaveSlotIndex { get; set; }
 		public string Seed { get; set; } = "";
 		public List<string> LocationsChecked { get; } = [];
 
@@ -422,10 +415,19 @@ internal class Archipelago
 			return apSaveData;
 		}
 
-		public void Erase()
+		public void Clear()
 		{
-			string path = GetAPSaveDataPath(SaveSlotIndex);
-			if (File.Exists(path)) { File.Delete(path); }
+			Seed = "";
+			LocationsChecked.Clear();
+			Save();
+
+			switch (SaveSlotIndex)
+			{
+				case 1: Instance.apSaveSlot1Data = this; break;
+				case 2: Instance.apSaveSlot2Data = this; break;
+				case 3: Instance.apSaveSlot3Data = this; break;
+				default: throw new IndexOutOfRangeException("Invalid save index");
+			}
 		}
 
 		public void AddCheckedLocation(string location)
@@ -435,8 +437,8 @@ internal class Archipelago
 		}
 	}
 #nullable disable
-  
-  public class APConfig
+
+	public class APConfig
 	{
 		private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 		public bool DeathLinkEnabled { get; set; } = false;
@@ -469,7 +471,7 @@ internal class Archipelago
 		[HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.EraseSave))]
 		private static void Postfix(SaveSlot __instance)
 		{
-			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length-1)));
+			Instance.ClearAPSaveSlot(int.Parse(__instance.saveId.Substring(__instance.saveId.Length - 1)));
 		}
 	}
 }
