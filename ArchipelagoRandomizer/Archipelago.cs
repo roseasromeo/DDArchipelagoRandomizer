@@ -22,16 +22,12 @@ internal class Archipelago
 	public static event Action OnConnected;
 	public static event Action OnDisconnected;
 	private static readonly Archipelago instance = new();
-	private APSaveData apSaveSlot1Data = APSaveData.Load(1);
-	private APSaveData apSaveSlot2Data = APSaveData.Load(2);
-	private APSaveData apSaveSlot3Data = APSaveData.Load(3);
-	private APSaveData GetAPSaveDataForSlot(int saveIndex) => saveIndex switch
-	{
-		1 => apSaveSlot1Data,
-		2 => apSaveSlot2Data,
-		3 => apSaveSlot3Data,
-		_ => throw new IndexOutOfRangeException("Invalid save index"),
-	};
+	private readonly APSaveData[] apSaveDataSlots =
+	[
+		APSaveData.Load(1),
+		APSaveData.Load(2),
+		APSaveData.Load(3)
+	];
 	internal APConfig apConfig = APConfig.LoadAPConfig();
 	private readonly UIManager uiManager = UIManager.Instance;
 	private Dictionary<string, object> slotData;
@@ -359,6 +355,16 @@ internal class Archipelago
 		return apConfig.ReceiveItemsFast;
 	}
 
+	private APSaveData GetAPSaveDataForSlot(int saveIndex)
+	{
+		if (saveIndex >= apSaveDataSlots.Length || saveIndex < 0)
+		{
+			throw new IndexOutOfRangeException("Invalid save index");
+		}
+
+		return apSaveDataSlots[saveIndex - 1];
+	}
+
 	private static string GetAPSaveDataPath(int saveIndex) => $"{Application.persistentDataPath}/SAVEDATA/Save_slot{saveIndex}-Archipelago.json";
 
 	private int GetSaveIndex()
@@ -421,13 +427,8 @@ internal class Archipelago
 			LocationsChecked.Clear();
 			Save();
 
-			switch (SaveSlotIndex)
-			{
-				case 1: Instance.apSaveSlot1Data = this; break;
-				case 2: Instance.apSaveSlot2Data = this; break;
-				case 3: Instance.apSaveSlot3Data = this; break;
-				default: throw new IndexOutOfRangeException("Invalid save index");
-			}
+			// Reset the loaded apSaveData to this instance
+			Instance.apSaveDataSlots[SaveSlotIndex] = this;
 		}
 
 		public void AddCheckedLocation(string location)
