@@ -78,7 +78,7 @@ We talk about the development of this in the Death's Door thread in the `future-
 
 Thanks to [dpinela](https://github.com/dpinela) for their work on the
 [Multiworld Randomizer](https://github.com/dpinela/DeathsDoor.Randomizer)
-(of which I'm using to figure out how to make this mod) and for the dependencies this mod uses:
+and for some of the dependencies this mod uses:
 [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes),
 [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger), and [MagicUI](https://github.com/dpinela/DeathsDoor.MagicUI)!
 
@@ -87,8 +87,8 @@ first attempt at an [APWorld](https://github.com/lunix33/Archipelago_DeathsDoor/
 
 Thanks to [BadMagic](https://github.com/BadMagic100) for their work on
 [Hollow Knight's Archipelago client](https://github.com/ArchipelagoMW-HollowKnight/Archipelago.HollowKnight),
-which I used as a reference for the MSBuild properties of this project, and for their answering my questions!
+which was used as a reference for the MSBuild properties of this project, and for the original version of MagicUI!
 
 Thanks to [Silent](https://github.com/silent-destroyer) and [Scipio Wright](https://github.com/ScipioWright)
 for their work on [Tunic's Archipelago client](https://github.com/ScipioWright/tunic-randomizer-archipelago-ER),
-which I used as a reference for some of the Archipelago integration!
+which was used as a reference for some of the Archipelago integration!
