@@ -33,7 +33,7 @@ public static class Locations
 
     public static string APItemInfoToDDLocationName(ItemInfo itemInfo)
     {
-        if (itemInfo.ItemGame == "Death's Door")
+        if (itemInfo.LocationGame == "Death's Door")
         {
             try
             {
