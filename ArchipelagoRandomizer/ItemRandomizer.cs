@@ -161,14 +161,6 @@ internal class ItemRandomizer : MonoBehaviour
 		};
 		icSaveData.StartingWeapon = startingWeaponId;
 
-		// Life seed required count
-		long lifeSeedCount = Archipelago.Instance.GetSlotData<long>("plant_pot_number");
-		if (lifeSeedCount == 0)
-		{
-			lifeSeedCount = 50; // 0 is not a possible yaml option, so the slot data must be missing the number. Original default was 50.
-		}
-		icSaveData.GreenTabletDoorCost = (int)lifeSeedCount;
-
 		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
 		saveFile.weaponId = icSaveData.StartingWeapon;
 
@@ -179,6 +171,14 @@ internal class ItemRandomizer : MonoBehaviour
 			LightNight.nightTime = true;
 			saveFile.SetNightState(true);
 		}
+
+		// Life seed required count
+		long lifeSeedCount = Archipelago.Instance.GetSlotData<long>("plant_pot_number");
+		if (lifeSeedCount == 0)
+		{
+			lifeSeedCount = 50; // 0 is not a possible yaml option, so the slot data must be missing the number. Original default was 50.
+		}
+		icSaveData.GreenTabletDoorCost = (int)lifeSeedCount;
 
 		// Set starting souls
 		int startingSouls = (int)Archipelago.Instance.GetSlotData<long>("starting_souls");
