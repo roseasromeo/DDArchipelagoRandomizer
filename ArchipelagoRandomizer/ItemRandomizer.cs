@@ -150,16 +150,24 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		// Determine starting weapon
-		long startWeapon = Archipelago.Instance.GetSlotData<long>("start_weapon"); // TODO: handle this with starting inventory?
+		long startWeapon = Archipelago.Instance.GetSlotData<long>("start_weapon");
 		string startingWeaponId = startWeapon switch
 		{
 			1 => "daggers",
-			2 => "umbrella",
+			2 => "hammer",
 			3 => "sword_heavy",
-			4 => "hammer",
+			4 => "umbrella",
 			_ => "sword"
 		};
 		icSaveData.StartingWeapon = startingWeaponId;
+
+		// Life seed required count
+		long lifeSeedCount = Archipelago.Instance.GetSlotData<long>("plant_pot_number");
+		if (lifeSeedCount == 0)
+		{
+			lifeSeedCount = 50; // 0 is not a possible yaml option, so the slot data must be missing the number. Original default was 50.
+		}
+		icSaveData.GreenTabletDoorCost = (int)lifeSeedCount;
 
 		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
 		saveFile.weaponId = icSaveData.StartingWeapon;
