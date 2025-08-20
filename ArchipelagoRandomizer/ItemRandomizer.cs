@@ -154,9 +154,9 @@ internal class ItemRandomizer : MonoBehaviour
 		string startingWeaponId = startWeapon switch
 		{
 			1 => "daggers",
-			2 => "umbrella",
+			2 => "hammer",
 			3 => "sword_heavy",
-			4 => "hammer",
+			4 => "umbrella",
 			_ => "sword"
 		};
 		icSaveData.StartingWeapon = startingWeaponId;
