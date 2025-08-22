@@ -28,6 +28,12 @@ This is a work in progress Archipelago randomizer mod for Death's Door.
 1. As you play, you should see item notifications pop up in the bottom right of your screen as you send and receive items. Items you pick up for yourself will have slightly more delay because we wait to notify you until you have received it.
 1. If playing over multiple sessions, you can resume your save by clicking Start or Archipelago on your existing save, and updating your connection information if the port changes.
 
+### Mod Options
+* Deathlink (Title Screen Options Menu)
+  * If Deathlink is on, you will send a Deathlink out when you die in game and die when you receive a deathlink from another game with Deathlink turned on.
+* Fast Items (Title Screen and In-Game Options Menus)
+  * If Fast Items is on, then you will receive items as fast as the game will allow and notifications will be queued for viewing. If Fast Items is off, the items themselves will be queued for receipt.
+
 ## Contributing
 
 If you're interested in helping out, join the discussion in the [Archipelago Discord server](https://discord.com/invite/8Z65BR2).
