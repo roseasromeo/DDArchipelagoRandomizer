@@ -33,6 +33,8 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 	}
 
+	private bool newGame = false;
+
 	private void Awake()
 	{
 		instance = this;
@@ -136,6 +138,7 @@ internal class ItemRandomizer : MonoBehaviour
 
 		if (icSaveData.UnnamedPlacements.Count > 0)
 		{
+			newGame = false;
 			return; // ItemChanger Placements already exist
 		}
 
@@ -178,6 +181,17 @@ internal class ItemRandomizer : MonoBehaviour
 		};
 		icSaveData.StartingWeapon = startingWeaponId;
 
+		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
+		saveFile.weaponId = icSaveData.StartingWeapon;
+
+		// Day or night setting
+		if (Archipelago.Instance.GetSlotData<long>("start_day_or_night") == 1)
+		{
+			Logger.Log("Should be Night, but now on the save file");
+			LightNight.nightTime = true;
+			saveFile.SetNightState(true);
+		}
+
 		// Life seed required count
 		long lifeSeedCount = Archipelago.Instance.GetSlotData<long>("plant_pot_number");
 		if (lifeSeedCount == 0)
@@ -186,17 +200,10 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 		icSaveData.GreenTabletDoorCost = (int)lifeSeedCount;
 
-		GameSave saveFile = TitleScreen.instance.saveMenu.saveSlots[TitleScreen.instance.saveMenu.index].saveFile;
-		saveFile.weaponId = icSaveData.StartingWeapon;
-		if (Archipelago.Instance.GetSlotData<long>("start_day_or_night") == 1)
-		{
-			Logger.Log("Should be Night, but now on the save file");
-			LightNight.nightTime = true;
-			saveFile.SetNightState(true);
-		}
 
 		// Save, since ItemChanger doesn't do it for us due to when we run this method
 		saveFile.Save();
+		newGame = true;
 	}
 
 	private string ModifyItemName(string itemName)
@@ -287,14 +294,38 @@ internal class ItemRandomizer : MonoBehaviour
 			quantity *= Instance.SoulMultiplier;
 		}
 
+		/// <summary>
+		/// Place items and do other setup at the start of a new save file
+		/// </summary>
 		[HarmonyPrefix, HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
 		[HarmonyAfter("deathsdoor.itemchanger")] // Needs to go after ItemChanger has loaded its save
-		private static void LoadFilePatch()
+		private static void PreLoadFilePatch()
 		{
 			if (Archipelago.Instance.IsConnected())
 			{
 				instance.PlaceItems();
 			}
+		}
+
+		/// <summary>
+		/// Increment the amount of souls the file starts with by the amount in slot_data
+		/// </summary>
+		[HarmonyPostfix, HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
+		[HarmonyAfter("deathsdoor.itemchanger")]
+		private static void PostLoadFilePatch()
+		{
+			if (!Archipelago.Instance.IsConnected() || !Instance.newGame)
+			{
+				return;
+			}
+			// Set starting souls
+			int startingSouls = (int)Archipelago.Instance.GetSlotData<long>("starting_souls");
+			if (startingSouls > 0)
+			{
+				GameSave.currentSave.AddToCountKey("currency", startingSouls);
+				GameSave.currentSave.Save();
+			}
+			Instance.newGame = false;
 		}
 
 		/// <summary>
