@@ -357,7 +357,7 @@ internal class Archipelago
 
 	private APSaveData GetAPSaveDataForSlot(int saveIndex)
 	{
-		if (saveIndex >= apSaveDataSlots.Length || saveIndex < 0)
+		if (saveIndex > apSaveDataSlots.Length || saveIndex <= 0)
 		{
 			throw new IndexOutOfRangeException("Invalid save index");
 		}
