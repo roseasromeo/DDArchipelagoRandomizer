@@ -16,6 +16,22 @@ internal class ItemRandomizer : MonoBehaviour
 	internal IEnumerator itemNotificationHandler;
 	internal ConcurrentQueue<ItemNotification> itemNotifications;
 	internal readonly float itemNotificationDelay = 3f;
+	private int? soulMultiplier = null;
+
+	private int SoulMultiplier
+	{
+		get
+		{
+			// Initialize value
+			if (!soulMultiplier.HasValue)
+			{
+				// Ensure multiplier never goes below 1
+				soulMultiplier = Mathf.Max(1, (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier"));
+			}
+
+			return soulMultiplier.Value;
+		}
+	}
 
 	private void Awake()
 	{
@@ -228,18 +244,25 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 
 		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.GainSoul))]
-		private static void CurrencyMultiplierPatch1(ref int count)
+		private static void GainSoul_CurrencyMultiplierPatch(ref int count)
 		{
-			count *= (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier");
+			if (!Archipelago.Instance.IsConnected())
+			{
+				return;
+			}
+
+			count *= Instance.SoulMultiplier;
 		}
 
 		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), [typeof(InventoryItem), typeof(int)])]
-		private static void CurrencyMultiplierPatch2(InventoryItem i, ref int quantity)
+		private static void AddItem_CurrencyMultiplierPatch(InventoryItem i, ref int quantity)
 		{
-			if (i.id == "currency")
+			if (!Archipelago.Instance.IsConnected() || i.id != "currency")
 			{
-				quantity *= (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier");
+				return;
 			}
+
+			quantity *= Instance.SoulMultiplier;
 		}
 
 		[HarmonyPrefix, HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
