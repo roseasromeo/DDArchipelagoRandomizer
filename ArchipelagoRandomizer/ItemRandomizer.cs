@@ -16,6 +16,22 @@ internal class ItemRandomizer : MonoBehaviour
 	internal IEnumerator itemNotificationHandler;
 	internal ConcurrentQueue<ItemNotification> itemNotifications;
 	internal readonly float itemNotificationDelay = 3f;
+	private int? soulMultiplier = null;
+
+	private int SoulMultiplier
+	{
+		get
+		{
+			// Initialize value
+			if (!soulMultiplier.HasValue)
+			{
+				// Ensure multiplier never goes below 1
+				soulMultiplier = Mathf.Max(1, (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier"));
+			}
+
+			return soulMultiplier.Value;
+		}
+	}
 
 	private void Awake()
 	{
@@ -49,8 +65,9 @@ internal class ItemRandomizer : MonoBehaviour
 			return;
 		}
 
-		Logger.Log($"Received {itemName} from {playerName}");
-		itemNotifications.Enqueue(new ItemNotification(itemName, location, playerSlot, item));
+		string modifiedItemName = ModifyItemName(itemName);
+		Logger.Log($"Received {modifiedItemName} from {playerName}");
+		itemNotifications.Enqueue(new ItemNotification(modifiedItemName, location, playerSlot, item));
 
 		GameSave.currentSave.IncreaseCountKey("AP_ItemsReceived");
 		item?.Trigger();
@@ -84,7 +101,7 @@ internal class ItemRandomizer : MonoBehaviour
 			bool receivedFromSelf = playerSlot == Archipelago.Instance.CurrentPlayer.Slot;
 			string playerName = Archipelago.Instance.Session.Players.GetPlayerName(playerSlot);
 			Sprite icon = IC.ItemIcons.Get(item.Icon);
-			string message = $"You got {item.DisplayName}";
+			string message = $"You got {itemName}";
 
 			if (!receivedFromSelf)
 			{
@@ -97,7 +114,7 @@ internal class ItemRandomizer : MonoBehaviour
 			{
 				LocationName = location,
 				ItemName = itemName,
-				ItemDisplayName = receivedFromSelf ? item.DisplayName : item.DisplayName + $" from {playerName}",
+				ItemDisplayName = receivedFromSelf ? itemName : itemName + $" from {playerName}",
 				ItemIcon = item.Icon
 			};
 			icSaveData.AddToTrackerLog(logEntry);
@@ -182,6 +199,19 @@ internal class ItemRandomizer : MonoBehaviour
 		saveFile.Save();
 	}
 
+	private string ModifyItemName(string itemName)
+	{
+		switch (itemName)
+		{
+			case "100 Souls":
+				int amount = int.Parse(itemName.Split(' ')[0]) * SoulMultiplier;
+				return $"{amount} Souls";
+		}
+
+		// Nothing to modify
+		return itemName;
+	}
+
 	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
 	{
 		public string Item { get; private set; } = item;
@@ -233,6 +263,28 @@ internal class ItemRandomizer : MonoBehaviour
 			{
 				Archipelago.Instance.SendCompletion();
 			}
+		}
+
+		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.GainSoul))]
+		private static void GainSoul_CurrencyMultiplierPatch(ref int count)
+		{
+			if (!Archipelago.Instance.IsConnected())
+			{
+				return;
+			}
+
+			count *= Instance.SoulMultiplier;
+		}
+
+		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), [typeof(InventoryItem), typeof(int)])]
+		private static void AddItem_CurrencyMultiplierPatch(InventoryItem i, ref int quantity)
+		{
+			if (!Archipelago.Instance.IsConnected() || i.id != "currency")
+			{
+				return;
+			}
+
+			quantity *= Instance.SoulMultiplier;
 		}
 
 		[HarmonyPrefix, HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
