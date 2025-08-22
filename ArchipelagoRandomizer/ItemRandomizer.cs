@@ -26,8 +26,7 @@ internal class ItemRandomizer : MonoBehaviour
 			if (!soulMultiplier.HasValue)
 			{
 				// Ensure multiplier never goes below 1
-				//soulMultiplier = Mathf.Max(1, (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier"));
-				soulMultiplier = 10;
+				soulMultiplier = Mathf.Max(1, (int)Archipelago.Instance.GetSlotData<long>("soul_multiplier"));
 			}
 
 			return soulMultiplier.Value;
