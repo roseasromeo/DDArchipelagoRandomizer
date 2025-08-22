@@ -428,7 +428,7 @@ internal class Archipelago
 			Save();
 
 			// Reset the loaded apSaveData to this instance
-			Instance.apSaveDataSlots[SaveSlotIndex] = this;
+			Instance.apSaveDataSlots[SaveSlotIndex - 1] = this;
 		}
 
 		public void AddCheckedLocation(string location)
