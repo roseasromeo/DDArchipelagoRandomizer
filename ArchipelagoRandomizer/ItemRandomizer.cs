@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using IC = DDoor.ItemChanger;
 
@@ -363,6 +366,36 @@ internal class ItemRandomizer : MonoBehaviour
 				}
 			}
 			return true;
+		}
+
+		[HarmonyPrefix, HarmonyPatch(typeof(IC.ItemIcons), nameof(IC.ItemIcons.Get))]
+		private static void PreGetPatch(string name)
+		{
+			string filename = name + ".png";
+			if (IC.ItemIcons.sprites.ContainsKey(filename))
+			{
+				return; // sprite is already pre-loaded
+			}
+			else
+			{
+				if (Assembly.GetExecutingAssembly().GetManifestResourceNames().Contains("DDoor.Resources.Item_Changer_Icons." + filename))
+				{
+					IC.ItemIcons.sprites[filename] = LoadSpriteFromAssembly(filename); // Get around that ItemChanger only takes paths by pre-loading the sprite
+				}
+			}
+
+			static Sprite LoadSpriteFromAssembly(string name) // Preparing for DD use is borrowed from ItemChanger's ItemIcons.LoadSprite
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+				using (MemoryStream memstream = new MemoryStream())
+				{
+					assembly.GetManifestResourceStream("DDoor.Resources.Item_Changer_Icons." + name).CopyTo(memstream);
+					tex.LoadImage(memstream.ToArray(), true);
+				}
+            	tex.filterMode = FilterMode.Bilinear;
+            	return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
+			}
 		}
 
 	}

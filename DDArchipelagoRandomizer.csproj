@@ -74,6 +74,7 @@
 	<ItemGroup>
     	<EmbeddedResource Include="ArchipelagoRandomizer/Data/Locations.json" />
     	<EmbeddedResource Include="ArchipelagoRandomizer/Data/Items.json" />
+		<EmbeddedResource Include="@(ItemChangerIcons)" />
   	</ItemGroup>
 
 	<Target Name="CopyMod" AfterTargets="PostBuildEvent">
@@ -83,12 +84,8 @@
 		<MakeDir Condition="!Exists('$(PluginsPath)/$(ModName)/')" Directories="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(PluginsPath)/$(ModName)/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(PluginsPath)/$(ModName)/" />
-		<Copy SourceFiles="@(ItemChangerIcons)" DestinationFolder="$(PluginsPath)/$(ModName)/Resources/Item Changer Icons/" />
-		<Copy SourceFiles="@(Resources)" DestinationFolder="$(PluginsPath)/$(ModName)/Resources" />
 		<Copy SourceFiles="$(ProjectDir)\README.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/" />
 		<Copy SourceFiles="$(OutputPath)/Archipelago.MultiClient.Net.dll" DestinationFolder="$(ExportDir)/zip/" />
-		<Copy SourceFiles="@(ItemChangerIcons)" DestinationFolder="$(ExportDir)/zip/Resources/Item Changer Icons/" />
-		<Copy SourceFiles="@(Resources)" DestinationFolder="$(ExportDir)/zip/Resources" />
 		<ZipDirectory SourceDirectory="$(ExportDir)/zip/" DestinationFile="$(ExportDir)/$(ModName).zip" />
 		<RemoveDir Directories="$(ExportDir)/zip/" />
 		<GetFileHash Files="$(ExportDir)/$(ModName).zip" Algorithm="SHA256">
