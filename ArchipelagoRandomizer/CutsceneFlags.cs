@@ -8,9 +8,10 @@ namespace DDoor.ArchipelagoRandomizer;
 public static class CutsceneFlags
 {
     private static GameSave GetGameSave() => GameSave.GetSaveData();
+    private static readonly string hallOfDoorsScene = "lvl_HallOfDoors";
 
     // These cutscenes must be skipping to prevent invisible collision obstacles
-    private static readonly string[] blockingCutscenes = ["crow_cut1", "gd_intro_done","phcs_5"];
+    private static readonly string[] blockingCutscenes = ["crow_cut1", "gd_intro_done", "phcs_5"];
     private static readonly string[] optionalCutscenes =
         ["cts_bus", "handler_intro", "sdoor_tutorial_hub", "sdoor_tutorial", "handler_intro2", "handler_intro3", "cts_handler", "shop_prompted", "bosskill_forestmother",
          "covenant_intro", "c_met_lod", "lod_meet1", "lod_meet2", "lod_meet3", "lod_meet4",
@@ -35,7 +36,7 @@ public static class CutsceneFlags
 
     private static void RemoveOfficeBlocker(Scene scene, LoadSceneMode _)
     {
-        if (scene.name == "lvl_HallOfDoors")
+        if (scene.name == hallOfDoorsScene)
         {
             GameObject officeBlocker = PathUtil.GetByPath(scene.name, "ENDGAME_STATE_CONTROL/_BASE_GAME_STATE/PROGRESSION_CONTROL/Default/BLOCKER_Office");
             officeBlocker.SetActive(false);
@@ -44,15 +45,15 @@ public static class CutsceneFlags
 
     private static void ActivateShopKeep(Scene scene, LoadSceneMode _)
     {
-        if (scene.name == "lvl_HallOfDoors")
+        if (scene.name == hallOfDoorsScene)
         {
-            GameObject sleepingShopkeep = PathUtil.GetByPath(scene.name, "ENDGAME_STATE_CONTROL/_BASE_GAME_STATE/BANK_PROG_CONTROL/Default/PreTutorial");
+            GetGameSave().SetKeyState("shop_prompted", true, true);
+            GameObject sleepingShopkeep = PathUtil.GetByPath(hallOfDoorsScene, "ENDGAME_STATE_CONTROL/_BASE_GAME_STATE/BANK_PROG_CONTROL/PreTutorial");
             sleepingShopkeep.SetActive(false);
-            GameObject awakeShopkeep = PathUtil.GetByPath(scene.name, "ENDGAME_STATE_CONTROL/_BASE_GAME_STATE/BANK_PROG_CONTROL/Default/ActiveBanker");
+            GameObject awakeShopkeep = PathUtil.GetByPath(hallOfDoorsScene, "ENDGAME_STATE_CONTROL/_BASE_GAME_STATE/BANK_PROG_CONTROL/ActiveBanker");
             awakeShopkeep.SetActive(true);
         }
     }
-
 
     [HarmonyPatch]
     private class Patches
@@ -68,13 +69,12 @@ public static class CutsceneFlags
                 SceneManager.sceneLoaded += ActivateShopKeep;
                 if (Archipelago.Instance.apConfig.SkipCutscenes)
                 {
-                    if (!GameSave.GetSaveData().IsKeyUnlocked("cts_bus")) // Only queue GoS door to trigger if it is a new file
+                    if (!GameSave.GetSaveData().IsKeyUnlocked("cts_handler")) // Only queue GoS door to trigger if Chandler scene has not already been watched/skipped
                     {
                         ItemRandomizer.Instance.QueueTriggerGroveOfSpiritsDoorCheck();
                     }
                     SkipCutsceneSet(optionalCutscenes);
                 }
-                GameSave.SaveGameState();
             }
         }
 
