@@ -354,6 +354,16 @@ internal class Archipelago
 		return apConfig.ReceiveItemsFast;
 	}
 
+	internal void ToggleSkipCutscenes(bool newValue)
+	{
+		apConfig.SkipCutscenes = newValue;
+	}
+
+	internal bool InitializeSkipCutscenes()
+	{
+		return apConfig.SkipCutscenes;
+	}
+
 	private APSaveData GetAPSaveDataForSlot(int saveIndex)
 	{
 		if (saveIndex > apSaveDataSlots.Length || saveIndex <= 0)
@@ -442,6 +452,7 @@ internal class Archipelago
 		private static readonly string apConfigPath = $"{Application.persistentDataPath}/Archipelago_config.json";
 		public bool DeathLinkEnabled { get; set; } = false;
 		public bool ReceiveItemsFast { get; set; } = false;
+		public bool SkipCutscenes { get; set; } = false;
 
 		internal void SaveAPConfig()
 		{
