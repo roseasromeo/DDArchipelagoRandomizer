@@ -184,6 +184,10 @@
         "itemChangerName": "Purple Ancient Tablet of Knowledge"
     },
     {
+        "apItemId": 806,
+        "itemChangerName": "Pink Ancient Tablet of Knowledge"
+    },
+    {
         "apItemId": 900,
         "itemChangerName": "Lever-Bomb Exit"
     },
