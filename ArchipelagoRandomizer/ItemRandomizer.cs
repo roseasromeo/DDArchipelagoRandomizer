@@ -173,6 +173,15 @@ internal class ItemRandomizer : MonoBehaviour
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
 		}
 
+		if (GoalModifications.Instance.IsGreenTabletGoal())
+		{
+			// Place the goal item at Green Tablet if Green Tablet is a possible goal
+			IC.Predefined.TryGetItem("Green Ancient Tablet of Knowledge", out IC.Item predefinedItem);
+			IC.Item item = new GoalModifications.GoalItem("Goal", predefinedItem?.Icon ?? "Unknown", "Green Ancient Tablet of Knowledge");
+			icSaveData.Place(item, "Green Ancient Tablet of Knowledge");
+			Logger.Log($"Placed goal item at Green Ancient Tablet of Knowledge");
+		}
+
 		// Determine starting weapon
 		long startWeapon = Archipelago.Instance.GetSlotData<long>("start_weapon");
 		string startingWeaponId = startWeapon switch
@@ -278,19 +287,6 @@ internal class ItemRandomizer : MonoBehaviour
 	[HarmonyPatch]
 	private class Patches
 	{
-		// / <summary>
-		// / Sends completion for main ending
-		// / </summary>
-		// I think this will work?
-		[HarmonyPrefix, HarmonyPatch(typeof(LodBoss2), nameof(LodBoss2.NextPhase))]
-		private static void EndGameCsPatch(LodBoss2 __instance)
-		{
-			if (__instance.deathCutscene)
-			{
-				Archipelago.Instance.SendCompletion();
-			}
-		}
-
 		[HarmonyPrefix, HarmonyPatch(typeof(Inventory), nameof(Inventory.GainSoul))]
 		private static void GainSoul_CurrencyMultiplierPatch(ref int count)
 		{

@@ -5,7 +5,7 @@
 		<AssemblyTitle>Archipelago Randomizer</AssemblyTitle>
 		<Product>ArchipelagoRandomizer</Product>
 		<Description>An Archipelago multiworld client for Death's Door</Description>
-		<Version>0.1.2</Version>
+		<Version>0.2.0</Version>
 		<TargetFramework>net472</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
@@ -52,6 +52,9 @@
 		</Reference>
 		<Reference Include="UnityEngine.UI">
 			<HintPath>$(ManagedDir)\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp-firstpass" Publicize="true">
+			<HintPath>$(ManagedDir)\Assembly-CSharp-firstpass.dll</HintPath>
 		</Reference>
 		<Reference Include="AlternativeGameModes">
 			<HintPath>$(PluginsPath)/AlternativeGameModes/AlternativeGameModes.dll</HintPath>

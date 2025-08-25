@@ -10,7 +10,8 @@ This is a work in progress Archipelago randomizer mod for Death's Door.
     - Do **not** use BepInEx 6.x, as it's in pre-release stage and may not work properly or be compatible.
     - Unzip the BepInEx folder into the root of your game's installation directory (i.e. there should be a BepInEx folder in the same folder as your DeathsDoor.exe)
 1. Run the game once to generate the BepInEx plugins folder, then quit before performing the next step
-1. Install these mods into your Death's Door BepInEx plugins folder (inside the BepInEx folder) by unzipping the folder from the release:
+1. Install these mods into your Death's Door BepInEx plugins folder (inside the BepInEx folder) by unzipping the folder from the release. Note that each mod should be in its own folder within the plugins folder.
+    - [Archipelago Randomizer](https://github.com/Chris-Is-Awesome/DDArchipelagoRandomizer/releases/latest) (required)
     - [Alternative Game Modes](https://github.com/dpinela/DeathsDoor.AlternativeGameModes) (required)
     - [Item Changer](https://github.com/dpinela/DeathsDoor.ItemChanger) (required)
     - [MagicUI](https://github.com/dpinela/DeathsDoor.MagicUI) (required)
