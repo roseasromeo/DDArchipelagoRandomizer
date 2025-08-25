@@ -57,6 +57,11 @@ internal class GoalModifications : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= ModifyGoalScenes;
+    }
+
     [HarmonyPatch]
     private class Patches
     {
