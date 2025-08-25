@@ -9,6 +9,7 @@ public static class CutsceneFlags
 {
     private static GameSave GetGameSave() => GameSave.GetSaveData();
     private static readonly string hallOfDoorsScene = "lvl_HallOfDoors";
+    internal static bool skippedCutscenes = false;
 
     // These cutscenes must be skipping to prevent invisible collision obstacles
     private static readonly string[] blockingCutscenes = ["crow_cut1", "gd_intro_done", "phcs_5"];
@@ -34,7 +35,7 @@ public static class CutsceneFlags
         GetGameSave().SetKeyState(cutsceneKey, state, true);
     }
 
-    private static void RemoveOfficeBlocker(Scene scene, LoadSceneMode _)
+    internal static void RemoveOfficeBlocker(Scene scene, LoadSceneMode _)
     {
         if (scene.name == hallOfDoorsScene)
         {
@@ -43,7 +44,7 @@ public static class CutsceneFlags
         }
     }
 
-    private static void ActivateShopKeep(Scene scene, LoadSceneMode _)
+    internal static void ActivateShopKeep(Scene scene, LoadSceneMode _)
     {
         if (scene.name == hallOfDoorsScene)
         {
@@ -64,6 +65,10 @@ public static class CutsceneFlags
             if (Archipelago.Instance.IsConnected())
             {
                 // Only apply skips if playing an AP file
+                if (skippedCutscenes)
+                {
+                    return;
+                }
                 SkipCutsceneSet(blockingCutscenes);
                 SceneManager.sceneLoaded += RemoveOfficeBlocker;
                 SceneManager.sceneLoaded += ActivateShopKeep;
@@ -75,6 +80,7 @@ public static class CutsceneFlags
                     }
                     SkipCutsceneSet(optionalCutscenes);
                 }
+                skippedCutscenes = true;
             }
         }
 

@@ -235,8 +235,9 @@ internal class ItemRandomizer : MonoBehaviour
 	internal void QueueTriggerGroveOfSpiritsDoorCheck()
 	{
 		SceneManager.sceneLoaded += TriggerGroveofSpiritsDoorCheck;
+	}
 
-		void TriggerGroveofSpiritsDoorCheck(Scene scene, LoadSceneMode _)
+	internal void TriggerGroveofSpiritsDoorCheck(Scene scene, LoadSceneMode _)
 		{
 			if (scene.name == "lvl_HallOfDoors")
 			{
@@ -245,7 +246,6 @@ internal class ItemRandomizer : MonoBehaviour
 				SceneManager.sceneLoaded -= TriggerGroveofSpiritsDoorCheck;
 			}
 		}
-	}
 
 	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
 	{

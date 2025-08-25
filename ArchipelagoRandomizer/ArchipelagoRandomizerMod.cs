@@ -90,6 +90,10 @@ internal class ArchipelagoRandomizerMod
 	/// </summary>
 	private void DisableMod()
 	{
+		SceneManager.sceneLoaded -= ItemRandomizer.Instance.TriggerGroveofSpiritsDoorCheck;
+		SceneManager.sceneLoaded -= CutsceneFlags.RemoveOfficeBlocker;
+		SceneManager.sceneLoaded -= CutsceneFlags.ActivateShopKeep;
+		CutsceneFlags.skippedCutscenes = false;
 		Object.Destroy(archipelagoRandomizer);
 		Archipelago.Instance.Disconnect();
 	}
