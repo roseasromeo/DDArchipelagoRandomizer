@@ -250,7 +250,10 @@ internal class ItemRandomizer : MonoBehaviour
 		if (scene.name == "lvl_HallOfDoors")
 		{
 			Plugin.Logger.LogDebug("Triggering GoS door check");
-			icSaveData.UnnamedPlacements["Grove of Spirits Door"].Trigger();
+			if (icSaveData.UnnamedPlacements.ContainsKey("Grove of Spirits Door"))
+			{
+				icSaveData.UnnamedPlacements["Grove of Spirits Door"].Trigger();
+			}
 			SceneManager.sceneLoaded -= TriggerGroveofSpiritsDoorCheck;
 		}
 	}
