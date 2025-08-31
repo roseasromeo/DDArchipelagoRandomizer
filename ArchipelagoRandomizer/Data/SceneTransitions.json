@@ -1,0 +1,327 @@
+[
+    {
+        "apName": "Hall of Doors Grove of Spirits Door",
+        "loadingZoneId": "sdoor_tutorial",
+        "sceneName": "lvl_Tutorial"
+    },
+    {
+        "apName": "Grove of Spirits Door",
+        "loadingZoneId": "sdoor_tutorial",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Lost Cemetery Door",
+        "loadingZoneId": "sdoor_graveyard",
+        "sceneName": "lvl_Graveyard"
+    },
+    {
+        "apName": "Lost Cemetery Door",
+        "loadingZoneId": "sdoor_graveyard",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Estate of the Urn Witch Door",
+        "loadingZoneId": "sdoor_gardens",
+        "sceneName": "lvl_GrandmaGardens"
+    },
+    {
+        "apName": "Estate of the Urn Witch Door",
+        "loadingZoneId": "sdoor_gardens",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Ceramic Manor Door",
+        "loadingZoneId": "sdoor_mansion",
+        "sceneName": "lvl_GrandmaMansion"
+    },
+    {
+        "apName": "Ceramic Manor Door",
+        "loadingZoneId": "sdoor_mansion",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Inner Furnace Door",
+        "loadingZoneId": "sdoor_basementromp",
+        "sceneName": "lvl_GrandmaBasement"
+    },
+    {
+        "apName": "Inner Furnace Door",
+        "loadingZoneId": "sdoor_basementromp",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors The Urn Witch's Laboratory Door",
+        "loadingZoneId": "sdoor_grandmaboss",
+        "sceneName": "boss_grandma"
+    },
+    {
+        "apName": "The Urn Witch's Laboratory Door",
+        "loadingZoneId": "sdoor_grandmaboss",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Overgrown Ruins Door",
+        "loadingZoneId": "sdoor_forest",
+        "sceneName": "lvl_Forest"
+    },
+    {
+        "apName": "Overgrown Ruins Door",
+        "loadingZoneId": "sdoor_forest",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Mushroom Dungeon Door",
+        "loadingZoneId": "sdoor_forest_dung",
+        "sceneName": "lvl_Forest"
+    },
+    {
+        "apName": "Mushroom Dungeon Door",
+        "loadingZoneId": "sdoor_forest_dung",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Flooded Fortress Door",
+        "loadingZoneId": "sdoor_swamp",
+        "sceneName": "lvl_Swamp"
+    },
+    {
+        "apName": "Flooded Fortress Door",
+        "loadingZoneId": "sdoor_swamp",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Throne of the Frog King Door",
+        "loadingZoneId": "sdoor_frogboss",
+        "sceneName": "boss_frog"
+    },
+    {
+        "apName": "Throne of the Frog King Door",
+        "loadingZoneId": "sdoor_frogboss",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Stranded Sailor Door",
+        "loadingZoneId": "sdoor_sailor",
+        "sceneName": "lvl_SailorMountain"
+    },
+    {
+        "apName": "Stranded Sailor Door",
+        "loadingZoneId": "sdoor_sailor",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Castle Lockstone Door",
+        "loadingZoneId": "sdoor_fortress",
+        "sceneName": "lvl_frozenfortress"
+    },
+    {
+        "apName": "Castle Lockstone Door",
+        "loadingZoneId": "sdoor_fortress",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Camp of the Free Crows Door",
+        "loadingZoneId": "sdoor_covenant",
+        "sceneName": "lvlConnect_Fortress_Mountaintops"
+    },
+    {
+        "apName": "Camp of the Free Crows Door",
+        "loadingZoneId": "sdoor_covenant",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Old Watchtowers Door",
+        "loadingZoneId": "sdoor_mountaintops",
+        "sceneName": "lvl_Mountaintops"
+    },
+    {
+        "apName": "Old Watchtowers Door",
+        "loadingZoneId": "sdoor_mountaintops",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Hall of Doors Betty's Lair Door",
+        "loadingZoneId": "sdoor_betty",
+        "sceneName": "boss_betty"
+    },
+    {
+        "apName": "Betty's Lair Door",
+        "loadingZoneId": "sdoor_betty",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Grove of Spirits to Lost Cemetery",
+        "loadingZoneId": "tdoor_gy",
+        "sceneName": "lvl_Graveyard"
+    },
+    {
+        "apName": "Lost Cemetery to Grove of Spirits",
+        "loadingZoneId": "tdoor_gy",
+        "sceneName": "lvl_Tutorial"
+    },
+    {
+        "apName": "Lost Cemetery to Crypt",
+        "loadingZoneId": "d_graveyardtocrypt",
+        "sceneName": "lvlConnect_Graveyard_Gardens"
+    },
+    {
+        "apName": "Crypt to Lost Cemetery",
+        "loadingZoneId": "d_graveyardtocrypt",
+        "sceneName": "lvl_Graveyard"
+    },
+    {
+        "apName": "Crypt to Estate of the Urn Witch",
+        "loadingZoneId": "d_crypttogardens",
+        "sceneName": "lvl_GrandmaGardens"
+    },
+    {
+        "apName": "Estate of the Urn Witch to Crypt",
+        "loadingZoneId": "d_crypttogardens",
+        "sceneName": "lvlConnect_Graveyard_Gardens"
+    },
+    {
+        "apName": "Estate of the Urn Witch to Ceramic Manor",
+        "loadingZoneId": "d_gardenstomansion",
+        "sceneName": "lvl_GrandmaMansion"
+    },
+    {
+        "apName": "Ceramic Manor to Estate of the Urn Witch",
+        "loadingZoneId": "d_gardenstomansion",
+        "sceneName": "lvl_GrandmaGardens"
+    },
+    {
+        "apName": "Ceramic Manor to Furnace Observation Rooms",
+        "loadingZoneId": "d_mansiontobasement",
+        "sceneName": "lvlConnect_Mansion_Basement"
+    },
+    {
+        "apName": "Furnace Observation Rooms to Ceramic Manor",
+        "loadingZoneId": "d_mansiontobasement",
+        "sceneName": "lvl_GrandmaMansion"
+    },
+    {
+        "apName": "Furnace Observation Rooms to Inner Furnace",
+        "loadingZoneId": "d_basementtoromp",
+        "sceneName": "lvl_GrandmaBasement"
+    },
+    {
+        "apName": "Inner Furnace to Furnace Observation Rooms",
+        "loadingZoneId": "d_basementtoromp",
+        "sceneName": "lvlConnect_Mansion_Basement"
+    },
+    {
+        "apName": "Inner Furnace to The Urn Witch's Laboratory",
+        "loadingZoneId": "d_basementtoboss",
+        "sceneName": "boss_grandma"
+    },
+    {
+        "apName": "The Urn Witch's Laboratory to Inner Furnace",
+        "loadingZoneId": "d_basementtoboss",
+        "sceneName": "lvl_GrandmaBasement"
+    },
+    {
+        "apName": "Lost Cemetery to Stranded Sailor Caves",
+        "loadingZoneId": "d_graveyardtosailorcaves",
+        "sceneName": "lvlconnect_graveyard_sailor"
+    },
+    {
+        "apName": "Stranded Sailor Caves to Lost Cemetery",
+        "loadingZoneId": "d_graveyardtosailorcaves",
+        "sceneName": "lvl_graveyard"
+    },
+    {
+        "apName": "Stranded Sailor Caves to Stranded Sailor",
+        "loadingZoneId": "d_connecttosailor",
+        "sceneName": "lvl_sailormountain"
+    },
+    {
+        "apName": "Stranded Sailor to Stranded Sailor Caves",
+        "loadingZoneId": "d_connecttosailor",
+        "sceneName": "lvlconnect_graveyard_sailor"
+    },
+    {
+        "apName": "Stranded Sailor to Castle Lockstone",
+        "loadingZoneId": "d_sailortofortress",
+        "sceneName": "lvl_frozenfortress"
+    },
+    {
+        "apName": "Castle Lockstone to Stranded Sailor",
+        "loadingZoneId": "d_sailortofortress",
+        "sceneName": "lvl_sailormountain"
+    },
+    {
+        "apName": "Castle Lockstone to Camp of the Free Crows",
+        "loadingZoneId": "d_fortresstoroof",
+        "sceneName": "lvlConnect_Fortress_Mountaintops"
+    },
+    {
+        "apName": "Camp of the Free Crows to Castle Lockstone",
+        "loadingZoneId": "d_fortresstoroof",
+        "sceneName": "lvl_frozenfortress"
+    },
+    {
+        "apName": "Camp of the Free Crows to Old Watchtowers",
+        "loadingZoneId": "d_CrowCavestoMountaintops",
+        "sceneName": "lvl_mountaintops"
+    },
+    {
+        "apName": "Old Watchtowers to Camp of the Free Crows",
+        "loadingZoneId": "d_CrowCavestoMountaintops",
+        "sceneName": "lvlConnect_Fortress_Mountaintops"
+    },
+    {
+        "apName": "Old Watchtowers to Betty's Lair",
+        "loadingZoneId": "d_mountaintopstobetty",
+        "sceneName": "boss_betty"
+    },
+    {
+        "apName": "Betty's Lair to Old Watchtowers",
+        "loadingZoneId": "d_mountaintopstobetty",
+        "sceneName": "lvl_mountaintops"
+    },
+    {
+        "apName": "Lost Cemetery to Overgrown Ruins (Gondola)",
+        "loadingZoneId": "forest_buggy",
+        "sceneName": "lvl_Forest"
+    },
+    {
+        "apName": "Overgrown Ruins to Lost Cemetery (Gondola)",
+        "loadingZoneId": "forest_buggy",
+        "sceneName": "lvl_Graveyard"
+    },
+    {
+        "apName": "Mushroom Dungeon to Flooded Fortress",
+        "loadingZoneId": "d_swamp_enter",
+        "sceneName": "lvl_Swamp"
+    },
+    {
+        "apName": "Flooded Fortress to Mushroom Dungeon",
+        "loadingZoneId": "d_swamp_enter",
+        "sceneName": "lvl_Forest"
+    },
+    {
+        "apName": "Flooded Fortress to Throne of the Frog King",
+        "loadingZoneId": "d_frog_boss",
+        "sceneName": "boss_frog"
+    },
+    {
+        "apName": "Throne of the Frog King to Flooded Fortress",
+        "loadingZoneId": "d_frog_boss",
+        "sceneName": "lvl_Swamp"
+    },
+    {
+        "apName": "Ceramic Manor Ancient Door",
+        "loadingZoneId": "hod_anc_mansion",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Castle Lockstone Ancient Door",
+        "loadingZoneId": "hod_anc_forest",
+        "sceneName": "lvl_HallOfDoors"
+    },
+    {
+        "apName": "Mushroom Dungeon Ancient Door",
+        "loadingZoneId": "hod_anc_fortress",
+        "sceneName": "lvl_HallOfDoors"
+    }
+]
