@@ -357,6 +357,7 @@ internal class Archipelago
 	internal void ToggleSkipCutscenes(bool newValue)
 	{
 		apConfig.SkipCutscenes = newValue;
+		apConfig.SaveAPConfig();
 	}
 
 	internal bool InitializeSkipCutscenes()
