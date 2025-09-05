@@ -16,12 +16,14 @@ public static class SceneTransitions
     public readonly struct SceneTransition(
             string apName,
             string loadingZoneId,
-            string sceneName
+            string toSceneName,
+            string originSceneName
         )
     {
         public readonly string apName = apName;
         public readonly string loadingZoneId = loadingZoneId;
-        public readonly string sceneName = sceneName;
+        public readonly string toSceneName = toSceneName;
+        public readonly string originSceneName = originSceneName;
     }
 
     private static List<SceneTransition> transitionData;
@@ -33,25 +35,22 @@ public static class SceneTransitions
         transitionData = JsonConvert.DeserializeObject<List<SceneTransition>>(reader.ReadToEnd());
     }
 
+    internal static SceneTransition? GetThisSceneTransition(string loadingZoneId, string sceneName) => transitionData.First(scene => scene.loadingZoneId.Equals(loadingZoneId.Replace("avarice_", ""), System.StringComparison.OrdinalIgnoreCase) && scene.toSceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase));
+
+
     internal static SceneTransition? GetConnectedSceneTransition(string loadingZoneId, string sceneName)
     {
-        // Plugin.Logger.LogDebug(loadingZoneId);
-        // Plugin.Logger.LogDebug(sceneName);
-        // Plugin.Logger.LogDebug(transitionData.First(scene => scene.loadingZoneId.Equals(loadingZoneId, System.StringComparison.OrdinalIgnoreCase)).apName);
-        // Plugin.Logger.LogDebug(transitionData.First(scene => scene.sceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase)).apName);
-        string entranceName = transitionData.First(scene => scene.loadingZoneId.Equals(loadingZoneId, System.StringComparison.OrdinalIgnoreCase) && scene.sceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase)).apName;
-        // Plugin.Logger.LogDebug(entranceName);
-		if (EntranceRandomizer.Instance.GetEntrancePairings().TryGetValue(entranceName, out string exitName))
-		{
-			Plugin.Logger.LogDebug(exitName);
-			return transitionData.First(scene => scene.apName == exitName);
-		}
-		else
-		{
-			return null;
-		}
-
-	}
+        string entranceName = GetThisSceneTransition(loadingZoneId, sceneName)?.apName;
+        if (EntranceRandomizer.Instance.GetEntrancePairings().TryGetValue(entranceName, out string exitName))
+        {
+            Plugin.Logger.LogDebug(exitName);
+            return transitionData.First(scene => scene.apName == exitName);
+        }
+        else
+        {
+            return null;
+        }
+    }
 
 }
 #nullable disable
