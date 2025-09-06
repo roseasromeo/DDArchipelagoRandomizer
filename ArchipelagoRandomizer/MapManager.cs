@@ -10,11 +10,11 @@ public class MapManager : MonoBehaviour
     private static MapManager instance;
 
     public static MapManager Instance => instance;
-    public readonly struct PlayerCoords(float x, float y, int mapLayer)
+    public readonly struct PlayerCoords(float x, float y, float z)
     {
         public float X { get; } = x;
         public float Y { get; } = y;
-        public int MapLayer { get; } = mapLayer;
+        public float Z { get; } = z;
     }
 
     private PlayerCoords lastSentCoords;
@@ -72,7 +72,7 @@ public class MapManager : MonoBehaviour
         {
             UpdateCoordinates(currentCoords);
         }
-        else if (Vector2.Distance(new(lastSentCoords.X, lastSentCoords.Y), new(currentCoords.X, currentCoords.Y)) > distanceDelta)
+        else if (Vector3.Distance(new(lastSentCoords.X, lastSentCoords.Y, lastSentCoords.Z), new(currentCoords.X, currentCoords.Y, currentCoords.Z)) > distanceDelta)
         {
             UpdateCoordinates(currentCoords);
         }
@@ -80,10 +80,7 @@ public class MapManager : MonoBehaviour
 
     private PlayerCoords CurrentCoords()
     {
-        float westEast = PlayerGlobal.instance.transform.position.x;
-        float northSouth = PlayerGlobal.instance.transform.position.z; // y is height
-        // TODO: Figure out how to check which map layer
-        return new(westEast, northSouth, 0);
+        return new(PlayerGlobal.instance.transform.position.x, PlayerGlobal.instance.transform.position.y, PlayerGlobal.instance.transform.position.z);
     }
 
     private void UpdateCoordinates(PlayerCoords currentCoords)
