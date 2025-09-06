@@ -38,6 +38,7 @@ public class Plugin : BaseUnityPlugin
 
 			new Harmony("deathsdoor.archipelagorandomizer").PatchAll();
 			UIManager.Instance.AddOptionsMenuItems();
+			UIManager.Instance.CheckPluginVersion();
 
 			InitStatus = 1;
 		}
