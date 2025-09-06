@@ -1,0 +1,96 @@
+using DDoor.AddUIToOptionsMenu;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace DDoor.ArchipelagoRandomizer;
+
+public class MapManager : MonoBehaviour
+{
+    private static MapManager instance;
+
+    public static MapManager Instance => instance;
+    public readonly struct PlayerCoords(float x, float y, int mapLayer)
+    {
+        public float X { get; } = x;
+        public float Y { get; } = y;
+        public int MapLayer { get; } = mapLayer;
+    }
+
+    private PlayerCoords lastSentCoords;
+    private float lastSentTime;
+
+    private const float timeDelta = 5.0f;
+    private const float distanceDelta = 10.0f;
+
+    private readonly Dictionary<string, string> sceneToMap = new(){
+        {"lvl_HallOfDoors", "hall_of_doors"},
+        {"lvl_Tutorial", "grove_of_spirits"},
+        { "lvl_Graveyard", "lost_cemetery"},
+        {"lvlConnect_Graveyard_Gardens", "crypt"},
+        {"lvl_GrandmaGardens", "estate_of_the_urn_witch"},
+        {"lvl_GrandmaMansion", "ceramic_manor"},
+        {"lvlconnect_Mansion_Basement", "furnace_observation_rooms"},
+        {"lvl_GrandmaBasement", "inner_furnace"},
+        {"boss_Grandma", "the_urn_witchs_laboratory"},
+        {"lvl_Forest", "overgrown_ruins"},
+        {"lvl_Swamp", "flooded_fortress"},
+        {"boss_Frog", "throne_of_the_frog_king"},
+        {"lvlConnect_Graveyard_Sailor", "stranded_sailor_caves"},
+        {"lvl_SailorMountain", "stranded_sailor"},
+        {"lvl_FrozenFortress", "castle_lockstone"},
+        {"lvlConnect_Fortress_Mountaintops", "camp_of_the_free_crows"},
+        {"lvl_mountaintops", "old_watchtowers"},
+        {"boss_betty", "bettys_lair"},
+    };
+
+    private void Awake()
+    {
+        instance = this;
+        SceneManager.sceneLoaded += UpdateMap;
+    }
+
+    private void Update()
+    {
+        UpdateCoordsIfNeeded();
+    }
+
+    internal void UpdateMap(Scene scene, LoadSceneMode _)
+    {
+        
+        if (sceneToMap.ContainsKey(scene.name))
+        {
+            Archipelago.Instance.StoreMap(sceneToMap[scene.name]);
+        }
+    }
+
+    private void UpdateCoordsIfNeeded()
+    {
+        float currentTime = Time.time;
+        PlayerCoords currentCoords = CurrentCoords();
+        if (currentTime >= lastSentTime + timeDelta)
+        {
+            UpdateCoordinates(currentCoords);
+        }
+        else if (Vector2.Distance(new(lastSentCoords.X, lastSentCoords.Y), new(currentCoords.X, currentCoords.Y)) > distanceDelta)
+        {
+            UpdateCoordinates(currentCoords);
+        }
+    }
+
+    private PlayerCoords CurrentCoords()
+    {
+        float westEast = PlayerGlobal.instance.transform.position.x;
+        float northSouth = PlayerGlobal.instance.transform.position.z; // y is height
+        // TODO: Figure out how to check which map layer
+        return new(westEast, northSouth, 0);
+    }
+
+    private void UpdateCoordinates(PlayerCoords currentCoords)
+    {
+        float currentTime = Time.time;
+        Archipelago.Instance.StorePosition(currentCoords);
+        lastSentCoords = currentCoords;
+        lastSentTime = currentTime;
+    }
+}

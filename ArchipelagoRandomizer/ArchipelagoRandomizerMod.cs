@@ -70,6 +70,7 @@ internal class ArchipelagoRandomizerMod
 				archipelagoRandomizer = new GameObject("ArchipelagoRandomizer");
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();
 				GoalModifications goalMods = archipelagoRandomizer.AddComponent<GoalModifications>();
+				MapManager mapManager = archipelagoRandomizer.AddComponent<MapManager>();
 				archipelagoRandomizer.AddComponent<DeathManager>();
 				Object.DontDestroyOnLoad(archipelagoRandomizer);
 				UIManager.Instance.HideConnectionMenu();
@@ -90,6 +91,7 @@ internal class ArchipelagoRandomizerMod
 	/// </summary>
 	private void DisableMod()
 	{
+		SceneManager.sceneLoaded -= MapManager.Instance.UpdateMap;
 		SceneManager.sceneLoaded -= ItemRandomizer.Instance.TriggerGroveofSpiritsDoorCheck;
 		SceneManager.sceneLoaded -= CutsceneFlags.RemoveOfficeBlocker;
 		SceneManager.sceneLoaded -= CutsceneFlags.ActivateShopKeep;
