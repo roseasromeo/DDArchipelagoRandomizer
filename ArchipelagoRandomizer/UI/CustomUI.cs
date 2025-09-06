@@ -1,4 +1,5 @@
-﻿using MagicUI.Core;
+﻿using DDoor.AddUIToOptionsMenu;
+using MagicUI.Core;
 using MagicUI.Elements;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,8 +37,8 @@ internal abstract class CustomUI
 
 	public static void CacheBackgroundSprite()
 	{
-		Sprite borderSprite = TitleScreen.instance.saveMenu.saveSlots[0].borders[0].sprite;
-		Sprite blurSprite = TitleScreen.instance.keybindMenu.gamepadSubMenu.transform.Find("__Col_Action/KEYBIND_").GetComponent<UnityEngine.UI.Image>().sprite;
+		Sprite borderSprite = PathUtil.GetByPath("TitleScreen", "UI_PauseCanvas/BGMask/SaveMenu/ItemWindow_9slice/ItemWindow/SaveGameSlot/").GetComponent<UnityEngine.UI.Image>().sprite;
+		Sprite blurSprite = PathUtil.GetByPath("TitleScreen", "UI_PauseCanvas/BGMask/OptionsPanels/MENU_KeyBindings_NEW/MENU_Keyboard").transform.Find("__Col_Action/KEYBIND_").GetComponent<UnityEngine.UI.Image>().sprite;
 
 		backgroundSprites = new Dictionary<BackgroundSpriteType, Sprite>()
 		{
