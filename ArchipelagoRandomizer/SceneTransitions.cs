@@ -14,13 +14,15 @@ public static class SceneTransitions
         PopulateTransitionFromJson();
     }
     public readonly struct SceneTransition(
-            string apName,
+            string startingRegion,
+            string endingRegion,
             string loadingZoneId,
             string toSceneName,
             string originSceneName
         )
     {
-        public readonly string apName = apName;
+        public readonly string startingRegion = startingRegion;
+        public readonly string endingRegion = endingRegion;
         public readonly string loadingZoneId = loadingZoneId;
         public readonly string toSceneName = toSceneName;
         public readonly string originSceneName = originSceneName;
@@ -35,22 +37,27 @@ public static class SceneTransitions
         transitionData = JsonConvert.DeserializeObject<List<SceneTransition>>(reader.ReadToEnd());
     }
 
-    internal static SceneTransition? GetThisSceneTransition(string loadingZoneId, string sceneName) => transitionData.First(scene => scene.loadingZoneId.Equals(loadingZoneId.Replace("avarice_", ""), System.StringComparison.OrdinalIgnoreCase) && scene.toSceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase));
+    internal static SceneTransition? GetThisSceneTransition(string loadingZoneId, string sceneName) =>
+        transitionData.First(scene => scene.loadingZoneId.Equals(loadingZoneId.Replace("avarice_", ""),
+            System.StringComparison.OrdinalIgnoreCase)
+            && scene.toSceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase));
 
 
     internal static SceneTransition? GetConnectedSceneTransition(string loadingZoneId, string sceneName)
     {
-        string entranceName = GetThisSceneTransition(loadingZoneId, sceneName)?.apName;
+        string entranceName = GetThisSceneTransition(loadingZoneId, sceneName)?.startingRegion;
         if (EntranceRandomizer.Instance.GetEntrancePairings().TryGetValue(entranceName, out string exitName))
         {
-            Plugin.Logger.LogDebug(exitName);
-            return transitionData.First(scene => scene.apName == exitName);
+            return transitionData.First(scene => scene.endingRegion == exitName);
         }
         else
         {
             return null;
         }
     }
+
+    internal static bool IsSceneInRandomizedTransitions(string sceneName) =>
+        transitionData.Any(scene => scene.toSceneName == sceneName);
 
 }
 #nullable disable
