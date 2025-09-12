@@ -71,6 +71,7 @@ internal class ArchipelagoRandomizerMod
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();
 				GoalModifications goalMods = archipelagoRandomizer.AddComponent<GoalModifications>();
 				MapManager mapManager = archipelagoRandomizer.AddComponent<MapManager>();
+				TrapManager trapManager = archipelagoRandomizer.AddComponent<TrapManager>();
 				archipelagoRandomizer.AddComponent<DeathManager>();
 				Object.DontDestroyOnLoad(archipelagoRandomizer);
 				UIManager.Instance.HideConnectionMenu();
