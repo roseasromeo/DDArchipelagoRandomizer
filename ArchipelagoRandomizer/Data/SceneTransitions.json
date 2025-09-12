@@ -70,7 +70,7 @@
         "originSceneName": "lvl_GrandmaBasement"
     },
     {
-        "startingRegion": "Door to Urn Witchs Laboratory",
+        "startingRegion": "Door to Urn Witch's Laboratory",
         "endingRegion": "The Urn Witch's Laboratory Door",
         "loadingZoneId": "sdoor_grandmaboss",
         "toSceneName": "boss_grandma",
@@ -78,7 +78,7 @@
     },
     {
         "startingRegion": "The Urn Witch's Laboratory Door",
-        "endingRegion": "Door to Urn Witchs Laboratory",
+        "endingRegion": "Door to Urn Witch's Laboratory",
         "loadingZoneId": "sdoor_grandmaboss",
         "toSceneName": "lvl_HallOfDoors",
         "originSceneName": "boss_grandma"

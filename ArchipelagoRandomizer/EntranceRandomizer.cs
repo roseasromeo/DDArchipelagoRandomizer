@@ -1,10 +1,9 @@
 using HarmonyLib;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using IC = DDoor.ItemChanger;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -27,6 +26,8 @@ internal class EntranceRandomizer : MonoBehaviour
         }
         return entrancePairings;
     }
+
+    private readonly bool entranceRandomization = Archipelago.Instance.GetSlotData<long>("entrance_randomization") > 0; // Any value greater than 0 indicates entrance randomization
 
     private void Awake()
     {
@@ -54,12 +55,82 @@ internal class EntranceRandomizer : MonoBehaviour
         [HarmonyPostfix]
         private static void PostShortcutDoorAwake(ShortcutDoor __instance)
         {
-            DoorTrigger doorTrigger = __instance.doorTrigger;
-            SceneTransitions.SceneTransition? newSceneTransition = SceneTransitions.GetConnectedSceneTransition(doorTrigger.doorId, doorTrigger.sceneToLoad);
-            doorTrigger.doorId = newSceneTransition?.loadingZoneId;
-            doorTrigger.sceneToLoad = newSceneTransition?.toSceneName;
-            doorTrigger.targetDoor = newSceneTransition?.loadingZoneId;
+            if (Archipelago.Instance.IsConnected() && Instance != null && Instance.entranceRandomization)
+            {
+                DoorTrigger doorTrigger = __instance.doorTrigger;
+                SceneTransitions.SceneTransition? newSceneTransition = SceneTransitions.GetConnectedSceneTransition(doorTrigger.doorId, doorTrigger.sceneToLoad);
+                doorTrigger.doorId = newSceneTransition?.loadingZoneId;
+                doorTrigger.sceneToLoad = newSceneTransition?.toSceneName;
+                doorTrigger.targetDoor = newSceneTransition?.loadingZoneId;
+                if (!GameSave.GetSaveData().IsKeyUnlocked(__instance.keyId))
+                {
+                    __instance.unlocked = false;
+                }
+            }
         }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ShortcutDoor), nameof(ShortcutDoor.Trigger))]
+        [HarmonyBefore("deathsdoor.itemchanger")]
+        private static bool PreShortcutDoorTrigger(ShortcutDoor __instance)
+        {
+            //Borrowed directly from ItemChanger EXCEPT we apply checks for if we are entering Hall of Doors
+
+            if (!IC.ItemChangerPlugin.TryGetPlacedItem(typeof(IC.DoorLocation), __instance.keyId, out IC.Item? item))
+            {
+                return true;
+            }
+
+            // Original ItemChanger comment:
+            // The check can be collected from either side of the door; if this
+            // is not desirable - for instance if some form of transition rando
+            // has been applied - then you should also check isHub here.
+
+            string collectedKey = IC.DoorLocation.keyPrefix + __instance.keyId;
+            GameSave save = GameSave.GetSaveData();
+
+            // MODIFICATION TO ITEMCHANGER METHOD IN THIS CHECK
+            // Instead of only checking if the Door has not been collected,
+            // We want to check if it hasn't been collected AND one of three options
+            // 1. The door is unlocked already (for collecting in HoD when you already have the door)
+            // 2. We are not in Hall of Doors (for collecting in other levels)
+            // 3. It is the Grove of Spirits Door (for Chandler cutscene triggering GoS door)
+            if (!save.IsKeyUnlocked(collectedKey) && (__instance.unlocked || !SceneManager.GetSceneByName("lvl_HallOfDoors").isLoaded || __instance.keyId == IC.DoorLocation.groveDoorKey))
+            {
+                save.SetKeyState(collectedKey, true);
+                IC.CornerPopup.Show(item);
+                item.Trigger();
+
+                // Darwin normally only wakes up after defeating DFS.
+                // If the Grove of Spirits door is replaced by something
+                // else, this is problematic as it prevents the player from
+                // upgrading stats until potentially much later in the game.
+                //
+                // It would be preferrable to directly patch whatever is
+                // making the decision to wake Darwin up, but it has been
+                // very difficult to locate the exact object that does it.
+                //
+                // We set these keys after the Grove of Spirits door check
+                // because setting the DFS one earlier also disables the
+                // Chandler cutscene, which triggers the check in the first
+                // place.
+                if (__instance.keyId == IC.DoorLocation.groveDoorKey)
+                {
+                    save.SetKeyState("shop_prompted", true);
+                    save.SetKeyState(IC.DoorLocation.dfsKey, true);
+                }
+            }
+
+            if (!__instance.unlocked)
+            {
+                PlayerGlobal.instance.UnPauseInput();
+                PlayerGlobal.instance.UnPauseInput_Cutscene();
+            }
+            
+            // If the door is already open, allow you to go through it anyway.
+                return __instance.unlocked;
+        }
+        
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(DoorTrigger), nameof(DoorTrigger.OnTriggerEnter))]
@@ -92,17 +163,22 @@ internal class EntranceRandomizer : MonoBehaviour
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(DoorTrigger), nameof(DoorTrigger.OnTriggerExit))]
-        private static void PostOnTriggerExit()
+        private static void PostOnTriggerExit(DoorTrigger __instance)
         {
+            PlayerGlobal.instance.UnPauseInput();
             PlayerGlobal.instance.UnPauseInput_Cutscene();
+            if (__instance.parentDoor != null && !GameSave.GetSaveData().IsKeyUnlocked(__instance.parentDoor.keyId))
+            {
+                __instance.parentDoor.unlocked = false;
+            }
         }
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(DoorTrigger), nameof(DoorTrigger.Awake))]
         private static bool PreDoorTriggerAwake(DoorTrigger __instance)
         {
-            // Prevent breaking when loading into Hall of Doors/from a save
-            if (Instance != null && (Instance.enteringHallOfDoors || Instance.loadingIn) && __instance.doorId != "" && !GameSave.GetSaveData().IsKeyUnlocked(DoorTrigger.currentTargetDoor))
+            // Prevent breaking when loading in when Door hasn't been made yet
+            if (Archipelago.Instance.IsConnected() && Instance != null && __instance.doorId != "" && !GameSave.GetSaveData().IsKeyUnlocked(DoorTrigger.currentTargetDoor)) //&& (Instance.enteringHallOfDoors || Instance.loadingIn)
             {
                 if (__instance.doorId == DoorTrigger.currentTargetDoor)
                 {
@@ -115,12 +191,14 @@ internal class EntranceRandomizer : MonoBehaviour
                         PlayerGlobal.instance.SetPosition(__instance.spawnPoint.position, false, false);
                         PlayerGlobal.instance.SetSafePos(__instance.spawnPoint.position);
                         PlayerGlobal.instance.SetRotation(__instance.spawnPoint.rotation);
+                        // GameSceneManager.instance.ReloadCurrentScene();
                         DoorTrigger.currentTargetDoor = "";
+                        GameSceneManager.instance.reloadPlayerScene = true;
                         PlayerGlobal.instance.UnPauseInput();
                         PlayerGlobal.instance.UnPauseInput_Cutscene();
                         __instance.parentDoor = __instance.gameObject.GetComponentInParent<ShortcutDoor>();
                         Instance.loadingIn = false;
-                        Instance.enteringHallOfDoors = false;
+                        // Instance.enteringHallOfDoors = false;
                         return false;
                     }
                     else
@@ -137,7 +215,7 @@ internal class EntranceRandomizer : MonoBehaviour
         private static bool PreDoorTriggerStart(DoorTrigger __instance)
         {
             // Prevent breaking when loading into Hall of Doors/from a save
-            if (Instance != null && (Instance.enteringHallOfDoors && __instance.retryInStart || Instance.loadingIn))
+            if (Archipelago.Instance.IsConnected() && Instance != null && ( __instance.retryInStart || Instance.loadingIn)) //Instance.enteringHallOfDoors &&
             {
                 if (PlayerGlobal.instance != null)
                 {
@@ -149,10 +227,11 @@ internal class EntranceRandomizer : MonoBehaviour
                     PlayerGlobal.instance.SetSafePos(__instance.spawnPoint.position);
                     PlayerGlobal.instance.SetRotation(__instance.spawnPoint.rotation);
                     DoorTrigger.currentTargetDoor = "";
+                    GameSceneManager.instance.reloadPlayerScene = true;
                     PlayerGlobal.instance.UnPauseInput();
                     PlayerGlobal.instance.UnPauseInput_Cutscene();
                     __instance.parentDoor = __instance.gameObject.GetComponentInParent<ShortcutDoor>();
-                    Instance.enteringHallOfDoors = false;
+                    // Instance.enteringHallOfDoors = false;
                     Instance.loadingIn = false;
                     return false;
                 }
