@@ -410,5 +410,20 @@ internal class ItemRandomizer : MonoBehaviour
 			}
 		}
 
+		/// <summary>
+		/// Replace the item name 100 Souls with the appropriate multiple in dialogue (prefixing ItemChanger)
+		/// </summary>
+		/// <param name="message">The message that ItemChanger is passing in to replace the NPC's speech</param>
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(IC.SpeechPopup), nameof(IC.SpeechPopup.Modify), [typeof(NPCCharacter), typeof(int), typeof(string)])]
+		private static void PreModify(ref string message)
+		{
+			if (message.Contains("100 Souls"))
+			{
+				int amount = 100 * Instance.SoulMultiplier;
+				message = message.Replace("100 Souls", $"{amount} Souls");
+			}
+		}
+
 	}
 }
