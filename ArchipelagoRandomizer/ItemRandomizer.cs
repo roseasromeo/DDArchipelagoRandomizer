@@ -62,7 +62,22 @@ internal class ItemRandomizer : MonoBehaviour
 		Sprite icon;
 		string message;
 
-		if (!IC.Predefined.TryGetItem(itemName, out IC.Item item))
+		IC.Item item;
+
+		if (TrapManager.Instance.traps.ContainsKey(itemName))
+		{
+			TrapManager.Instance.trapQueue.Enqueue(TrapManager.Instance.traps[itemName]);
+			Logger.Log($"Received {itemName} from {playerName}");
+			IC.CountableInventoryItem tempItem = new IC.CountableInventoryItem
+			{
+				UniqueId = itemName,
+				CountId = itemName,
+				DisplayName = itemName,
+				Icon = "Unknown"
+			};
+			item = tempItem;
+		}
+		else if (!IC.Predefined.TryGetItem(itemName, out item))
 		{
 			Logger.LogError($"Received unknown item {itemName} from {playerName}");
 			icon = IC.ItemIcons.Get("Unknown");
@@ -90,15 +105,6 @@ internal class ItemRandomizer : MonoBehaviour
 				yield return true;
 				continue;
 			}
-			// Add delay between each item notification received so player has time to read the notifications (only needed if Fast Items is on)
-			if (Archipelago.Instance.apConfig.ReceiveItemsFast)
-			{
-				float timePreDelay = Time.time;
-				while (Time.time - timePreDelay < (itemNotifications.Count < 5 ? itemNotificationDelay : 1))
-				{
-					yield return null;
-				}
-			}
 			int playerSlot = itemNotification.PlayerSlot;
 			IC.Item item = itemNotification.Item;
 			string location = itemNotification.Location;
@@ -125,6 +131,16 @@ internal class ItemRandomizer : MonoBehaviour
 			};
 			icSaveData.AddToTrackerLog(logEntry);
 			itemNotifications.TryDequeue(out _);
+
+			// Add delay between each item notification received so player has time to read the notifications (only needed if Fast Items is on)
+			if (Archipelago.Instance.apConfig.ReceiveItemsFast)
+			{
+				float timePreDelay = Time.time;
+				while (Time.time - timePreDelay < (itemNotifications.Count < 5 ? itemNotificationDelay : 1))
+				{
+					yield return null;
+				}
+			}
 		}
 	}
 
