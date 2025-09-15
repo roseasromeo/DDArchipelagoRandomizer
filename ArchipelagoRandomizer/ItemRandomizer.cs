@@ -172,6 +172,14 @@ internal class ItemRandomizer : MonoBehaviour
 
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
 		}
+		if (Archipelago.Instance.ScoutedPlacements.Count(placement => placement.Location == "Grove of Spirits Door") == 0)
+		{
+			// If the Grove of Spirits Door is not placed, some of the cutscene skip work does not function correctly
+			// Specifically, activating the shop means the Demonic Forest Spirit will never spawn
+			// Place the Grove of Spirits Door at its vanilla location in order to have IC use its alternate system
+			IC.Predefined.TryGetItem("Grove of Spirits Door", out IC.Item predefinedItem);
+			icSaveData.Place(predefinedItem, "Grove of Spirits Door");
+		}
 
 		if (GoalModifications.Instance.IsGreenTabletGoal())
 		{
@@ -238,14 +246,17 @@ internal class ItemRandomizer : MonoBehaviour
 	}
 
 	internal void TriggerGroveofSpiritsDoorCheck(Scene scene, LoadSceneMode _)
+	{
+		if (scene.name == "lvl_HallOfDoors")
 		{
-			if (scene.name == "lvl_HallOfDoors")
+			Plugin.Logger.LogDebug("Triggering GoS door check");
+			if (icSaveData.UnnamedPlacements.ContainsKey("Grove of Spirits Door"))
 			{
-				Plugin.Logger.LogDebug("Triggering GoS door check");
 				icSaveData.UnnamedPlacements["Grove of Spirits Door"].Trigger();
-				SceneManager.sceneLoaded -= TriggerGroveofSpiritsDoorCheck;
 			}
+			SceneManager.sceneLoaded -= TriggerGroveofSpiritsDoorCheck;
 		}
+	}
 
 	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
 	{
@@ -405,8 +416,8 @@ internal class ItemRandomizer : MonoBehaviour
 					assembly.GetManifestResourceStream("DDoor.Resources.Item_Changer_Icons." + name).CopyTo(memstream);
 					tex.LoadImage(memstream.ToArray(), true);
 				}
-            	tex.filterMode = FilterMode.Bilinear;
-            	return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
+				tex.filterMode = FilterMode.Bilinear;
+				return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(.5f, .5f));
 			}
 		}
 
