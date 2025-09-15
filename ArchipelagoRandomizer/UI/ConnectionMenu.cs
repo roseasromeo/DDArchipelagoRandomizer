@@ -33,6 +33,7 @@ internal class ConnectionMenu : CustomUI
 		Prefill();
 		Plugin.Instance.StartCoroutine(SelectFirstTextInput());
 		Plugin.Instance.OnUpdate += CheckForInputs;
+		Buttons.instance.buttonList["MenuOk"].tapped = false;
 	}
 
 	public override void Hide()
@@ -214,10 +215,10 @@ internal class ConnectionMenu : CustomUI
 				// (While shift/caps/control would not trigger the Buttons code below under default keybinding, assume that the player may have rebound their keyboard controls)
 				// If someone has remapped both their copy/paste/etc. shortcuts AND their Death's Door controls so that they clash but aren't those listed letters, they will run into issues
 				Input.ResetInputAxes(); //required to avoid below controller handling from triggering
-				Buttons.inputPaused = true;
+				Buttons.PauseInput(true);
 				return;
 			}
-			Buttons.inputPaused = false;
+			Buttons.PauseInput(false);
 
 			// Should only reach this section from Controller inputs or unfiltered keyboard inputs
 			if (Buttons.Tapped("MenuOk")) // Enter and Return are now handled above
