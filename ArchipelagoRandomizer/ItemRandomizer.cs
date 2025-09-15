@@ -190,6 +190,15 @@ internal class ItemRandomizer : MonoBehaviour
 			Logger.Log($"Placed goal item at Green Ancient Tablet of Knowledge");
 		}
 
+		if (GoalModifications.Instance.IsLordOfDoorsGoal())
+		{
+			// Place a goal item at Rusty Belltower Key if Lord of Doors is a possible goal so that the belltower is accessible
+			IC.Predefined.TryGetItem("Rusty Belltower Key", out IC.Item predefinedItem);
+			IC.Item item = new GoalModifications.GoalItem("Goal", predefinedItem?.Icon ?? "Unknown", "Rusty Belltower Key");
+			icSaveData.Place(item, "Rusty Belltower Key");
+			Logger.Log($"Placed goal item at Rusty Belltower Key");
+		}
+
 		// Determine starting weapon
 		long startWeapon = Archipelago.Instance.GetSlotData<long>("start_weapon");
 		string startingWeaponId = startWeapon switch
