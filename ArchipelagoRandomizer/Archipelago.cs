@@ -5,6 +5,7 @@ using Archipelago.MultiClient.Net.Models;
 using Archipelago.MultiClient.Net.Packets;
 using HarmonyLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -331,6 +332,23 @@ internal class Archipelago
 			PlayerGlobal.instance.IsAlive()
 		);
 	}
+	internal void StorePosition(MapManager.PlayerCoords playerCoords)
+    {
+        if (!IsConnected())
+        {
+            return;
+        }
+        Session.DataStorage[$"{Session.ConnectionInfo.Slot}_{Session.ConnectionInfo.Team}_deathsdoor_coords"] = JObject.FromObject(playerCoords);
+    }
+
+	internal void StoreMap(string map)
+    {
+        if (!IsConnected())
+        {
+            return;
+        }
+		Session.DataStorage[$"{Session.ConnectionInfo.Slot}_{Session.ConnectionInfo.Team}_deathsdoor_map"] = map;
+    }
 
 	internal void ToggleDeathlink(bool newValue)
 	{
