@@ -124,6 +124,7 @@ internal class Archipelago
 			incomingItemHandler?.MoveNext();
 			outgoingItemHandler?.MoveNext();
 			ItemRandomizer.Instance.itemNotificationHandler?.MoveNext();
+			TrapManager.Instance.trapHandler?.MoveNext();
 		}
 	}
 
