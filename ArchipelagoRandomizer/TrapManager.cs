@@ -38,6 +38,8 @@ public class TrapManager : MonoBehaviour
                 continue;
             }
 
+			yield return new WaitWhile(PlayerGlobal.instance.InputPaused);
+
             switch (trap)
             {
                 case TrapType.Rotation:
@@ -89,16 +91,10 @@ public class TrapManager : MonoBehaviour
 
 	private void KnockbackTrap()
 	{
-		PlayerGlobal player = PlayerGlobal.instance;
-
-		if (player.InputPaused())
-		{
-			Logger.Log("Player can not be knocked back right now");
-			return;
-		}
+		GameObject player = PlayerGlobal.instance.gameObject;
 
 		// This ensures player always gets knocked backwards
-		Vector3 originPos = player.gameObject.transform.position - player.gameObject.transform.forward;
+		Vector3 originPos = player.transform.position - player.transform.forward;
 
 		// Get random knockback force
 		float force = Random.Range(1, 5);
