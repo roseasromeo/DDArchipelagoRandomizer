@@ -15,6 +15,7 @@ public class TrapManager : MonoBehaviour
     public Dictionary<string, TrapType> traps = new() {
         {"Rotation Trap", TrapType.Rotation },
         {"Invisibility Trap", TrapType.Invisibility },
+		{"Knockback Trap", TrapType.Knockback },
     };
     internal IEnumerator trapHandler;
     internal ConcurrentQueue<TrapType> trapQueue;
@@ -86,11 +87,33 @@ public class TrapManager : MonoBehaviour
         }
     }
 
+	private void KnockbackTrap()
+	{
+		PlayerGlobal player = PlayerGlobal.instance;
+
+		if (player.InputPaused())
+		{
+			Logger.Log("Player can not be knocked back right now");
+			return;
+		}
+
+		// This ensures player always gets knocked backwards
+		Vector3 originPos = player.gameObject.transform.position - player.gameObject.transform.forward;
+
+		// Get random knockback force
+		float force = Random.Range(1, 5);
+
+		player.GetComponent<DamageablePlayer>().fallOver(originPos, force);
+
+		Logger.Log($"Player received knockback with force of {force}");
+	}
+
 
 
     public enum TrapType
     {
         Rotation,
-        Invisibility
+        Invisibility,
+		Knockback,
     }
 }
