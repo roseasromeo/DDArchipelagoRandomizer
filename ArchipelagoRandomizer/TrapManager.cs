@@ -132,10 +132,16 @@ public class TrapManager : MonoBehaviour
 		int enemyLayer = LayerMask.NameToLayer("Enemy");
 
 		// Get all active enemy meshes
-		List<SkinnedMeshRenderer> allEnemyMeshes = [.. Resources.FindObjectsOfTypeAll<AI_Brain>()
+		List<SkinnedMeshRenderer> allEnemyMeshes = Resources.FindObjectsOfTypeAll<AI_Brain>()
 			.Where(ai => ai.gameObject.layer == enemyLayer) // Checks for enemy layer
 			.SelectMany(ai => ai.GetComponentsInChildren<SkinnedMeshRenderer>()) // Gets all meshes (there can be many children with meshes)
-			.Where(mesh => mesh.gameObject.activeSelf)]; // Gets only the active meshes
+			.Where(mesh => mesh.gameObject.activeSelf) // Gets only the active meshes
+			.ToList();
+
+		foreach (SkinnedMeshRenderer mesh in allEnemyMeshes)
+		{
+			mesh.gameObject.SetActive(false);
+		}
 
 		// Lower invis timer
 		while (enemyInvisTimer > 0)
