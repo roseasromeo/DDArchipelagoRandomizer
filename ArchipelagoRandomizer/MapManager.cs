@@ -57,7 +57,7 @@ public class MapManager : MonoBehaviour
 
     internal void UpdateMap(Scene scene, LoadSceneMode _)
     {
-        
+
         if (sceneToMap.ContainsKey(scene.name))
         {
             Archipelago.Instance.StoreMap(sceneToMap[scene.name]);
@@ -68,13 +68,16 @@ public class MapManager : MonoBehaviour
     {
         float currentTime = Time.time;
         PlayerCoords currentCoords = CurrentCoords();
-        if (currentTime >= lastSentTime + timeDelta)
+        if (PlayerGlobal.instance)
         {
-            UpdateCoordinates(currentCoords);
-        }
-        else if (Vector3.Distance(new(lastSentCoords.X, lastSentCoords.Y, lastSentCoords.Z), new(currentCoords.X, currentCoords.Y, currentCoords.Z)) > distanceDelta)
-        {
-            UpdateCoordinates(currentCoords);
+            if (currentTime >= lastSentTime + timeDelta)
+            {
+                UpdateCoordinates(currentCoords);
+            }
+            else if (Vector3.Distance(new(lastSentCoords.X, lastSentCoords.Y, lastSentCoords.Z), new(currentCoords.X, currentCoords.Y, currentCoords.Z)) > distanceDelta)
+            {
+                UpdateCoordinates(currentCoords);
+            }
         }
     }
 
