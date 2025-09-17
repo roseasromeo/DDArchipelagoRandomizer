@@ -526,5 +526,21 @@
     {
         "apItemId": 1111,
         "itemChangerName": "Crow-Lockstone South West"
+    },
+    {
+        "apItemId": 2000,
+        "itemChangerName": "Rotation Trap"
+    },
+    {
+        "apItemId": 2001,
+        "itemChangerName": "Player Invisibility Trap"
+    },
+    {
+        "apItemId": 2002,
+        "itemChangerName": "Enemy Invisibility Trap"
+    },
+    {
+        "apItemId": 2003,
+        "itemChangerName": "Knockback Trap"
     }
 ]
