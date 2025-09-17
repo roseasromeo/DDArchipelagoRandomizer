@@ -3,7 +3,9 @@ using DDoor.ItemChanger;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -14,12 +16,16 @@ public class TrapManager : MonoBehaviour
 
     public Dictionary<string, TrapType> traps = new() {
         {"Rotation Trap", TrapType.Rotation },
-        {"Invisibility Trap", TrapType.Invisibility },
+        {"Player Invisibility Trap", TrapType.PlayerInvisibility },
+		{"Enemy Invisibility Trap", TrapType.EnemyInvisibility },
 		{"Knockback Trap", TrapType.Knockback },
     };
     internal IEnumerator trapHandler;
     internal ConcurrentQueue<TrapType> trapQueue;
     private readonly float trapDelay = 3f;
+	private Coroutine enemyInvisCoroutine;
+	private float enemyInvisTime = 15f;
+	private float enemyInvisTimer = 0f;
 
     private void Awake()
     {
@@ -27,6 +33,16 @@ public class TrapManager : MonoBehaviour
         trapQueue = new ConcurrentQueue<TrapType>();
         trapHandler = TrapHandler();
     }
+
+	private void OnEnable()
+	{
+		SceneManager.activeSceneChanged += OnSceneChanged;
+	}
+
+	private void OnDisable()
+	{
+		SceneManager.activeSceneChanged -= OnSceneChanged;
+	}
 
     private IEnumerator TrapHandler()
     {
@@ -44,9 +60,21 @@ public class TrapManager : MonoBehaviour
             {
                 case TrapType.Rotation:
                     RotationTrap(); break;
-                case TrapType.Invisibility:
-                    InvisibilityTrap(); break;
-            }
+                case TrapType.PlayerInvisibility:
+                    PlayerInvisibilityTrap(); break;
+				case TrapType.EnemyInvisibility:
+					bool startRoutine = enemyInvisTimer <= 0f;
+					enemyInvisTimer += enemyInvisTime;
+
+					if (startRoutine)
+					{
+						enemyInvisCoroutine = StartCoroutine(EnemyInvisibilityTrap());
+					}
+
+					break;
+				case TrapType.Knockback:
+					KnockbackTrap(); break;
+			}
             trapQueue.TryDequeue(out _);
             // Add delay between each trap
             float timePreDelay = Time.time;
@@ -57,6 +85,16 @@ public class TrapManager : MonoBehaviour
         }
     }
 
+	private void OnSceneChanged(Scene _, Scene __)
+	{
+		// Stop enemy invis coroutine
+		if (enemyInvisCoroutine != null)
+		{
+			StopCoroutine(enemyInvisCoroutine);
+			enemyInvisTimer = 0f;
+		}
+	}
+
     private float accumulatedAngle = 0f;
     private void RotationTrap()
     {
@@ -64,7 +102,7 @@ public class TrapManager : MonoBehaviour
         CameraRotationControl.instance.Rotate(accumulatedAngle);
     }
 
-    private void InvisibilityTrap()
+    private void PlayerInvisibilityTrap()
     {
         Transform playerVisuals = PlayerGlobal.instance.playerVisuals;
 
@@ -89,6 +127,35 @@ public class TrapManager : MonoBehaviour
         }
     }
 
+	private IEnumerator EnemyInvisibilityTrap()
+	{
+		int enemyLayer = LayerMask.NameToLayer("Enemy");
+
+		// Get all active enemy meshes
+		List<SkinnedMeshRenderer> allEnemyMeshes = [.. Resources.FindObjectsOfTypeAll<AI_Brain>()
+			.Where(ai => ai.gameObject.layer == enemyLayer) // Checks for enemy layer
+			.SelectMany(ai => ai.GetComponentsInChildren<SkinnedMeshRenderer>()) // Gets all meshes (there can be many children with meshes)
+			.Where(mesh => mesh.gameObject.activeSelf)]; // Gets only the active meshes
+
+		// Lower invis timer
+		while (enemyInvisTimer > 0)
+		{
+			enemyInvisTimer -= Time.deltaTime;
+			yield return null;
+		}
+
+		// At this point, invis timer has ran out
+
+		enemyInvisTimer = 0f;
+
+		// Reset all modified enemy meshes. When an enemy is killed, the object gets destroyed.
+		// So we only reset meshes that still exist to avoid null ref.
+		foreach (SkinnedMeshRenderer mesh in allEnemyMeshes.Where(m => m != null))
+		{
+			mesh.gameObject.SetActive(true);
+		}
+	}
+
 	private void KnockbackTrap()
 	{
 		GameObject player = PlayerGlobal.instance.gameObject;
@@ -109,7 +176,8 @@ public class TrapManager : MonoBehaviour
     public enum TrapType
     {
         Rotation,
-        Invisibility,
+        PlayerInvisibility,
+		EnemyInvisibility,
 		Knockback,
-    }
+	}
 }
