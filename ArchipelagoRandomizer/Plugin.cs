@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 using AGM = DDoor.AlternativeGameModes;
 
@@ -49,9 +51,15 @@ public class Plugin : BaseUnityPlugin
 		}
 	}
 
+	bool hasFaded;
 	private void Update()
 	{
 		OnUpdate?.Invoke();
+	}
+
+	public static Coroutine StartRoutine(IEnumerator routine)
+	{
+		return Instance.StartCoroutine(routine);
 	}
 }
 
