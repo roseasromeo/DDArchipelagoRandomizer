@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,6 +143,7 @@ internal class EnemyRandomizer : MonoBehaviour
 	{
 		Logger.Log("Enemy randomizer started!");
 
+		// Preload enemies
 		foreach (var kvp in enemiesToCache)
 		{
 			string sceneName = kvp.Key;
@@ -208,7 +208,6 @@ internal class EnemyRandomizer : MonoBehaviour
 
 	public GameObject SpawnEnemyAtPlayer(Enemy enemyType)
 	{
-		Logger.LogError("test");
 		Transform player = PlayerGlobal.instance.transform;
 		Vector3 position = player.position - player.forward * 2f;
 		GameObject enemy = Instantiate(GetEnemy(enemyType));

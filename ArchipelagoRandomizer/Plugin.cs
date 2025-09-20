@@ -28,6 +28,15 @@ public class Plugin : BaseUnityPlugin
 	{
 		instance = this;
 
+		// Only show Unity logs that are errors
+		Application.logMessageReceivedThreaded += (condition, stackTrace, type) =>
+		{
+			if (type == LogType.Log || type == LogType.Warning)
+				return;
+
+			Logger.LogError($"{condition}\n{stackTrace}");
+		};
+
 		try
 		{
 			Logger = base.Logger;
