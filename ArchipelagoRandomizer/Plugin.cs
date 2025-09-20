@@ -33,10 +33,7 @@ public class Plugin : BaseUnityPlugin
 			Logger = base.Logger;
 			Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
-			AGM.AlternativeGameModes.Add("ARCHIPELAGO", () =>
-			{
-				ArchipelagoRandomizerMod.Instance.OnFileCreated();
-			});
+			AGM.AlternativeGameModes.Add("ARCHIPELAGO", ArchipelagoRandomizerMod.Instance.OnFileCreated);
 
 			new Harmony("deathsdoor.archipelagorandomizer").PatchAll();
 			UIManager.Instance.AddOptionsMenuItems();
@@ -51,7 +48,6 @@ public class Plugin : BaseUnityPlugin
 		}
 	}
 
-	bool hasFaded;
 	private void Update()
 	{
 		OnUpdate?.Invoke();

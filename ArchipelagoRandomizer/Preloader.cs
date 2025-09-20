@@ -16,6 +16,7 @@ internal class Preloader
 	private readonly List<Object> cachedObjects;
 	private Transform cacheHolder;
 	private Stopwatch stopwatch;
+	private string savedScene;
 
 	public static Preloader Instance => instance;
 	public static bool IsPreloading { get; private set; }
@@ -29,10 +30,19 @@ internal class Preloader
 	public static T GetCachedObject<T>(string objName) where T : Object
 	{
 		// Find the cached object
-		Object obj = Instance.cachedObjects.Find(x => x.name == objName)
-			?? throw new Exception($"No object with name {objName} was found in the cached list of objects.");
+		Object obj = Instance.cachedObjects.Find(x => x.name == objName);
 
-		return (T)obj;
+		if (obj == null)
+		{
+			Logger.LogError($"No object with name {objName} was found in the cached list of objects. Returning null.");
+			return null;
+		}
+
+		if (obj is T typedObj)
+			return typedObj;
+
+		Logger.LogError($"Found cached object with name {objName}, but it's not a UnityEngine.Object type. Returning null.");
+		return null;
 	}
 
 	public void AddObjectToCacheList(string scene, OnLoadedSceneFunc onLoadedSceneCallback)
@@ -55,6 +65,7 @@ internal class Preloader
 	public void StartPreload(Action onDone = null)
 	{
 		IsPreloading = true;
+		savedScene = GameSave.GetSaveData().GetSpawnScene();
 		Logger.Log("Starting preload...");
 
 		// Create the parent that will hold the cached objects
@@ -120,16 +131,21 @@ internal class Preloader
 			foreach (Object obj in objs)
 			{
 				GameObject gameObj = obj as GameObject;
+				Object newObj;
 
 				// If object is a GameObject, change its parent so it persists
 				if (gameObj != null)
-					gameObj.transform.SetParent(cacheHolder, true);
+				{
+					newObj = Object.Instantiate(gameObj, cacheHolder);
+					newObj.name = newObj.name.Replace("(Clone)", "");
+				}
 				else
 				{
-					Object.DontDestroyOnLoad(obj);
+					newObj = Object.Instantiate(obj);
+					Object.DontDestroyOnLoad(newObj);
 				}
 
-				cachedObjects.Add(obj);
+				cachedObjects.Add(newObj);
 			}
 		}
 	}
@@ -143,7 +159,7 @@ internal class Preloader
 		onDone?.Invoke();
 
 		GameSceneManager.DontSaveNext();
-		GameSceneManager.LoadScene(GameSave.GetSaveData().GetSpawnScene(), false);
+		GameSceneManager.LoadScene(savedScene, false);
 		GameSceneManager.ReloadSaveOnLoad();
 	}
 
@@ -157,6 +173,9 @@ internal class Preloader
 		[HarmonyPatch(typeof(SaveSlot), nameof(SaveSlot.LoadSave))]
 		private static bool NewGamePatch(SaveSlot __instance)
 		{
+			if (!Archipelago.Instance.IsConnected())
+				return true;
+
 			__instance.useSaveFile();
 			return false;
 		}
@@ -166,6 +185,9 @@ internal class Preloader
 		[HarmonyPatch(typeof(GameSceneManager), nameof(GameSceneManager.ReturnToTitle))]
 		private static void ReturnToTitlePatch()
 		{
+			if (!Archipelago.Instance.IsConnected())
+				return;
+
 			Instance.cachedObjects.Clear();
 			Instance.objectsToCache.Clear();
 			Object.Destroy(Instance.cacheHolder.gameObject);
