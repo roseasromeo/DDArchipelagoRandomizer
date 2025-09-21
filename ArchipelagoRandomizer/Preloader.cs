@@ -47,6 +47,13 @@ internal class Preloader : IDisposable
 		return null;
 	}
 
+	public static void CacheObject(GameObject obj)
+	{
+		GameObject newObj = Object.Instantiate(obj, Instance.cacheHolder);
+		newObj.name = newObj.name.Replace("(Clone)", "");
+		Instance.cachedObjects.Add(newObj);
+	}
+
 	public void AddObjectToCacheList(string scene, OnLoadedSceneFunc onLoadedSceneCallback)
 	{
 		// If the scene is already in the cache list, add the new callback to it
