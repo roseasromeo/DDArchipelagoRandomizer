@@ -42,7 +42,6 @@ internal class EnemyRandomizer : MonoBehaviour
 		LurkerMother,
 		Mage,
 		MageFire,
-		MageGrounded,
 		MagePlague,
 		MagePlagueSingleshot,
 		MageRedPurple,
@@ -72,6 +71,7 @@ internal class EnemyRandomizer : MonoBehaviour
 	private Dictionary<string, EnemyData[]> enemiesToCache;
 	private Dictionary<EnemyType, EnemyData> enemyTypeLookup = new();
 	private List<string> enemiesToNotReplace;
+	private bool hasSpawnedFireColumn;
 
 	public static EnemyRandomizer Instance => instance;
 
@@ -81,81 +81,80 @@ internal class EnemyRandomizer : MonoBehaviour
 		enemiesToCache = new()
 		{
 			{"AVARICE_WAVES_Secret", [
-				new EnemyData { type = EnemyType.Lurker, name = "_E_LURKER" },
-				new EnemyData { type = EnemyType.Knight, name = "_E_KNIGHT" },
-				new EnemyData { type = EnemyType.MageRedPurple, name = "_E_MAGE_REDPURPLE Variant" },
-				new EnemyData { type = EnemyType.BruteGold, name = "_E_BRUTE_GOLD Variant" },
-				new EnemyData { type = EnemyType.GruntRedeemerIndoor, name = "_E_GRUNT_Redeemer_Indoor Variant" },
-				new EnemyData { type = EnemyType.MagePlagueSingleshot, name = "_E_MAGE_Plague_SingleShot" },
-				new EnemyData { type = EnemyType.BatWhite, name = "_E_BAT_White" },
-				new EnemyData { type = EnemyType.GhoulRapid, name = "_E_GHOUL_Rapid Variant" },
-				new EnemyData { type = EnemyType.LurkerMother, name = "_E_LURKER_MOTHER" },
+				new EnemyData { type = EnemyType.Lurker, name = "_E_LURKER", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.Knight, name = "_E_KNIGHT", weightTier = EnemyData.WeightTier.Tier4 },
+				new EnemyData { type = EnemyType.MageRedPurple, name = "_E_MAGE_REDPURPLE Variant", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.BruteGold, name = "_E_BRUTE_GOLD Variant", weightTier = EnemyData.WeightTier.Tier3 },
+				new EnemyData { type = EnemyType.GruntRedeemerIndoor, name = "_E_GRUNT_Redeemer_Indoor Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.MagePlagueSingleshot, name = "_E_MAGE_Plague_SingleShot", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.BatWhite, name = "_E_BAT_White", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.GhoulRapid, name = "_E_GHOUL_Rapid Variant", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.LurkerMother, name = "_E_LURKER_MOTHER", weightTier = EnemyData.WeightTier.Tier3 },
 			]},
 			{"lvl_Forest", [
-				new EnemyData { type = EnemyType.DekuScrub, name = "_E_DEKU_SCRUB" },
-				new EnemyData { type = EnemyType.Plant, name = "_E_PLANT" },
+				new EnemyData { type = EnemyType.DekuScrub, name = "_E_DEKU_SCRUB", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.Plant, name = "_E_PLANT", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 			{"lvl_Graveyard", [
-				new EnemyData { type = EnemyType.GruntRedeemer, name = "_E_GRUNT_Redeemer" },
-				new EnemyData { type = EnemyType.GruntGrave, name = "_E_GRUNT_Grave Variant" },
-				new EnemyData { type = EnemyType.BatBlack, name = "_E_BAT_Black Variant" },
-				new EnemyData { type = EnemyType.HeadrollerHeadless, name = "_E_HEADROLLER_HEADLESS Variant" },
+				new EnemyData { type = EnemyType.GruntRedeemer, name = "_E_GRUNT_Redeemer", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.GruntGrave, name = "_E_GRUNT_Grave Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.BatBlack, name = "_E_BAT_Black Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.HeadrollerHeadless, name = "_E_HEADROLLER_HEADLESS Variant", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 			{"lvl_GrandmaGardens", [
-				new EnemyData { type = EnemyType.SlimeMedGreen, name = "_E_Slime_med_GREEN Variant" },
-				new EnemyData { type = EnemyType.SlimeSmallGreen, name = "_E_Slime_small_GREEN Variant" },
-				new EnemyData { type = EnemyType.SlimeBigGreen, name = "_E_Slime_big_GREEN Variant" },
-				new EnemyData { type = EnemyType.PotMimicAvariceExplode, name = "POT_Mimic_Explode_AVARICE Variant" },
-				new EnemyData { type = EnemyType.PotMimicAvariceMagic, name = "POT_Mimic_Magic_AVARICE Variant" },
-				new EnemyData { type = EnemyType.PotMimicAvariceMelee, name = "POT_Mimic_Melee_AVARICE Variant" },
+				new EnemyData { type = EnemyType.SlimeMedGreen, name = "_E_Slime_med_GREEN Variant", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.SlimeSmallGreen, name = "_E_Slime_small_GREEN Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.SlimeBigGreen, name = "_E_Slime_big_GREEN Variant", weightTier = EnemyData.WeightTier.Tier4 },
+				new EnemyData { type = EnemyType.PotMimicAvariceExplode, name = "POT_Mimic_Explode_AVARICE Variant", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.PotMimicAvariceMagic, name = "POT_Mimic_Magic_AVARICE Variant", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.PotMimicAvariceMelee, name = "POT_Mimic_Melee_AVARICE Variant", weightTier = EnemyData.WeightTier.Tier2 },
 			]},
 			{"lvl_GrandmaMansion", [
-				new EnemyData { type = EnemyType.PotMimicMagic, name = "POT_Mimic_Magic" },
-				new EnemyData { type = EnemyType.PotMimicExplode, name = "POT_Mimic_Explode" },
-				new EnemyData { type = EnemyType.PotMimicMelee, name = "POT_Mimic_Melee" },
+				new EnemyData { type = EnemyType.PotMimicMagic, name = "POT_Mimic_Magic", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.PotMimicExplode, name = "POT_Mimic_Explode", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.PotMimicMelee, name = "POT_Mimic_Melee", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 			{"lvl_Swamp", [
-				new EnemyData { type = EnemyType.FireplantNoHookshot, name = "_E_FIREPLANT_Nohookshot" },
-				new EnemyData { type = EnemyType.GhoulLongRange, name = "_E_GHOUL_LongRange Variant" },
-				new EnemyData { type = EnemyType.Grunt, name = "_E_GRUNT" },
-				new EnemyData { type = EnemyType.MagePlague, name = "_E_MAGE_Plague Variant" },
+				new EnemyData { type = EnemyType.FireplantNoHookshot, name = "_E_FIREPLANT_Nohookshot", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.GhoulLongRange, name = "_E_GHOUL_LongRange Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.Grunt, name = "_E_GRUNT", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.MagePlague, name = "_E_MAGE_Plague Variant", weightTier = EnemyData.WeightTier.Tier3 },
 			]},
 			{"lvl_mountaintops", [
-				new EnemyData { type = EnemyType.Brute, name = "_E_BRUTE" },
-				new EnemyData { type = EnemyType.Fireplant, name = "_E_FIREPLANT" },
-				new EnemyData { type = EnemyType.MageGrounded, name = "_E_MAGE_Grounded Variant" },
+				new EnemyData { type = EnemyType.Brute, name = "_E_BRUTE", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.Fireplant, name = "_E_FIREPLANT", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 			{"AVARICE_WAVES_Fortress", [
-				new EnemyData { type = EnemyType.SlimeSmall, name = "_E_Slime_small" },
-				new EnemyData { type = EnemyType.Jumper, name = "_E_JUMPER" },
-				new EnemyData { type = EnemyType.SlimeMed, name = "_E_Slime_med" },
-				new EnemyData { type = EnemyType.MageFire, name = "_E_MAGE_Fire Variant" },
-				new EnemyData { type = EnemyType.GruntYeti, name = "_E_GRUNT_Yeti Variant" },
+				new EnemyData { type = EnemyType.SlimeSmall, name = "_E_Slime_small", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.Jumper, name = "_E_JUMPER", weightTier = EnemyData.WeightTier.Tier3 },
+				new EnemyData { type = EnemyType.SlimeMed, name = "_E_Slime_med", weightTier = EnemyData.WeightTier.Tier2 },
+				new EnemyData { type = EnemyType.GruntYeti, name = "_E_GRUNT_Yeti Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.MageFire, name = "_E_MAGE_Fire Variant", weightTier = EnemyData.WeightTier.Tier2 },
 			]},
 			{"lvl_SailorMountain", [
-				new EnemyData { type = EnemyType.PlagueKnightSlowFire, name = "_E_PLAGUE_KNIGHT_SlowFire" },
+				new EnemyData { type = EnemyType.PlagueKnightSlowFire, name = "_E_PLAGUE_KNIGHT_SlowFire", weightTier = EnemyData.WeightTier.Tier2 },
 			]},
 			{"lvl_GrandmaBasement", [
-				new EnemyData { type = EnemyType.SlimeBig, name = "_E_Slime_big" },
-				new EnemyData { type = EnemyType.Headroller, name = "_E_HEADROLLER" },
-				new EnemyData { type = EnemyType.PlagueKnight, name = "_E_PLAGUE_KNIGHT" },
+				new EnemyData { type = EnemyType.SlimeBig, name = "_E_Slime_big", weightTier = EnemyData.WeightTier.Tier3 },
+				new EnemyData { type = EnemyType.Headroller, name = "_E_HEADROLLER", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.PlagueKnight, name = "_E_PLAGUE_KNIGHT", weightTier = EnemyData.WeightTier.Tier2 },
 			]},
 			{"TEST_AREA", [
-				new EnemyData { type = EnemyType.Mage, name = "_E_MAGE" },
-				new EnemyData { type = EnemyType.GruntPot, name = "_E_GRUNT_Pot Variant" },
-				new EnemyData { type = EnemyType.GrimaceKnight, name = "_E_GRIMACE_KNIGHT" },
-				new EnemyData { type = EnemyType.Dodger, name = "_E_DODGER" },
-				new EnemyData { type = EnemyType.KnightGreenPlague, name = "_E_KNIGHT_GreenPlague" },
-				new EnemyData { type = EnemyType.Ghoul, name = "_E_GHOUL" },
+				new EnemyData { type = EnemyType.Mage, name = "_E_MAGE", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.GruntPot, name = "_E_GRUNT_Pot Variant", weightTier = EnemyData.WeightTier.Tier1 },
+				new EnemyData { type = EnemyType.GrimaceKnight, name = "_E_GRIMACE_KNIGHT", weightTier = EnemyData.WeightTier.Tier4 },
+				new EnemyData { type = EnemyType.Dodger, name = "_E_DODGER", weightTier = EnemyData.WeightTier.Tier3 },
+				new EnemyData { type = EnemyType.KnightGreenPlague, name = "_E_KNIGHT_GreenPlague", weightTier = EnemyData.WeightTier.Tier5 },
+				new EnemyData { type = EnemyType.Ghoul, name = "_E_GHOUL", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 			{"lvl_SilentServant_Fight", [
-				new EnemyData { type = EnemyType.ServantAll, name = "_E_SERVANT_All" },
-				new EnemyData { type = EnemyType.ServantBomb, name = "_E_SERVANT_Bombs" },
-				new EnemyData { type = EnemyType.ServantFire, name = "_E_SERVANT_FIRE Variant" },
-				new EnemyData { type = EnemyType.ServantHookshot, name = "_E_SERVANT_Hookshot Variant" },
+				new EnemyData { type = EnemyType.ServantAll, name = "_E_SERVANT_All", weightTier = EnemyData.WeightTier.Tier5 },
+				new EnemyData { type = EnemyType.ServantBomb, name = "_E_SERVANT_Bombs", weightTier = EnemyData.WeightTier.Tier5 },
+				new EnemyData { type = EnemyType.ServantFire, name = "_E_SERVANT_FIRE Variant", weightTier = EnemyData.WeightTier.Tier5 },
+				new EnemyData { type = EnemyType.ServantHookshot, name = "_E_SERVANT_Hookshot Variant", weightTier = EnemyData.WeightTier.Tier5 },
 			]},
 			{"boss_Frog", [
-				new EnemyData { type = EnemyType.GruntFrog, name = "_E_GRUNT_Frog" },
+				new EnemyData { type = EnemyType.GruntFrog, name = "_E_GRUNT_Frog", weightTier = EnemyData.WeightTier.Tier1 },
 			]},
 		};
 		enemiesToNotReplace = new()
@@ -190,7 +189,7 @@ internal class EnemyRandomizer : MonoBehaviour
 
 	private void OnEnable()
 	{
-		Logger.Log("EnemyType randomizer started!");
+		Logger.Log("Enemy randomizer started!");
 
 		// Preload enemies
 		foreach (var kvp in enemiesToCache)
@@ -212,6 +211,13 @@ internal class EnemyRandomizer : MonoBehaviour
 						{
 							foundEnemy = brain.gameObject;
 							foundEnemy.SetActive(true);
+
+							// If MageFire, cache the fire column pool so it can attack
+							if (enemyData.type == EnemyType.MageFire)
+							{
+								GameObject fireColumnPool = GameObject.Find("_FIRE_COLUMN_POOL");
+								Preloader.CacheObject(fireColumnPool);
+							}
 
 							// Modify silent servants
 							if (foundEnemy.TryGetComponent(out AI_SilentServant ai))
@@ -260,6 +266,7 @@ internal class EnemyRandomizer : MonoBehaviour
 	//	if (Input.GetKeyDown("t"))
 	//	{
 	//		SpawnEnemyAtPlayer((EnemyType)index);
+	//		Logger.Log($"Spawned enemy: {(EnemyType)index}");
 	//		index++;
 	//	}
 	//}
@@ -271,6 +278,7 @@ internal class EnemyRandomizer : MonoBehaviour
 
 	private void SceneLoaded(Scene scene, LoadSceneMode _)
 	{
+		hasSpawnedFireColumn = false;
 		ReplaceEnemiesInScene();
 	}
 
@@ -278,9 +286,9 @@ internal class EnemyRandomizer : MonoBehaviour
 	{
 		Transform player = PlayerGlobal.instance.transform;
 		Vector3 position = player.position - player.forward * 2f;
-		GameObject enemy = Instantiate(GetEnemy(enemyType));
-		enemy.transform.position = position;
-		return enemy;
+		GameObject newEnemy = Instantiate(GetEnemy(enemyType));
+		newEnemy.transform.position = position;
+		return newEnemy;
 	}
 
 	private void ReplaceEnemiesInScene()
@@ -360,16 +368,42 @@ internal class EnemyRandomizer : MonoBehaviour
 
 	private GameObject GetRandomEnemy()
 	{
-		EnemyType[] types = enemyTypeLookup.Keys.ToArray();
-		int randomIndex = Random.Range(0, types.Length);
-		EnemyType randomEnemy = types[randomIndex];
-		return GetEnemy(randomEnemy);
+		List<EnemyData> enemies = enemyTypeLookup.Values.ToList();
+		int totalWeight = enemies.Sum(e => e.GetWeight());
+		int roll = Random.Range(0, totalWeight);
+		int cumulative = 0;
+
+		foreach (EnemyData enemy in enemies)
+		{
+			cumulative += enemy.GetWeight();
+
+			if (roll < cumulative)
+			{
+				// If MageFire, instantiate the fire column pool so it can attack
+				if (!hasSpawnedFireColumn && enemy.type == EnemyType.MageFire)
+				{
+					Instantiate(Preloader.GetCachedObject<GameObject>("_FIRE_COLUMN_POOL"));
+					hasSpawnedFireColumn = true;
+				}
+
+				return Preloader.GetCachedObject<GameObject>(enemy.name);
+			}
+		}
+
+		return null;
 	}
 
 	private GameObject GetEnemy(EnemyType enemyType)
 	{
 		if (enemyTypeLookup.TryGetValue(enemyType, out EnemyData data))
 		{
+			// If MageFire, instantiate the fire column pool so it can attack
+			if (!hasSpawnedFireColumn && enemyType == EnemyType.MageFire)
+			{
+				Instantiate(Preloader.GetCachedObject<GameObject>("_FIRE_COLUMN_POOL"));
+				hasSpawnedFireColumn = true;
+			}
+
 			return Preloader.GetCachedObject<GameObject>(data.name);
 		}
 
@@ -387,6 +421,27 @@ internal class EnemyRandomizer : MonoBehaviour
 	{
 		public EnemyType type;
 		public string name;
+		public WeightTier weightTier;
+		/// <summary>
+		/// Set this greater than 0 to set a custom weight for this enemy
+		/// </summary>
+		public int weight = -1;
+
+		public EnemyData() { }
+
+		public int GetWeight()
+		{
+			return weight > 0 ? weight : (int)weightTier;
+		}
+
+		public enum WeightTier
+		{
+			Tier1 = 50,
+			Tier2 = 30,
+			Tier3 = 15,
+			Tier4 = 5,
+			Tier5 = 1,
+		}
 	}
 
 	[HarmonyPatch]
