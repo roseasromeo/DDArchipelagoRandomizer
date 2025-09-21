@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace DDoor.ArchipelagoRandomizer;
 
-internal class Preloader
+internal class Preloader : IDisposable
 {
 	private readonly static Preloader instance = new();
 	private readonly Dictionary<string, List<OnLoadedSceneFunc>> objectsToCache;
@@ -17,6 +17,8 @@ internal class Preloader
 	private Transform cacheHolder;
 	private Stopwatch stopwatch;
 	private string savedScene;
+
+	public event Action OnPreloadDone;
 
 	public static Preloader Instance => instance;
 	public static bool IsPreloading { get; private set; }
@@ -76,6 +78,11 @@ internal class Preloader
 		Object.DontDestroyOnLoad(cacheHolder);
 
 		Plugin.StartRoutine(PreloadAll(onDone));
+	}
+
+	public void Dispose()
+	{
+		OnPreloadDone = null;
 	}
 
 	private IEnumerator PreloadAll(Action onDone)
@@ -157,6 +164,7 @@ internal class Preloader
 		IsPreloading = false;
 		objectsToCache.Clear();
 		onDone?.Invoke();
+		OnPreloadDone?.Invoke();
 
 		GameSceneManager.DontSaveNext();
 		GameSceneManager.LoadScene(savedScene, false);

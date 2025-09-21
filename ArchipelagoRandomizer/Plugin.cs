@@ -62,6 +62,11 @@ public class Plugin : BaseUnityPlugin
 		OnUpdate?.Invoke();
 	}
 
+	private void OnApplicationQuit()
+	{
+		Preloader.Instance.Dispose();
+	}
+
 	public static Coroutine StartRoutine(IEnumerator routine)
 	{
 		return Instance.StartCoroutine(routine);
