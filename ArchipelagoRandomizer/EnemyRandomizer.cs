@@ -174,6 +174,8 @@ internal class EnemyRandomizer : MonoBehaviour
 			"FROG_BOSS_FAT",
 			"FROG_BOSS_MAIN",
 			"betty_boss",
+			"OLD_CROW_BOSS(old)",
+			"old_crow_boss_fbx",
 		};
 
 		// Setup enemyType -> EnemyData lookup dict
