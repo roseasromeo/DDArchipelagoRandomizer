@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static DDoor.ArchipelagoRandomizer.EnemyRandomizer;
 using Random = UnityEngine.Random;
 
 namespace DDoor.ArchipelagoRandomizer;
@@ -188,13 +189,9 @@ internal class EnemyRandomizer : MonoBehaviour
 				if (!enemyTypeLookup.ContainsKey(data.type))
 				{
 					enemyTypeLookup.Add(data.type, data);
+					enemyTypeEnabled[data.type] = Plugin.Instance.Config.Bind("Enemy Randomizer", data.type.ToString(), true, $"Enable enemy {data.type}");
 				}
 			}
-		}
-		foreach (EnemyType enemyType in enemyTypeLookup.Keys)
-		{
-			EnemyData data = enemyTypeLookup[enemyType];
-			enemyTypeEnabled[enemyType] = Plugin.Instance.Config.Bind("Enemy Randomizer", data.type.ToString(), true, $"Enable enemy {data.type}");
 		}
 	}
 
