@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Configuration;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,7 +70,8 @@ internal class EnemyRandomizer : MonoBehaviour
 	private static EnemyRandomizer instance;
 	private static readonly Array enemyValues = Enum.GetValues(typeof(EnemyType));
 	private Dictionary<string, EnemyData[]> enemiesToCache;
-	private Dictionary<EnemyType, EnemyData> enemyTypeLookup = new();
+	private readonly Dictionary<EnemyType, EnemyData> enemyTypeLookup = new();
+	private readonly Dictionary<EnemyType, ConfigEntry<bool>> enemyTypeEnabled = [];
 	private List<string> enemiesToNotReplace;
 	private bool hasSpawnedFireColumn;
 
@@ -184,8 +186,15 @@ internal class EnemyRandomizer : MonoBehaviour
 			foreach (EnemyData data in dataArr)
 			{
 				if (!enemyTypeLookup.ContainsKey(data.type))
+				{
 					enemyTypeLookup.Add(data.type, data);
+				}
 			}
+		}
+		foreach (EnemyType enemyType in enemyTypeLookup.Keys)
+		{
+			EnemyData data = enemyTypeLookup[enemyType];
+			enemyTypeEnabled[enemyType] = Plugin.Instance.Config.Bind("Enemy Randomizer", data.type.ToString(), true, $"Enable enemy {data.type}");
 		}
 	}
 
@@ -313,7 +322,7 @@ internal class EnemyRandomizer : MonoBehaviour
 						if (brain is AI_SilentServant)
 							break;
 
-						replacement = GetEnemyReplalcement(comp);
+						replacement = GetEnemyReplacement(comp);
 
 						if (replacement == null)
 							break;
@@ -326,7 +335,7 @@ internal class EnemyRandomizer : MonoBehaviour
 						break;
 					// Replace enemies that spawn from spawners
 					case WaveEnemy wave:
-						replacement = GetEnemyReplalcement(comp);
+						replacement = GetEnemyReplacement(comp);
 
 						if (replacement == null)
 							break;
@@ -335,7 +344,7 @@ internal class EnemyRandomizer : MonoBehaviour
 						break;
 					// Replace enemies that spawn from eggs (Lurkers)
 					case LurkerEgg egg:
-						replacement = GetEnemyReplalcement(comp);
+						replacement = GetEnemyReplacement(comp);
 
 						if (replacement == null)
 							break;
@@ -350,7 +359,7 @@ internal class EnemyRandomizer : MonoBehaviour
 		Logger.Log($"Took {sw.ElapsedMilliseconds}ms to replace all enemies in {scene.name}");
 	}
 
-	private GameObject GetEnemyReplalcement(Component comp)
+	private GameObject GetEnemyReplacement(Component comp)
 	{
 		string enemyName = comp switch
 		{
@@ -370,7 +379,7 @@ internal class EnemyRandomizer : MonoBehaviour
 
 	private GameObject GetRandomEnemy()
 	{
-		List<EnemyData> enemies = enemyTypeLookup.Values.ToList();
+		List<EnemyData> enemies = enemyTypeLookup.Values.Where(data => enemyTypeEnabled[data.type].Value == true).ToList();
 		int totalWeight = enemies.Sum(e => e.GetWeight());
 		int roll = Random.Range(0, totalWeight);
 		int cumulative = 0;
@@ -444,6 +453,7 @@ internal class EnemyRandomizer : MonoBehaviour
 			Tier4 = 5,
 			Tier5 = 1,
 		}
+
 	}
 
 	[HarmonyPatch]
