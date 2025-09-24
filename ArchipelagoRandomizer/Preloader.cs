@@ -119,8 +119,8 @@ internal class Preloader : IDisposable
 			}
 
 			// Wait for scene to load
-			yield return SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
 			Logger.Log($"Preloading scene {sceneToLoad}...");
+			yield return SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
 			SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneToLoad));
 			GameSceneManager.currentScene = sceneToLoad;
 
@@ -176,6 +176,9 @@ internal class Preloader : IDisposable
 		GameSceneManager.DontSaveNext();
 		GameSceneManager.LoadScene(savedScene, false);
 		GameSceneManager.ReloadSaveOnLoad();
+
+		// Start playing the scene's audio
+		GameSceneManager.instance.didLoadPlayer();
 	}
 
 	public delegate Object[] OnLoadedSceneFunc();
@@ -193,6 +196,13 @@ internal class Preloader : IDisposable
 
 			__instance.useSaveFile();
 			return false;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GameRoom), nameof(GameRoom.init))]
+		private static bool FixGameRoomNullRef()
+		{
+			return !IsPreloading;
 		}
 
 		// When returning to title, it clears the cached objects list

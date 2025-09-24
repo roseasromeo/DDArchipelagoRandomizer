@@ -7,13 +7,19 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static DDoor.ArchipelagoRandomizer.EnemyRandomizer;
 using Random = UnityEngine.Random;
 
 namespace DDoor.ArchipelagoRandomizer;
 
 internal class EnemyRandomizer : MonoBehaviour
 {
+	/* List of enemies that have been removed (kept as a reference in case they make a comeback
+	 * 
+	 * _E_PLAGUE_KNIGHT_SlowFire
+	 *		Scene: lvl_SailorMountain
+	 *		Reason: Their pathfinding doesn't work often times, and they'll get stuck on walls during chase state
+	*/
+
 	public enum EnemyType
 	{
 		BatBlack,
@@ -48,7 +54,6 @@ internal class EnemyRandomizer : MonoBehaviour
 		MagePlagueSingleshot,
 		MageRedPurple,
 		PlagueKnight,
-		PlagueKnightSlowFire,
 		Plant,
 		PotMimicAvariceExplode,
 		PotMimicAvariceMagic,
@@ -133,9 +138,6 @@ internal class EnemyRandomizer : MonoBehaviour
 				new EnemyData { type = EnemyType.SlimeMed, name = "_E_Slime_med", weightTier = EnemyData.WeightTier.Tier2 },
 				new EnemyData { type = EnemyType.GruntYeti, name = "_E_GRUNT_Yeti Variant", weightTier = EnemyData.WeightTier.Tier1 },
 				new EnemyData { type = EnemyType.MageFire, name = "_E_MAGE_Fire Variant", weightTier = EnemyData.WeightTier.Tier2 },
-			]},
-			{"lvl_SailorMountain", [
-				new EnemyData { type = EnemyType.PlagueKnightSlowFire, name = "_E_PLAGUE_KNIGHT_SlowFire", weightTier = EnemyData.WeightTier.Tier2 },
 			]},
 			{"lvl_GrandmaBasement", [
 				new EnemyData { type = EnemyType.SlimeBig, name = "_E_Slime_big", weightTier = EnemyData.WeightTier.Tier3 },
@@ -273,8 +275,9 @@ internal class EnemyRandomizer : MonoBehaviour
 	//{
 	//	if (Input.GetKeyDown("t"))
 	//	{
-	//		SpawnEnemyAtPlayer((EnemyType)index);
-	//		Logger.Log($"Spawned enemy: {(EnemyType)index}");
+	//		//SpawnEnemyAtPlayer((EnemyType)index);
+	//		//Logger.Log($"Spawned enemy: {(EnemyType)index}");
+	//		//SpawnEnemyAtPlayer(EnemyType.PlagueKnightSlowFire);
 	//		index++;
 	//	}
 	//}
@@ -487,6 +490,17 @@ internal class EnemyRandomizer : MonoBehaviour
 			}
 
 			return true;
+		}
+
+		// Fixes boomerang throwers to not jump in place in scenes that don't have Node objects
+		[HarmonyPostfix]
+		[HarmonyPatch(typeof(AI_Jumper), nameof(AI_Jumper.SetState))]
+		private static void BoomerangThrowerFixJumping(AI_Jumper __instance, AI_Brain.AIState newState)
+		{
+			if (newState == AI_Brain.AIState.Jump && !(bool)__instance.currentNode)
+			{
+				__instance.endJump = PlayerGlobal.instance.transform.position;
+			}
 		}
 	}
 }
