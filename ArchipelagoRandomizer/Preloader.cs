@@ -207,5 +207,15 @@ internal class Preloader : IDisposable
 			Instance.objectsToCache.Clear();
 			Object.Destroy(Instance.cacheHolder.gameObject);
 		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(LevelSpawn), nameof(LevelSpawn.Awake))]
+		private static void PreLevelSpawnAwake(LevelSpawn __instance)
+		{
+			if (IsPreloading)
+			{
+				__instance.spawnInjuredFalling = false;
+			}
+		}
 	}
 }
