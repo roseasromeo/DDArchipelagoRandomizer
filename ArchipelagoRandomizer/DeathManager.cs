@@ -91,6 +91,11 @@ internal class DeathManager : MonoBehaviour
 	private IEnumerator DoDeathReceived(DeathLink deathLink)
 	{
 		Logger.Log("Received death! You will die when next possible...");
+		while (!PlayerGlobal.instance)
+		{
+			// if Player doesn't exist yet
+			yield return null;
+		}
 		PlayerGlobal player = PlayerGlobal.instance;
 		preventDeath = true;
 
@@ -112,8 +117,8 @@ internal class DeathManager : MonoBehaviour
 		diedFromDeathLink = true;
 
 		// Apply damage instead of calling Die method to avoid issues
-		damageable.SetHealth(1);
-		damageable.ReceiveDamage(1, 0, player.transform.position, player.transform.position, Damageable.DamageType.Hole, 1);
+		damageable.SetHealth(1f);
+		damageable.ReceiveDamage(10f, 0, player.transform.position, player.transform.position, Damageable.DamageType.Hole, 1);
 		StartCoroutine(DeathCooldownTimer());
 	}
 
