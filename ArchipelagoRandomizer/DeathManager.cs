@@ -13,7 +13,6 @@ internal class DeathManager : MonoBehaviour
 
 	private DeathLinkService deathLinkService;
 	private DamageablePlayer damageable;
-	private UIMenuPauseController pauseController;
 	private readonly List<string> deathMessages =
 	[
 		"{name}'s last feather has fallen...",
@@ -102,11 +101,6 @@ internal class DeathManager : MonoBehaviour
 		if (damageable == null)
 		{
 			damageable = player.GetComponent<DamageablePlayer>();
-		}
-
-		if (pauseController == null)
-		{
-			pauseController = FindObjectOfType<UIMenuPauseController>();
 		}
 
 		while (!CanDie())
