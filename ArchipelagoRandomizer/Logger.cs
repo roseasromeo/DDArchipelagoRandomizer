@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -14,9 +16,16 @@ static class Logger
 		Plugin.Logger.LogWarning(message);
 	}
 
-	public static void LogError(string message)
+	public static void LogError(string message, bool includeTrace = true)
 	{
-		Plugin.Logger.LogError(message);
+		Plugin.Logger.LogError(includeTrace ? message + "\n" + GetStackTrace() : message);
+	}
+
+	private static string GetStackTrace()
+	{
+		string stack = Environment.StackTrace;
+		string[] lines = stack.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+		return string.Join("\n", lines.Skip(3));
 	}
 	public static void LogList<T>(List<T> list)
 	{
