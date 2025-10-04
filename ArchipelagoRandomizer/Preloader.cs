@@ -48,11 +48,37 @@ internal class Preloader : IDisposable
 		return null;
 	}
 
+	public static bool TryGetCachedObject<T>(string objName, out Object obj) where T : Object
+	{
+		// Find the cached object
+		obj = Instance.cachedObjects.Find(x => x.name == objName);
+
+		if (obj == null)
+		{
+			return false;
+		}
+
+		if (obj is T typedObj)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public static void CacheObject(GameObject obj)
 	{
 		GameObject newObj = Object.Instantiate(obj, Instance.cacheHolder);
 		newObj.name = newObj.name.Replace("(Clone)", "");
 		Instance.cachedObjects.Add(newObj);
+	}
+
+	public static GameObject CacheAndReturnObject(GameObject obj)
+	{
+		GameObject newObj = Object.Instantiate(obj, Instance.cacheHolder);
+		newObj.name = newObj.name.Replace("(Clone)", "");
+		Instance.cachedObjects.Add(newObj);
+		return newObj;
 	}
 
 	public void AddObjectToCacheList(string scene, OnLoadedSceneFunc onLoadedSceneCallback)
@@ -212,7 +238,7 @@ internal class Preloader : IDisposable
 		[HarmonyPatch(typeof(GameSceneManager), nameof(GameSceneManager.ReturnToTitle))]
 		private static void ReturnToTitlePatch()
 		{
-			if (Instance.cacheHolder == null) return;
+			if (Instance == null || Instance.cacheHolder == null) return;
 
 			Instance.cachedObjects.Clear();
 			Instance.objectsToCache.Clear();
@@ -227,6 +253,62 @@ internal class Preloader : IDisposable
 			{
 				__instance.spawnInjuredFalling = false;
 			}
+		}
+
+				[HarmonyPrefix]
+		[HarmonyPatch(typeof(CinemachineInitialiser), nameof(CinemachineInitialiser.Start))]
+		private static bool PreCinemachineInitialiserStart()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ButtonPromptArea), nameof(ButtonPromptArea.Start))]
+		private static bool PreButtonPromptAreaStart()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(CameraZoomArea), nameof(CameraZoomArea.Update))]
+		private static bool PreCameraZoomAreaUpdate()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(LightNight), nameof(LightNight.Update))]
+		private static bool PreLightNightUpdate()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(PointOfInterest), nameof(PointOfInterest.FixedUpdate))]
+		private static bool PrePointOfInterestFixedUpdate()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ForestSpiritController), nameof(ForestSpiritController.FixedUpdate))]
+		private static bool PreForestSpiritControllerFixedUpdate()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(DoorOverrider), nameof(DoorOverrider.Start))]
+		private static bool PreDoorOverriderStart()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(ShortcutDoor), nameof(ShortcutDoor.Start))]
+		private static bool PreShortcutDoorStart()
+		{
+			return !IsPreloading;
 		}
 	}
 }

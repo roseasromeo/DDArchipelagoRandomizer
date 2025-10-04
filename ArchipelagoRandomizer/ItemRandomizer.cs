@@ -7,6 +7,8 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IC = DDoor.ItemChanger;
+using CA = System.Diagnostics.CodeAnalysis;
+using Archipelago.MultiClient.Net.Enums;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -183,7 +185,7 @@ internal class ItemRandomizer : MonoBehaviour
 
 			// Place item. Using custom item here so we can override the Trigger() method
 			// for knowing when an item was picked up to send it to server
-			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location, itemPlacement.IsForAnotherPlayer);
+			IC.Item item = new DDItem(itemName, icon, itemPlacement.Location, itemPlacement.IsForAnotherPlayer, (int)itemPlacement.ItemClassification);
 			icSaveData.Place(item, itemPlacement.Location);
 
 			Logger.Log($"Placed {itemPlacement.Item} for {itemPlacement.ForPlayer} at {itemPlacement.Location}");
@@ -275,7 +277,7 @@ internal class ItemRandomizer : MonoBehaviour
 		if (scene.name == "lvl_HallOfDoors")
 		{
 			Logger.Log("Triggering GoS door check");
-			if (icSaveData.UnnamedPlacements.ContainsKey("Grove of Spirits Door"))
+			if (IsLocationPlaced("Grove of Spirits Door"))
 			{
 				icSaveData.UnnamedPlacements["Grove of Spirits Door"].Trigger();
 			}
@@ -283,32 +285,61 @@ internal class ItemRandomizer : MonoBehaviour
 		}
 	}
 
-	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer)
+	internal bool IsLocationPlaced(string itemChangerName)
+	{
+		return icSaveData.UnnamedPlacements.ContainsKey(itemChangerName);
+	}
+
+#nullable enable
+	internal bool TryGetICLocation(string itemChangerName, [CA.NotNullWhen(true)] out DDItem? item)
+	{
+		if (!icSaveData.UnnamedPlacements.ContainsKey(itemChangerName))
+		{
+			item = null;
+			return false;
+		}
+		else if (icSaveData.UnnamedPlacements[itemChangerName].GetType() == typeof(DDItem))
+		{
+			item = (DDItem)icSaveData.UnnamedPlacements[itemChangerName];
+			return true;
+		}
+		else
+		{
+			item = null;
+			return false;
+		}
+	}
+#nullable disable
+
+	public struct ItemPlacement(string item, string location, string forPlayer, bool isForAnotherPlayer, ClassEnum itemClassification)
 	{
 		public string Item { get; private set; } = item;
 		public string Location { get; private set; } = location;
 		public string ForPlayer { get; private set; } = forPlayer;
 		public bool IsForAnotherPlayer { get; private set; } = isForAnotherPlayer;
+		public ClassEnum ItemClassification { get; private set; } = itemClassification;
 	}
 
-	private readonly struct DDItem : IC.Item
+	internal readonly struct DDItem : IC.Item
 	{
 		public string DisplayName { get; }
 		public string Icon { get; }
 		public string Location { get; }
 		public bool IsForAnotherPlayer { get; }
+		public int ItemClassification { get; }
 
 		public void Trigger()
 		{
 			Instance.PickedUpItem(this);
 		}
 
-		public DDItem(string displayName, string icon, string location, bool isForAnotherPlayer)
+		public DDItem(string displayName, string icon, string location, bool isForAnotherPlayer, int itemClassification)
 		{
 			DisplayName = displayName;
 			Icon = icon;
 			Location = location;
 			IsForAnotherPlayer = isForAnotherPlayer;
+			ItemClassification = itemClassification;
 		}
 	}
 
@@ -318,6 +349,36 @@ internal class ItemRandomizer : MonoBehaviour
 		internal string Location = location;
 		internal int PlayerSlot = playerSlot;
 		internal IC.Item Item = item;
+	}
+
+	internal enum ClassEnum
+	{
+		Trap,
+		Filler,
+		Progression,
+		Useful,
+		ProgressionUseful,
+	}
+
+	internal static ClassEnum ConvertItemFlagsToItemClassification(ItemFlags itemFlags)
+	{
+		if (itemFlags.HasFlag(ItemFlags.Advancement))
+		{
+			if (itemFlags.HasFlag(ItemFlags.NeverExclude))
+			{
+				return ClassEnum.ProgressionUseful;
+			}
+			return ClassEnum.Progression;
+		}
+		else if (itemFlags.HasFlag(ItemFlags.Trap))
+		{
+			return ClassEnum.Trap;
+		}
+		else if (itemFlags.HasFlag(ItemFlags.NeverExclude))
+		{
+			return ClassEnum.Useful;
+		}
+		return ClassEnum.Filler;
 	}
 
 	[HarmonyPatch]

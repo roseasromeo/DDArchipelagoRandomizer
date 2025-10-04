@@ -69,6 +69,7 @@ internal class ArchipelagoRandomizerMod
 				ItemRandomizer itemRando = archipelagoRandomizer.AddComponent<ItemRandomizer>();
 				EntranceRandomizer entranceRandomizer = archipelagoRandomizer.AddComponent<EntranceRandomizer>();
 				EnemyRandomizer enemyRando = Archipelago.Instance.apConfig.EnemyRando ? archipelagoRandomizer.AddComponent<EnemyRandomizer>() : null;
+				ModelSwapper modelSwapper = Archipelago.Instance.apConfig.ModelSwapper ? archipelagoRandomizer.AddComponent<ModelSwapper>() : null;
 				GoalModifications goalMods = archipelagoRandomizer.AddComponent<GoalModifications>();
 				MapManager mapManager = archipelagoRandomizer.AddComponent<MapManager>();
 				TrapManager trapManager = archipelagoRandomizer.AddComponent<TrapManager>();

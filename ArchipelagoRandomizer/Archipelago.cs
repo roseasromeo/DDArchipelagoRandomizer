@@ -321,8 +321,8 @@ internal class Archipelago
 		string location = Locations.APItemInfoToDDLocationName(itemInfo);
 		string forPlayer = itemInfo.Player.Name;
 		bool isForAnotherPlayer = itemInfo.Player != CurrentPlayer;
-		return new ItemRandomizer.ItemPlacement(item, location, forPlayer, isForAnotherPlayer);
-
+		ItemRandomizer.ClassEnum itemClassification = ItemRandomizer.ConvertItemFlagsToItemClassification(itemInfo.Flags);
+		return new ItemRandomizer.ItemPlacement(item, location, forPlayer, isForAnotherPlayer, itemClassification);
 	}
 
 	private bool CanPlayerReceiveItems()
@@ -419,6 +419,17 @@ internal class Archipelago
 		return apConfig.EnemyRando;
 	}
 
+	internal void ToggleModelSwapper(bool newValue)
+	{
+		apConfig.ModelSwapper = newValue;
+		apConfig.SaveAPConfig();
+	}
+
+	internal bool InitializeModelSwapper()
+	{
+		return apConfig.ModelSwapper;
+	}
+
 	private APSaveData GetAPSaveDataForSlot(int saveIndex)
 	{
 		if (saveIndex > apSaveDataSlots.Length || saveIndex <= 0)
@@ -509,6 +520,7 @@ internal class Archipelago
 		public bool ReceiveItemsFast { get; set; } = false;
 		public bool SkipCutscenes { get; set; } = false;
 		public bool EnemyRando { get; set; } = false;
+		public bool ModelSwapper { get; set; } = false;
 
 		internal void SaveAPConfig()
 		{

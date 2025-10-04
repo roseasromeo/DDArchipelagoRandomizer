@@ -41,6 +41,7 @@ internal class UIManager
 		AddItemHandlingToggle();
 		AddCutsceneToggle();
 		AddEnemyRandoToggle();
+		AddModelSwapperToggle();
 		IngameUIManager.RetriggerModifyingOptionsMenuTitleScreen();
 	}
 
@@ -65,6 +66,11 @@ internal class UIManager
 	private void AddEnemyRandoToggle()
 	{
 		OptionsToggle optionsToggle = new(itemText: "ENEMY RANDOMIZER", gameObjectName: "ARCHIPELAGO_UI_ToggleEnnemyRando", id: "ToggleEnnemyRando", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleEnemyRando, toggleValueInitializer: Archipelago.Instance.InitializeEnemyRando, contextText: "BUTTON:CONFIRM Toggle Enemy Ranndomizer BUTTON:BACK Back");
+		IngameUIManager.AddOptionsMenuItem(optionsToggle);
+	}
+	private void AddModelSwapperToggle()
+	{
+		OptionsToggle optionsToggle = new(itemText: "ITEM MODEL SWAPPING", gameObjectName: "ARCHIPELAGO_UI_ToggleModelSwapper", id: "ToggleModelSwapper", relevantScenes: [IngameUIManager.RelevantScene.TitleScreen], toggleAction: Archipelago.Instance.ToggleModelSwapper, toggleValueInitializer: Archipelago.Instance.InitializeModelSwapper, contextText: "BUTTON:CONFIRM Toggle Enemy Randomizer BUTTON:BACK Back");
 		IngameUIManager.AddOptionsMenuItem(optionsToggle);
 	}
 
