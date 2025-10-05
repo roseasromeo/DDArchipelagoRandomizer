@@ -1,6 +1,5 @@
 using DDoor.AddUIToOptionsMenu;
 using HarmonyLib;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +10,7 @@ public static class CutsceneFlags
     private static GameSave GetGameSave() => GameSave.GetSaveData();
     private static readonly string hallOfDoorsScene = "lvl_HallOfDoors";
     internal static bool skippedCutscenes = false;
+    internal static bool triggerGoS = false;
 
     // These cutscenes must be skipping to prevent invisible collision obstacles
     private static readonly string[] blockingCutscenes = ["crow_cut1", "gd_intro_done", "phcs_5", "bard_fort_intro"];
@@ -77,11 +77,22 @@ public static class CutsceneFlags
                 {
                     if (!GameSave.GetSaveData().IsKeyUnlocked("cts_handler")) // Only queue GoS door to trigger if Chandler scene has not already been watched/skipped
                     {
-                        ItemRandomizer.Instance.QueueTriggerGroveOfSpiritsDoorCheck();
+                        triggerGoS = true;
                         SkipCutsceneSet(optionalCutscenes);
                     }
                 }
                 skippedCutscenes = true;
+            }
+        }
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GameSceneManager), nameof(GameSceneManager.OnSceneLoaded))]
+        private static void PostGameSceneManagerOnSceneLoaded(Scene scene)
+        {
+            if (triggerGoS)
+            {
+                ItemRandomizer.Instance.TriggerGroveofSpiritsDoorCheck(scene);
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using System.Runtime.CompilerServices;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -49,17 +48,18 @@ public class Plugin : BaseUnityPlugin
 
 			harmony = new Harmony("deathsdoor.archipelagorandomizer");
 			harmony.PatchAll();
-			UIManager.Instance.AddOptionsMenuItems();
-			UIManager.Instance.CheckPluginVersion();
+			DisableItemChangerShortcutDoorTriggerOverride();
 
 			InitStatus = 1;
-
-
 		}
 		catch (System.Exception err)
 		{
 			InitStatus = 2;
 			throw err;
+		}
+		if (InitStatus == 1)
+		{
+			UIManager.Instance.StartUp();
 		}
 	}
 

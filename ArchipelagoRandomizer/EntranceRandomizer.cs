@@ -72,7 +72,7 @@ internal class EntranceRandomizer : MonoBehaviour
         [HarmonyPostfix]
         private static void PostShortcutDoorAwake(ShortcutDoor __instance)
         {
-            if (Archipelago.Instance.IsConnected() && Instance != null && Instance.entranceRandomization)
+            if (Archipelago.Instance.IsConnected() && !Preloader.IsPreloading && Instance != null && Instance.entranceRandomization)
             {
                 DoorTrigger doorTrigger = __instance.doorTrigger;
                 SceneTransitions.SceneTransition? newSceneTransition = SceneTransitions.GetConnectedSceneTransition(doorTrigger.doorId, doorTrigger.sceneToLoad);
@@ -95,6 +95,13 @@ internal class EntranceRandomizer : MonoBehaviour
                 }
 
             }
+        }
+
+        [HarmonyReversePatch]
+        [HarmonyPatch(typeof(ShortcutDoor), nameof(ShortcutDoor.Trigger))]
+        internal static void OrigTrigger(ShortcutDoor self)
+        {
+            throw new System.InvalidOperationException("stub");
         }
 
         [HarmonyPrefix]
@@ -123,7 +130,7 @@ internal class EntranceRandomizer : MonoBehaviour
             // 1. The door is unlocked already (for collecting in HoD when you already have the door)
             // 2. We are not in Hall of Doors (for collecting in other levels)
             // 3. It is the Grove of Spirits Door (for Chandler cutscene triggering GoS door)
-            if (!save.IsKeyUnlocked(collectedKey) && (__instance.unlocked || !SceneManager.GetSceneByName("lvl_HallOfDoors").isLoaded || __instance.keyId == IC.DoorLocation.groveDoorKey))
+            if (!save.IsKeyUnlocked(collectedKey) && (__instance.unlocked || __instance.gameObject.scene.name != "lvl_HallOfDoors" || __instance.keyId == IC.DoorLocation.groveDoorKey))
             {
                 save.SetKeyState(collectedKey, true);
                 IC.CornerPopup.Show(item);
@@ -157,6 +164,36 @@ internal class EntranceRandomizer : MonoBehaviour
 
             // If the door is already open, allow you to go through it anyway.
             return __instance.unlocked;
+        }
+
+        // Credit Diogo Pinela, in ItemChanger. Needed here since we unpatch the original TriggerPatch
+        // Open the door immediately if you collect its item in the same room where
+        // the door is.
+        // This applies to doors outside the Hall of Doors, and also to the Grove
+        // door in Hall of Doors (the one that is normally given at the start);
+        // therefore this patch and the one in KeyItem are complementary.
+        [HarmonyPatch(typeof(ShortcutDoor), nameof(ShortcutDoor.FixedUpdate))]
+        private static class VanillaRoomOpenPatch
+        {
+            private static void Postfix(ShortcutDoor __instance)
+            {
+                if (!__instance.unlocked && GameSave.GetSaveData().IsKeyUnlocked(__instance.keyId))
+                {
+                    OrigTrigger(__instance);
+                }
+            }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ShortcutDoor), nameof(ShortcutDoor.SetAsRespawnDoor))]
+        private static bool PreSetAsRespawnDoor()
+        {
+            // Don't allow the shortcut doors to override your respawn point if they are unlocked
+            if (Instance != null && Instance.entranceRandomization)
+            {
+                return false;
+            }
+            return true;
         }
 
         [HarmonyPrefix]

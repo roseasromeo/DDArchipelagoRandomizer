@@ -96,7 +96,6 @@ internal class ArchipelagoRandomizerMod
 	private void DisableMod()
 	{
 		SceneManager.sceneLoaded -= MapManager.Instance.UpdateMap;
-		SceneManager.sceneLoaded -= ItemRandomizer.Instance.TriggerGroveofSpiritsDoorCheck;
 		SceneManager.sceneLoaded -= CutsceneFlags.RemoveOfficeBlocker;
 		SceneManager.sceneLoaded -= CutsceneFlags.ActivateShopKeep;
 		CutsceneFlags.skippedCutscenes = false;

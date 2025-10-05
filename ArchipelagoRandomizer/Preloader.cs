@@ -226,13 +226,6 @@ internal class Preloader : IDisposable
 			return false;
 		}
 
-		[HarmonyPrefix]
-		[HarmonyPatch(typeof(GameRoom), nameof(GameRoom.init))]
-		private static bool FixGameRoomNullRef()
-		{
-			return !IsPreloading;
-		}
-
 		// When returning to title, it clears the cached objects list
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(GameSceneManager), nameof(GameSceneManager.ReturnToTitle))]
@@ -252,10 +245,18 @@ internal class Preloader : IDisposable
 			if (IsPreloading)
 			{
 				__instance.spawnInjuredFalling = false;
+				__instance.forcePosition = false;
 			}
 		}
 
-				[HarmonyPrefix]
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GameRoom), nameof(GameRoom.init))]
+		private static bool FixGameRoomNullRef()
+		{
+			return !IsPreloading;
+		}
+
+		[HarmonyPrefix]
 		[HarmonyPatch(typeof(CinemachineInitialiser), nameof(CinemachineInitialiser.Start))]
 		private static bool PreCinemachineInitialiserStart()
 		{
@@ -310,5 +311,26 @@ internal class Preloader : IDisposable
 		{
 			return !IsPreloading;
 		}
+
+		// [HarmonyPrefix]
+		// [HarmonyPatch(typeof(LadderLock), nameof(LadderLock.Start))]
+		// private static bool PreLadderLockStart()
+		// {
+		// 	return !IsPreloading;
+		// }
+
+		// [HarmonyPrefix]
+		// [HarmonyPatch(typeof(Ladder), nameof(Ladder.Start))]
+		// private static bool PreLadderStart()
+		// {
+		// 	return !IsPreloading;
+		// }
+
+		// [HarmonyPrefix]
+		// [HarmonyPatch(typeof(VineLadder), nameof(VineLadder.Start))]
+		// private static bool PreVineLadderStart()
+		// {
+		// 	return !IsPreloading;
+		// }
 	}
 }

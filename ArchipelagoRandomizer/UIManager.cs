@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Net;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DDoor.ArchipelagoRandomizer;
 
@@ -19,6 +20,12 @@ internal class UIManager
 	private static bool UpdateAvailable = false;
 
 	private UIManager() { }
+
+	internal void StartUp()
+	{
+		Instance.AddOptionsMenuItems();
+		Instance.CheckPluginVersion();		
+	}
 
 	public void ShowConnectionMenu()
 	{

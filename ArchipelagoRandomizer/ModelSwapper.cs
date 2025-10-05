@@ -95,6 +95,7 @@ internal class ModelSwapper : MonoBehaviour
                 new LocationData{ itemChangerName = "Soul Orb-Estate Secret Cave", locationType = LocationType.DropItem },
                 new LocationData{ itemChangerName = "Soul Orb-Estate Twin Benches", locationType = LocationType.DropItem },
                 new LocationData{ itemChangerName = "Magic Shrine-Estate Left of Manor", locationType = LocationType.Shrine },
+                new LocationData{ itemChangerName = "Heart Shrine-Garden of Life", locationType = LocationType.Shrine },
                 new LocationData{ itemChangerName = "Seed-Estate Family Tomb", locationType = LocationType.DropItem },
                 new LocationData{ itemChangerName = "Seed-Garden of Joy", locationType = LocationType.DropItem },
                 new LocationData{ itemChangerName = "Seed-Estate Entrance", locationType = LocationType.DropItem },
@@ -634,7 +635,7 @@ internal class ModelSwapper : MonoBehaviour
                 }
                 else
                 {
-                    boostAmount = 1f;
+                    boostAmount = 2f;
                 }
                 newObject.transform.SetPositionAndRotation(newObject.transform.position + new Vector3(0f, boostAmount, 0f), newObject.transform.rotation);
             }
@@ -668,7 +669,7 @@ internal class ModelSwapper : MonoBehaviour
                     return false;
                 }
             GameObject newObject = SwapModel(oldModel, newModel);
-            if (newObject.name.Contains("AP") || newObject.name.Contains("Soul"))
+            if (newObject.name.Contains("AP") || newObject.name.Contains("Soul") || newObject.name.Contains("Shard"))
             {
                 ItemFloater itemFloater = newObject.GetComponent<ItemFloater>();
                 itemFloater.ySine = Mathf.PI / 2f;
@@ -940,6 +941,7 @@ internal class ModelSwapper : MonoBehaviour
             ItemType.PinkAncientTabletOfKnowledge => GetTabletFromTruthTabletSpawner(scene, itemData),
             ItemType.Lever => GetLever(scene, itemData),
             ItemType.Fire or ItemType.Bomb or ItemType.Hookshot or ItemType.Bow => GetSpell(scene, itemData),
+            ItemType.VitalityShard or ItemType.MagicShard => GetShard(scene, itemData),
             _ => GetGameObjectDirectly(scene, itemData),
         };
 
@@ -953,16 +955,33 @@ internal class ModelSwapper : MonoBehaviour
 
     private GameObject GetLever(string scene, ItemData itemData)
     {
-        GameObject lever = PathUtil.GetByPath(scene, itemData.path);
+        GameObject lever = GetGameObjectDirectly(scene, itemData);
         DestroyImmediate(lever.GetComponentInChildren<ButtonPromptArea>(true).gameObject);
         lever.transform.localPosition = new Vector3(0f, 0f, 0f);
+        // lever.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f); // Levers stick out extra. If we want to stop that, uncomment this line
         return lever;
     }
+
     private GameObject GetSpell(string scene, ItemData itemData)
     {
-        GameObject spell = PathUtil.GetByPath(scene, itemData.path);
+        GameObject spell = GetGameObjectDirectly(scene, itemData);
         spell.transform.localPosition = new Vector3(0f, 0f, 0f);
         return spell;
+    }
+
+    private GameObject GetShard(string scene, ItemData itemData)
+    {
+        GameObject shard = GetGameObjectDirectly(scene, itemData);
+        if (itemData.type == ItemType.VitalityShard)
+        {
+            shard.GetComponentInChildren<MeshRenderer>().material.color = new Color(1, .3f, .5f, .2f);
+        }
+        else
+        {
+            shard.GetComponentInChildren<MeshRenderer>().material.color = new Color(0, 1, 0, .2f);
+        }
+        
+        return shard;
     }
 
     private GameObject GetGameObjectDirectly(string scene, ItemData itemData)
@@ -986,10 +1005,6 @@ internal class ModelSwapper : MonoBehaviour
 
     private void TryInitialSwap(string objectSceneName, string id, GameObject instanceGameObject, Func<GameObject, GameObject> getCorrectChild)
     {
-        if (!Archipelago.Instance.apConfig.ModelSwapper || Preloader.IsPreloading)
-        {
-            return;
-        }
         if (!Instance.preloadedSwaps.Keys.Contains(objectSceneName))
         {
             return;
@@ -1030,6 +1045,10 @@ internal class ModelSwapper : MonoBehaviour
         [HarmonyPatch(typeof(BaseKey), nameof(BaseKey.Awake))]
         private static void PostBaseKeyAwake(BaseKey __instance)
         {
+            if (!Archipelago.Instance.apConfig.ModelSwapper || Preloader.IsPreloading || SceneManager.GetSceneByName("TitleScreen").isLoaded)
+            {
+                return;
+            }
 			static GameObject getCorrectChild(GameObject instanceGameObject) => instanceGameObject.transform.GetComponentInChildren<LightDistanceControl>().gameObject;
 			Instance.TryInitialSwap(__instance.gameObject.scene.name, __instance.uniqueId, __instance.gameObject, getCorrectChild);
         }
@@ -1038,8 +1057,11 @@ internal class ModelSwapper : MonoBehaviour
         [HarmonyPatch(typeof(DropItem), nameof(DropItem.Awake))]
         private static void PostDropItemAwake(DropItem __instance)
         {
+            if (!Archipelago.Instance.apConfig.ModelSwapper || Preloader.IsPreloading)
+            {
+                return;
+            }
             Func<GameObject, GameObject> getCorrectChild;
-
             if (__instance.uniqueId == "hammer" || __instance.uniqueId == "sword_heavy")
             {
                 getCorrectChild = instanceGameObject => instanceGameObject.transform.Find("GameObject/Visuals").gameObject;
@@ -1055,6 +1077,10 @@ internal class ModelSwapper : MonoBehaviour
         [HarmonyPatch(typeof(SoulKey), nameof(SoulKey.Start))]
         private static void PostSoulKeyStart(SoulKey __instance)
         {
+            if (!Archipelago.Instance.apConfig.ModelSwapper || Preloader.IsPreloading)
+            {
+                return;
+            }
 			static GameObject getCorrectChild(GameObject instanceGameObject) => instanceGameObject.transform.Find("Soul/crow_2").gameObject;
 			Instance.TryInitialSwap(__instance.gameObject.scene.name, __instance.GetComponentInChildren<NPCCharacter>().speech_id[0].unlocks.Replace("ItemChanger-collected_crow_location_", ""), __instance.gameObject, getCorrectChild);
         }
@@ -1063,6 +1089,10 @@ internal class ModelSwapper : MonoBehaviour
         [HarmonyPatch(typeof(CollectableKey), nameof(CollectableKey.Start))]
         private static void PostCollectableKeyStart(CollectableKey __instance)
         {
+            if (!Archipelago.Instance.apConfig.ModelSwapper || Preloader.IsPreloading)
+            {
+                return;
+            }
             static GameObject getCorrectChild(GameObject instanceGameObject) => instanceGameObject.transform.Find("keyHover").gameObject;
 			Instance.TryInitialSwap(__instance.gameObject.scene.name, __instance.keyId, __instance.gameObject, getCorrectChild);
         }

@@ -267,21 +267,16 @@ internal class ItemRandomizer : MonoBehaviour
 		return itemName;
 	}
 
-	internal void QueueTriggerGroveOfSpiritsDoorCheck()
+	internal void TriggerGroveofSpiritsDoorCheck(Scene scene)
 	{
-		SceneManager.sceneLoaded += TriggerGroveofSpiritsDoorCheck;
-	}
-
-	internal void TriggerGroveofSpiritsDoorCheck(Scene scene, LoadSceneMode _)
-	{
-		if (scene.name == "lvl_HallOfDoors")
+		if (CutsceneFlags.triggerGoS && scene.name == "lvl_HallOfDoors" && !Preloader.IsPreloading)
 		{
 			Logger.Log("Triggering GoS door check");
 			if (IsLocationPlaced("Grove of Spirits Door"))
 			{
 				icSaveData.UnnamedPlacements["Grove of Spirits Door"].Trigger();
 			}
-			SceneManager.sceneLoaded -= TriggerGroveofSpiritsDoorCheck;
+			CutsceneFlags.triggerGoS = false;
 		}
 	}
 
