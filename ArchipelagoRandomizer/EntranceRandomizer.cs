@@ -76,8 +76,11 @@ internal class EntranceRandomizer : MonoBehaviour
             {
                 DoorTrigger doorTrigger = __instance.doorTrigger;
                 SceneTransitions.SceneTransition? newSceneTransition = SceneTransitions.GetConnectedSceneTransition(doorTrigger.doorId, doorTrigger.sceneToLoad);
-                doorTrigger.sceneToLoad = newSceneTransition?.toSceneName;
-                doorTrigger.targetDoor = newSceneTransition?.loadingZoneId;
+                if (newSceneTransition != null)
+                {
+                    doorTrigger.sceneToLoad = newSceneTransition?.toSceneName;
+                    doorTrigger.targetDoor = newSceneTransition?.loadingZoneId;
+                }
             }
             if (!IC.ItemChangerPlugin.TryGetPlacedItem(typeof(IC.DoorLocation), __instance.keyId, out IC.Item? item))
             {

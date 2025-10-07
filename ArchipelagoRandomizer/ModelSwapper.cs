@@ -524,6 +524,10 @@ internal class ModelSwapper : MonoBehaviour
                     {
                         itemName = "Lever";
                     }
+                    else if (itemName.IndexOf("Camp of the Free Crows Door") >= 0)
+                    {
+                        itemName = " Door";
+                    }
                     else if (itemName.IndexOf("Crow", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         itemName = "Crow";
@@ -972,7 +976,7 @@ internal class ModelSwapper : MonoBehaviour
     private GameObject GetShard(string scene, ItemData itemData)
     {
         GameObject shard = GetGameObjectDirectly(scene, itemData);
-        if (itemData.type == ItemType.VitalityShard)
+        if (itemData.type == ItemType.MagicShard)
         {
             shard.GetComponentInChildren<MeshRenderer>().material.color = new Color(1, .3f, .5f, .2f);
         }
